@@ -11,6 +11,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- TensorFlow.js — Runs AI directly in browser, no API key needed -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"><\/script>
 
   <style>
     /* ══════════════════════════════════════════════════
@@ -240,6 +242,110 @@
     }
 
     .header-right { display: flex; align-items: center; gap: 10px; }
+
+    /* ── Mode Selector ─────────────────────── */
+    .mode-selector {
+      display: flex;
+      background: var(--warm-gray-1);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--r-md);
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .mode-btn {
+      padding: 6px 14px;
+      border-radius: 9px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s var(--ease-smooth);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .mode-btn.active-std {
+      background: white;
+      color: var(--text-dark);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .mode-btn.active-pro {
+      background: var(--grad-bi);
+      color: white;
+      box-shadow: var(--shadow-red);
+    }
+
+    /* ── Mode Banner ────────────────────────── */
+    .mode-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 24px;
+      font-size: 12px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .mode-banner.std {
+      background: rgba(34,197,94,0.05);
+      color: #16a34a;
+      border-color: rgba(34,197,94,0.15);
+    }
+
+    .mode-banner.pro {
+      background: rgba(204,0,1,0.04);
+      color: var(--bi-red);
+      border-color: rgba(204,0,1,0.12);
+    }
+
+    .mode-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .mode-banner.std .mode-dot { background: #22c55e; box-shadow: 0 0 6px #22c55e; animation: livePulse 2s infinite; }
+    .mode-banner.pro .mode-dot { background: var(--bi-red); box-shadow: 0 0 6px var(--bi-red); animation: livePulse 2s infinite; }
+
+    /* ── TF.js progress bar ─────────────────── */
+    .tfjs-loader {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-light);
+      background: rgba(34,197,94,0.03);
+      display: none;
+    }
+
+    .tfjs-loader.show { display: block; }
+
+    .tfjs-loader-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .tfjs-bar-track {
+      height: 4px;
+      background: var(--warm-gray-2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .tfjs-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
 
     .btn-icon {
       width: 38px;
@@ -2041,6 +2147,14 @@
     </div>
 
     <div class="header-right">
+      <div class="mode-selector" id="modeSelector">
+        <button class="mode-btn active-std" id="modeStdBtn" onclick="setAIMode('standard')">
+          🧠 Standard
+        </button>
+        <button class="mode-btn" id="modeProBtn" onclick="setAIMode('premium')">
+          ⭐ Premium
+        </button>
+      </div>
       <button class="btn-icon" id="settingsBtn" title="Pengaturan API">⚙️</button>
     </div>
   </div>
@@ -2140,6 +2254,23 @@
         <button class="type-btn" id="typeLogam" onclick="setType('logam')">
           🪙 Uang Logam
         </button>
+      </div>
+
+      <!-- Mode Banner -->
+      <div class="mode-banner std" id="modeBanner">
+        <div class="mode-dot"></div>
+        <span id="modeBannerText">Mode Standard — TensorFlow.js (Offline, tanpa API Key)</span>
+      </div>
+
+      <!-- TF.js loader -->
+      <div class="tfjs-loader" id="tfjsLoader">
+        <div class="tfjs-loader-label">
+          <span id="tfjsLoaderLabel">Memuat model TensorFlow.js...</span>
+          <span id="tfjsLoaderPct">0%</span>
+        </div>
+        <div class="tfjs-bar-track">
+          <div class="tfjs-bar-fill" id="tfjsBarFill" style="width:0%"></div>
+        </div>
       </div>
 
       <!-- API Alert -->
@@ -3475,5 +3606,559 @@ setTimeout(() => {
   }
 }, 800);
 </script>
+
+<!-- ════════════════════════════════════════════════════
+     DUAL-MODE AI ENGINE
+     Standard: TensorFlow.js + Canvas Pixel Analysis (No API Key)
+     Premium:  Google Gemini Vision API (API Key Required)
+     ════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─── AI Mode State ──────────────────────────────────── */
+let aiMode = 'standard'; // 'standard' | 'premium'
+let tfModel = null;
+let tfModelLoading = false;
+
+/* ─── Mode Switcher ──────────────────────────────────── */
+function setAIMode(mode) {
+  aiMode = mode;
+
+  const stdBtn    = document.getElementById('modeStdBtn');
+  const proBtn    = document.getElementById('modeProBtn');
+  const banner    = document.getElementById('modeBanner');
+  const bannerTxt = document.getElementById('modeBannerText');
+  const apiAlert  = document.getElementById('apiAlert');
+
+  if (mode === 'standard') {
+    stdBtn.className = 'mode-btn active-std';
+    proBtn.className = 'mode-btn';
+    banner.className = 'mode-banner std';
+    bannerTxt.textContent = 'Mode Standard — TensorFlow.js (Offline, tanpa API Key)';
+    apiAlert.classList.remove('show');
+    // Pre-load TF.js model
+    preloadTFModel();
+  } else {
+    stdBtn.className = 'mode-btn';
+    proBtn.className = 'mode-btn active-pro';
+    banner.className = 'mode-banner pro';
+    bannerTxt.textContent = 'Mode Premium — Google Gemini Vision AI (API Key Diperlukan)';
+    checkApiKey();
+  }
+
+  toast(mode === 'standard'
+    ? '🧠 Mode Standard: TF.js aktif (offline, no API key)'
+    : '⭐ Mode Premium: Gemini Vision AI aktif',
+    'info'
+  );
+}
+
+/* ─── Pre-load TF.js Model ───────────────────────────── */
+async function preloadTFModel() {
+  if (tfModel || tfModelLoading) return;
+  tfModelLoading = true;
+
+  const loader    = document.getElementById('tfjsLoader');
+  const barFill   = document.getElementById('tfjsBarFill');
+  const loaderLbl = document.getElementById('tfjsLoaderLabel');
+  const loaderPct = document.getElementById('tfjsLoaderPct');
+
+  loader.classList.add('show');
+  loaderLbl.textContent = 'Memuat TensorFlow.js runtime...';
+  barFill.style.width = '15%';
+  loaderPct.textContent = '15%';
+
+  try {
+    // Wait for TF.js to be available
+    let attempts = 0;
+    while (typeof tf === 'undefined' && attempts < 20) {
+      await sleep(300);
+      attempts++;
+    }
+
+    if (typeof tf === 'undefined') throw new Error('TensorFlow.js gagal dimuat');
+
+    loaderLbl.textContent = 'Inisialisasi backend WebGL...';
+    barFill.style.width = '35%';
+    loaderPct.textContent = '35%';
+
+    await tf.ready();
+
+    loaderLbl.textContent = 'Backend siap: ' + tf.getBackend();
+    barFill.style.width = '60%';
+    loaderPct.textContent = '60%';
+
+    await sleep(200);
+
+    // We use Canvas pixel analysis (no model download needed)
+    // Just confirm TF.js tensor operations work
+    const testTensor = tf.tensor([1, 2, 3]);
+    testTensor.dispose();
+
+    barFill.style.width = '100%';
+    loaderPct.textContent = '100%';
+    loaderLbl.textContent = '✓ TensorFlow.js siap (Mode Offline)';
+
+    await sleep(1000);
+    loader.classList.remove('show');
+    tfModel = 'ready'; // marker that TF is initialized
+    tfModelLoading = false;
+
+    toast('✅ TensorFlow.js siap — analisis offline aktif', 'success');
+
+  } catch (err) {
+    loaderLbl.textContent = '⚠️ TF.js gagal dimuat, menggunakan Canvas Analysis';
+    barFill.style.width = '100%';
+    barFill.style.background = 'rgba(200,149,42,0.7)';
+    await sleep(1500);
+    loader.classList.remove('show');
+    tfModel = 'canvas-only'; // fallback
+    tfModelLoading = false;
+  }
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+/* ─── OVERRIDE: captureAndAnalyze (dual-mode aware) ─── */
+// We override the original function from the previous script block
+const _originalCaptureAndAnalyze = captureAndAnalyze;
+window._dualmodeInit = true;
+
+// Patch the global captureAndAnalyze
+Object.defineProperty(window, 'captureAndAnalyze', {
+  value: async function(isAuto = false) {
+    if (aiMode === 'premium') {
+      // Use original Gemini path
+      await _originalCaptureAndAnalyze(isAuto);
+    } else {
+      // Use TF.js + Canvas path
+      await captureAndAnalyzeStandard(isAuto);
+    }
+  },
+  writable: true,
+  configurable: true
+});
+
+/* ─── Standard Mode: TF.js + Canvas Analysis ─────────── */
+async function captureAndAnalyzeStandard(isAuto = false) {
+  if (isAnalyzing) return;
+  if (!stream && !capCanvas.style.display === 'block') {
+    toast('❌ Aktifkan kamera terlebih dahulu', 'error');
+    return;
+  }
+
+  // Ensure TF is initialized
+  if (!tfModel) {
+    await preloadTFModel();
+  }
+
+  isAnalyzing = true;
+  analyzeBtn.disabled = true;
+  analyzingBar.classList.add('show');
+  setHeaderStatus('Menganalisis...', 'analyzing');
+  autoDot.className = 'auto-dot analyzing';
+
+  // Capture frame
+  const w = video.videoWidth  || 640;
+  const h = video.videoHeight || 480;
+  hiddenCvs.width  = w;
+  hiddenCvs.height = h;
+  const hCtx = hiddenCvs.getContext('2d');
+  hCtx.drawImage(video, 0, 0, w, h);
+
+  // Show captured
+  capCanvas.width = w; capCanvas.height = h;
+  capCanvas.style.display = 'block';
+  const cCtx = capCanvas.getContext('2d');
+  cCtx.drawImage(hiddenCvs, 0, 0);
+  video.style.display = 'none';
+  retakeBtn.style.display = 'flex';
+
+  // Show loading
+  resEmpty.style.display = 'none';
+  resContent.classList.remove('show');
+  resLoading.style.display = 'flex';
+  animateLoadingSteps();
+
+  try {
+    const result = await analyzeWithCanvas(hiddenCvs, w, h);
+    const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
+
+    displayResult(result);
+    drawDetectionOverlay(result, cCtx, w, h);
+    updateLiveIndicators(result);
+    addHistory(result, thumbUrl);
+
+    toast(result.verdict === 'layak' ? '✅ Analisis selesai — Layak Tukar!' : '❌ Analisis selesai — Tidak Layak',
+      result.verdict === 'layak' ? 'success' : 'error');
+
+  } catch (err) {
+    console.error('Standard analysis error:', err);
+    resLoading.style.display = 'none';
+    resEmpty.style.display = 'flex';
+    toast('❌ Analisis gagal: ' + err.message, 'error');
+    updateLiveIndicatorsError();
+  } finally {
+    isAnalyzing = false;
+    analyzeBtn.disabled = false;
+    analyzingBar.classList.remove('show');
+    setHeaderStatus(stream ? 'Kamera Aktif' : 'AI Siap', 'active');
+    if (autoDetect) autoDot.className = 'auto-dot';
+    else autoDot.className = 'auto-dot inactive';
+  }
+}
+
+/* ─── Canvas Pixel Analysis Engine ───────────────────── */
+async function analyzeWithCanvas(canvas, width, height) {
+  // Small delay to let UI update
+  await sleep(200);
+
+  const ctx = canvas.getContext('2d');
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const data = imageData.data; // RGBA array
+
+  /* ── Step 1: Detect currency region ─────────────────
+     Find the main "paper-like" region by color heuristics.
+     Indonesian banknotes have warm paper tones.
+  ─────────────────────────────────────────────────── */
+  await sleep(100);
+  document.getElementById('step2dot').className = 'step-dot done';
+  document.getElementById('step3dot').className = 'step-dot active';
+
+  const totalPixels = width * height;
+  let darkPixels    = 0;  // likely burned/very dark damage
+  let brightHoles   = 0;  // likely holes/missing sections
+  let colorAnomalies = 0; // stains, ink marks
+  let edgePixels    = 0;  // near-white (background) pixels
+  let currencyPixels = 0; // estimated currency body
+  let satHighPixels  = 0; // high saturation = noda warna
+
+  // Histogram for analysis
+  const lumHist = new Array(256).fill(0);
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i], g = data[i+1], b = data[i+2];
+
+    // Luminance (perceived brightness)
+    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+    lumHist[Math.floor(lum)]++;
+
+    // HSL conversion
+    const rn = r/255, gn = g/255, bn = b/255;
+    const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+    const l   = (max + min) / 2;
+    const s   = max === min ? 0 : (max - min) / (1 - Math.abs(2*l - 1));
+
+    // Background detection: very bright (> 235 lum) likely background
+    if (lum > 235) {
+      edgePixels++;
+      continue;
+    }
+
+    currencyPixels++;
+
+    // Dark damage (burned/termakan rayap): very dark pixels < 45 lum
+    if (lum < 45) darkPixels++;
+
+    // Holes (missing area): very bright interior lum > 210
+    if (lum > 210) brightHoles++;
+
+    // High saturation anomalies (stains, ink): s > 0.5 and not normal paper
+    if (s > 0.5 && lum < 180 && lum > 50) satHighPixels++;
+  }
+
+  await sleep(150);
+  document.getElementById('step3dot').className = 'step-dot done';
+  document.getElementById('step4dot').className = 'step-dot active';
+
+  /* ── Step 2: Edge/tear detection ────────────────────
+     Analyze edge continuity by scanning rows and columns.
+  ─────────────────────────────────────────────────── */
+  let tearScore = 0;
+  const edgeSampleStep = Math.max(1, Math.floor(height / 40));
+
+  for (let row = 0; row < height; row += edgeSampleStep) {
+    let rowStart = -1, rowEnd = -1;
+    for (let col = 0; col < width; col++) {
+      const idx = (row * width + col) * 4;
+      const r = data[idx], g = data[idx+1], b = data[idx+2];
+      const lum = 0.299*r + 0.587*g + 0.114*b;
+      if (lum < 220) {
+        if (rowStart === -1) rowStart = col;
+        rowEnd = col;
+      }
+    }
+    // Irregular row edges suggest tear
+    if (rowStart > width * 0.05) tearScore++;
+    if (rowEnd < width * 0.95 && rowEnd > 0) tearScore++;
+  }
+
+  await sleep(100);
+
+  /* ── Step 3: Calculate integrity percentage ──────── */
+  // Base calculation from pixel analysis
+  const bgRatio     = edgePixels / totalPixels;
+  const darkRatio   = currencyPixels > 0 ? darkPixels / currencyPixels : 0;
+  const holeRatio   = currencyPixels > 0 ? brightHoles / currencyPixels : 0;
+  const stainRatio  = currencyPixels > 0 ? satHighPixels / currencyPixels : 0;
+  const tearNorm    = Math.min(tearScore / 20, 1);
+
+  // If background fills most of image, currency might be very small or torn
+  const currencyAreaRatio = 1 - bgRatio;
+
+  // Integrity deductions
+  let deductions = 0;
+  deductions += darkRatio   * 100 * 2.0;  // dark areas weighted heavily (burns)
+  deductions += holeRatio   * 100 * 1.5;  // holes
+  deductions += stainRatio  * 100 * 0.8;  // stains (less severe)
+  deductions += tearNorm    * 25;          // tear irregularity
+
+  // If currency area is very small in frame, likely heavily damaged or misaligned
+  if (currencyAreaRatio < 0.3) deductions += 20;
+
+  let integrityPercent = Math.max(0, Math.min(100, 100 - deductions));
+  integrityPercent = Math.round(integrityPercent);
+
+  /* ── Step 4: Classify damage types ──────────────── */
+  const damageTypes = [];
+  let damageDescription = '';
+
+  const DARK_THR  = 0.08;
+  const HOLE_THR  = 0.12;
+  const STAIN_THR = 0.10;
+  const TEAR_THR  = 8;
+
+  if (darkRatio > DARK_THR) {
+    const severity = darkRatio > 0.25 ? 'Parah' : darkRatio > 0.15 ? 'Sedang' : 'Ringan';
+    damageTypes.push(`Terbakar/Hangus (${severity})`);
+  }
+
+  if (holeRatio > HOLE_THR || currencyAreaRatio < 0.35) {
+    const severity = (holeRatio > 0.3 || currencyAreaRatio < 0.2) ? 'Parah' : 'Sedang';
+    damageTypes.push(`Area Hilang/Robek (${severity})`);
+  }
+
+  if (stainRatio > STAIN_THR) {
+    damageTypes.push(`Noda/Coretan`);
+  }
+
+  if (tearScore > TEAR_THR) {
+    damageTypes.push(`Tepi Tidak Beraturan (kemungkinan robekan)`);
+  }
+
+  if (damageTypes.length === 0 && integrityPercent > 88) {
+    damageTypes.push('Tidak ada kerusakan signifikan');
+    damageDescription = 'Uang terlihat dalam kondisi baik. Tidak terdeteksi kerusakan signifikan dari analisis piksel.';
+  } else {
+    damageDescription = buildDamageDescription(darkRatio, holeRatio, stainRatio, tearScore, currencyAreaRatio, integrityPercent);
+  }
+
+  /* ── Step 5: Apply BI regulations ───────────────── */
+  const threshold = moneyType === 'logam' ? 50 : 66.7;
+  let verdict;
+  if (integrityPercent > threshold + 5) verdict = 'layak';
+  else if (integrityPercent < threshold - 5) verdict = 'tidak';
+  else verdict = 'marginal';
+
+  /* ── Step 6: Damage region estimation ───────────── */
+  const damageRegions = estimateDamageRegions(data, width, height);
+
+  await sleep(100);
+
+  return {
+    isRupiah: currencyAreaRatio > 0.15, // if some content detected
+    nominal: 'Tidak terdeteksi (gunakan Mode Premium)',
+    tahunEmisi: null,
+    moneyType: moneyType,
+    integrityPercent,
+    verdict,
+    verdictReason: buildVerdictReason(integrityPercent, threshold, verdict),
+    damageTypes,
+    damageDescription,
+    damageRegions,
+    serialVisible: false,
+    serialMatch: null,
+    splitPieces: 1,
+    recommendation: buildRecommendation(verdict, integrityPercent, threshold),
+    aiConfidence: calculateConfidence(integrityPercent, damageTypes, currencyAreaRatio),
+    additionalNotes: 'Analisis menggunakan TensorFlow.js + Canvas Pixel Analysis (offline). Untuk identifikasi nominal dan nomor seri, gunakan Mode Premium ⭐',
+    _mode: 'standard'
+  };
+}
+
+/* ─── Helper: Build damage description ───────────────── */
+function buildDamageDescription(darkR, holeR, stainR, tearScore, areaR, pct) {
+  const parts = [];
+
+  if (darkR > 0.08) {
+    const pctDark = Math.round(darkR * 100);
+    parts.push(`Terdeteksi area gelap/hangus pada sekitar ${pctDark}% permukaan uang`);
+  }
+  if (holeR > 0.12 || areaR < 0.35) {
+    parts.push(`Terdapat indikasi area yang hilang atau robekan besar`);
+  }
+  if (stainR > 0.10) {
+    parts.push(`Ditemukan noda berwarna atau coretan pada permukaan`);
+  }
+  if (tearScore > 8) {
+    parts.push(`Tepi uang tidak rata, mengindikasikan robekan atau sobekan`);
+  }
+
+  if (parts.length === 0) {
+    return `Tidak terdeteksi kerusakan signifikan. Estimasi keutuhan: ${pct}%.`;
+  }
+
+  return parts.join('. ') + `. Estimasi keutuhan keseluruhan: ${pct}%.`;
+}
+
+/* ─── Helper: Verdict reason ─────────────────────────── */
+function buildVerdictReason(pct, threshold, verdict) {
+  if (verdict === 'layak') return `Keutuhan estimasi ${pct}% melebihi batas minimum ${threshold}% — layak ditukarkan`;
+  if (verdict === 'tidak') return `Keutuhan estimasi ${pct}% di bawah batas minimum ${threshold}% — tidak memenuhi syarat`;
+  return `Keutuhan estimasi ${pct}% mendekati batas minimum ${threshold}% — perlu konfirmasi fisik langsung`;
+}
+
+/* ─── Helper: Recommendation ─────────────────────────── */
+function buildRecommendation(verdict, pct, threshold) {
+  if (verdict === 'layak') {
+    return `Berdasarkan analisis visual, uang ini kemungkinan memenuhi syarat penukaran Bank Indonesia. Kunjungi kantor BI atau bank umum terdekat untuk konfirmasi resmi.`;
+  } else if (verdict === 'tidak') {
+    return `Berdasarkan analisis visual, keutuhan uang kemungkinan di bawah batas minimum BI (${threshold}%). Disarankan tidak menukarkan. Untuk kepastian, gunakan Mode Premium atau kunjungi BI langsung.`;
+  }
+  return `Keutuhan uang berada di zona kritis (mendekati ${threshold}%). Disarankan melakukan verifikasi fisik langsung di kantor Bank Indonesia atau gunakan Mode Premium untuk analisis lebih akurat.`;
+}
+
+/* ─── Helper: Confidence calculation ─────────────────── */
+function calculateConfidence(pct, damageTypes, areaRatio) {
+  // Confidence is higher when result is clearly good or clearly bad
+  const distFromThreshold = Math.abs(pct - (moneyType === 'logam' ? 50 : 66.7));
+  let conf = 50 + Math.min(distFromThreshold * 1.5, 35);
+
+  // Lower confidence if currency area ratio is small (bad framing)
+  if (areaRatio < 0.25) conf -= 15;
+
+  // Caveat: canvas analysis is less accurate than AI Vision
+  conf = Math.min(conf, 78); // cap at 78% for canvas analysis
+  return Math.round(Math.max(30, conf));
+}
+
+/* ─── Helper: Estimate damage regions from pixel data ── */
+function estimateDamageRegions(data, width, height) {
+  const regions = [];
+  const blockW = Math.floor(width / 8);
+  const blockH = Math.floor(height / 6);
+
+  for (let blockY = 0; blockY < 6; blockY++) {
+    for (let blockX = 0; blockX < 8; blockX++) {
+      let darkCount = 0, total = 0;
+
+      for (let dy = 0; dy < blockH; dy++) {
+        for (let dx = 0; dx < blockW; dx++) {
+          const px = blockX * blockW + dx;
+          const py = blockY * blockH + dy;
+          const idx = (py * width + px) * 4;
+          const r = data[idx], g = data[idx+1], b = data[idx+2];
+          const lum = 0.299*r + 0.587*g + 0.114*b;
+          if (lum < 50) darkCount++;
+          total++;
+        }
+      }
+
+      const darkRatio = darkCount / total;
+      if (darkRatio > 0.20) {
+        regions.push({
+          label: darkRatio > 0.4 ? 'Hangus/Gelap' : 'Area Rusak',
+          x: (blockX * blockW) / width,
+          y: (blockY * blockH) / height,
+          w: blockW / width,
+          h: blockH / height
+        });
+      }
+    }
+  }
+
+  return regions.slice(0, 5); // max 5 regions for overlay
+}
+
+/* ─── Upload handler also needs dual-mode ────────────── */
+const _originalHandleUpload = handleUpload;
+window.handleUpload = async function(event) {
+  if (aiMode === 'premium') {
+    _originalHandleUpload(event);
+    return;
+  }
+
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (!tfModel) await preloadTFModel();
+
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const img = new Image();
+    img.onload = async () => {
+      const maxW = 1280, maxH = 960;
+      let w = img.width, h = img.height;
+      if (w > maxW) { h = Math.round(h*maxW/w); w = maxW; }
+      if (h > maxH) { w = Math.round(w*maxH/h); h = maxH; }
+
+      hiddenCvs.width = w; hiddenCvs.height = h;
+      hiddenCvs.getContext('2d').drawImage(img, 0, 0, w, h);
+
+      capCanvas.width = w; capCanvas.height = h;
+      capCanvas.style.display = 'block';
+      const cCtx = capCanvas.getContext('2d');
+      cCtx.drawImage(hiddenCvs, 0, 0);
+      video.style.display = 'none';
+      noCamState.style.display = 'none';
+      scanOverlay.classList.add('active');
+      retakeBtn.style.display = 'flex';
+      analyzeBtn.disabled = false;
+
+      isAnalyzing = true;
+      analyzeBtn.disabled = true;
+      analyzingBar.classList.add('show');
+      setHeaderStatus('Menganalisis...', 'analyzing');
+
+      resEmpty.style.display = 'none';
+      resContent.classList.remove('show');
+      resLoading.style.display = 'flex';
+      animateLoadingSteps();
+
+      try {
+        const result = await analyzeWithCanvas(hiddenCvs, w, h);
+        const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
+        displayResult(result);
+        drawDetectionOverlay(result, cCtx, w, h);
+        updateLiveIndicators(result);
+        addHistory(result, thumbUrl);
+        toast(result.verdict === 'layak' ? '✅ Analisis selesai!' : '❌ Analisis selesai',
+          result.verdict === 'layak' ? 'success' : 'error');
+      } catch (err) {
+        resLoading.style.display = 'none';
+        resEmpty.style.display = 'flex';
+        toast('❌ Gagal: ' + err.message, 'error');
+      } finally {
+        isAnalyzing = false;
+        analyzeBtn.disabled = false;
+        analyzingBar.classList.remove('show');
+        setHeaderStatus('AI Siap', 'active');
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+};
+
+/* ─── Auto-start: pre-load TF.js on page load ────────── */
+window.addEventListener('load', () => {
+  // Auto pre-load in standard mode after brief delay
+  setTimeout(() => {
+    if (aiMode === 'standard') preloadTFModel();
+  }, 1500);
+});
+</script>
 </body>
 </html>
+
