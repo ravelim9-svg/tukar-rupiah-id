@@ -570,15 +570,63 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
       opacity: 0;
-      transition: opacity 1.5s ease-in-out, transform 8s linear;
-      transform: scale(1.05);
+      transition: opacity 1.5s ease-in-out;
     }
-
+    
     .hero-slideshow .slide.active {
       opacity: 1;
+    }
+
+    .hero-slideshow .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.05);
+      transition: transform 8s linear;
+    }
+
+    .hero-slideshow .slide.active img {
       transform: scale(1);
+    }
+
+    .slide-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 60px 24px 24px;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+      color: white;
+      transform: translateY(15px);
+      opacity: 0;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition-delay: 0.2s;
+      text-align: left;
+    }
+
+    .hero-slideshow .slide.active .slide-caption {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .slide-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .slide-caption p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 500;
+      color: rgba(255,255,255,0.95);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
 
     @media (max-width: 700px) {
@@ -2259,9 +2307,27 @@
 
     <div class="hero-right">
       <div class="hero-slideshow">
-        <img src="slide1.png" class="slide active" alt="Uang rusak 1">
-        <img src="slide2.png" class="slide" alt="Uang rusak 2">
-        <img src="slide3.png" class="slide" alt="Uang rusak 3">
+        <div class="slide active">
+          <img src="slide1.png" alt="Uang Sobek">
+          <div class="slide-caption">
+            <span class="slide-badge" style="color:var(--bi-red-light);">Uang Sobek/Bolong</span>
+            <p>Fisik &gt; 66.7%? Anda masih bisa menukarnya dengan nilai utuh!</p>
+          </div>
+        </div>
+        <div class="slide">
+          <img src="slide2.png" alt="Uang Lecek">
+          <div class="slide-caption">
+            <span class="slide-badge" style="color:var(--bi-gold-light);">Uang Lecek & Lusuh</span>
+            <p>Uang kusut selalu laku! Asal fisik utuh dan asli.</p>
+          </div>
+        </div>
+        <div class="slide">
+          <img src="slide3.png" alt="Uang di-scan">
+          <div class="slide-caption">
+            <span class="slide-badge" style="color:#60A5FA;">AI Scanner Pintar</span>
+            <p>Sistem AI kami otomatis cek apakah uang rusak Anda layak ditukar.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
