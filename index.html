@@ -3975,134 +3975,93 @@ async function analyzeWithCanvas(canvas, width, height) {
   document.getElementById('step3dot').className = 'step-dot active';
 
   const totalPixels = width * height;
-  let darkPixels    = 0;  // likely burned/very dark damage
-  let brightHoles   = 0;  // likely holes/missing sections
-  let colorAnomalies = 0; // stains, ink marks
-  let edgePixels    = 0;  // near-white (background) pixels
-  let currencyPixels = 0; // estimated currency body
-  let satHighPixels  = 0; // high saturation = noda warna
-
-  // Histogram for analysis
-  const lumHist = new Array(256).fill(0);
-
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i], g = data[i+1], b = data[i+2];
-
-    // Luminance (perceived brightness)
-    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-    lumHist[Math.floor(lum)]++;
-
-    // HSL conversion
-    const rn = r/255, gn = g/255, bn = b/255;
-    const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
-    const l   = (max + min) / 2;
-    const s   = max === min ? 0 : (max - min) / (1 - Math.abs(2*l - 1));
-
-    // Background detection: very bright (> 235 lum) likely background
-    if (lum > 235) {
-      edgePixels++;
-      continue;
+  let edgeR = 0, edgeG = 0, edgeB = 0, edgeCount = 0;
+  
+  // 1. Sample background color from edges
+  for (let y = 0; y < height; y += 5) {
+    for (let x = 0; x < width; x += 5) {
+      if (x < 20 || x > width - 20 || y < 20 || y > height - 20) {
+        const idx = (y * width + x) * 4;
+        edgeR += data[idx]; edgeG += data[idx+1]; edgeB += data[idx+2];
+        edgeCount++;
+      }
     }
+  }
+  const bgR = edgeCount > 0 ? edgeR / edgeCount : 0;
+  const bgG = edgeCount > 0 ? edgeG / edgeCount : 0;
+  const bgB = edgeCount > 0 ? edgeB / edgeCount : 0;
 
-    currencyPixels++;
+  // 2. Identify object pixels (differs from background)
+  let objectPixels = 0;
+  let darkPixels = 0;
+  let brightHoles = 0;
+  let minX = width, maxX = 0, minY = height, maxY = 0;
 
-    // Dark damage (burned/termakan rayap): very dark pixels < 45 lum
-    if (lum < 45) darkPixels++;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * 4;
+      const r = data[idx], g = data[idx+1], b = data[idx+2];
+      
+      const colorDiff = Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB);
+      if (colorDiff > 60) { // Object pixel
+        objectPixels++;
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
 
-    // Holes (missing area): very bright interior lum > 210
-    if (lum > 210) brightHoles++;
-
-    // High saturation anomalies (stains, ink): s > 0.5 and not normal paper
-    if (s > 0.5 && lum < 180 && lum > 50) satHighPixels++;
+        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+        if (lum < 50) darkPixels++;
+        if (lum > 220) brightHoles++;
+      }
+    }
   }
 
+  const objectAreaRatio = objectPixels / totalPixels;
+  
   await sleep(150);
   document.getElementById('step3dot').className = 'step-dot done';
   document.getElementById('step4dot').className = 'step-dot active';
 
-  /* ── Step 2: Edge/tear detection ────────────────────
-     Analyze edge continuity by scanning rows and columns.
-  ─────────────────────────────────────────────────── */
-  let tearScore = 0;
-  const edgeSampleStep = Math.max(1, Math.floor(height / 40));
-
-  for (let row = 0; row < height; row += edgeSampleStep) {
-    let rowStart = -1, rowEnd = -1;
-    for (let col = 0; col < width; col++) {
-      const idx = (row * width + col) * 4;
-      const r = data[idx], g = data[idx+1], b = data[idx+2];
-      const lum = 0.299*r + 0.587*g + 0.114*b;
-      if (lum < 220) {
-        if (rowStart === -1) rowStart = col;
-        rowEnd = col;
-      }
-    }
-    // Irregular row edges suggest tear
-    if (rowStart > width * 0.05) tearScore++;
-    if (rowEnd < width * 0.95 && rowEnd > 0) tearScore++;
+  // 3. If no object detected or too small
+  if (objectAreaRatio < 0.05) {
+    return {
+      pct: 0,
+      verdict: 'tidak',
+      desc: 'Tidak ada uang atau objek dominan yang terdeteksi di depan kamera.',
+      details: ['Gagal mendeteksi objek. Kamera hanya melihat latar belakang.'],
+      serialMatch: null,
+      additionalNotes: 'Harap pastikan uang berada di tengah kamera dengan pencahayaan cukup dan kontras dengan latar belakang.'
+    };
   }
 
-  await sleep(100);
+  // 4. Calculate integrity
+  const boxWidth = Math.max(1, maxX - minX);
+  const boxHeight = Math.max(1, maxY - minY);
+  const boxArea = boxWidth * boxHeight;
+  
+  const fillRatio = objectPixels / boxArea;
+  const darkRatio = darkPixels / objectPixels;
+  const holeRatio = brightHoles / objectPixels;
 
-  /* ── Step 3: Calculate integrity percentage ──────── */
-  // Base calculation from pixel analysis
-  const bgRatio     = edgePixels / totalPixels;
-  const darkRatio   = currencyPixels > 0 ? darkPixels / currencyPixels : 0;
-  const holeRatio   = currencyPixels > 0 ? brightHoles / currencyPixels : 0;
-  const stainRatio  = currencyPixels > 0 ? satHighPixels / currencyPixels : 0;
-  const tearNorm    = Math.min(tearScore / 20, 1);
-
-  // If background fills most of image, currency might be very small or torn
-  const currencyAreaRatio = 1 - bgRatio;
-
-  // Integrity deductions
   let deductions = 0;
-  deductions += darkRatio   * 100 * 2.0;  // dark areas weighted heavily (burns)
-  deductions += holeRatio   * 100 * 1.5;  // holes
-  deductions += stainRatio  * 100 * 0.8;  // stains (less severe)
-  deductions += tearNorm    * 25;          // tear irregularity
-
-  // If currency area is very small in frame, likely heavily damaged or misaligned
-  if (currencyAreaRatio < 0.3) deductions += 20;
+  if (fillRatio < 0.85) deductions += (0.85 - fillRatio) * 100 * 2.5; // Missing corners/torn
+  deductions += darkRatio * 100 * 2.0; // Burned
+  deductions += holeRatio * 100 * 1.5; // Holes
 
   let integrityPercent = Math.max(0, Math.min(100, 100 - deductions));
   integrityPercent = Math.round(integrityPercent);
 
-  /* ── Step 4: Classify damage types ──────────────── */
+  // 5. Classification
   const damageTypes = [];
-  let damageDescription = '';
-
-  const DARK_THR  = 0.08;
-  const HOLE_THR  = 0.12;
-  const STAIN_THR = 0.10;
-  const TEAR_THR  = 8;
-
-  if (darkRatio > DARK_THR) {
-    const severity = darkRatio > 0.25 ? 'Parah' : darkRatio > 0.15 ? 'Sedang' : 'Ringan';
-    damageTypes.push(`Terbakar/Hangus (${severity})`);
+  if (fillRatio < 0.8) damageTypes.push('Area Hilang/Terkoyak');
+  if (darkRatio > 0.05) damageTypes.push('Terbakar/Hangus');
+  if (holeRatio > 0.05) damageTypes.push('Berlubang/Bolong');
+  
+  if (damageTypes.length === 0 && integrityPercent > 95) {
+    damageTypes.push('Kondisi Utuh');
   }
 
-  if (holeRatio > HOLE_THR || currencyAreaRatio < 0.35) {
-    const severity = (holeRatio > 0.3 || currencyAreaRatio < 0.2) ? 'Parah' : 'Sedang';
-    damageTypes.push(`Area Hilang/Robek (${severity})`);
-  }
-
-  if (stainRatio > STAIN_THR) {
-    damageTypes.push(`Noda/Coretan`);
-  }
-
-  if (tearScore > TEAR_THR) {
-    damageTypes.push(`Tepi Tidak Beraturan (kemungkinan robekan)`);
-  }
-
-  if (damageTypes.length === 0 && integrityPercent > 88) {
-    damageTypes.push('Tidak ada kerusakan signifikan');
-    damageDescription = 'Uang terlihat dalam kondisi baik. Tidak terdeteksi kerusakan signifikan dari analisis piksel.';
-  } else {
-    damageDescription = buildDamageDescription(darkRatio, holeRatio, stainRatio, tearScore, currencyAreaRatio, integrityPercent);
-  }
-
-  /* ── Step 5: Apply BI regulations ───────────────── */
   const threshold = moneyType === 'logam' ? 50 : 66.7;
   let verdict;
   if (integrityPercent > threshold + 5) verdict = 'layak';
@@ -4112,10 +4071,17 @@ async function analyzeWithCanvas(canvas, width, height) {
   /* ── Step 6: Damage region estimation ───────────── */
   const damageRegions = estimateDamageRegions(data, width, height);
 
+  let damageDescription = '';
+  if (damageTypes.length === 0) {
+    damageDescription = 'Uang terlihat dalam kondisi baik. Tidak terdeteksi kerusakan signifikan dari analisis bentuk dan warna.';
+  } else {
+    damageDescription = `Terdapat indikasi: ${damageTypes.join(', ')}.`;
+  }
+
   await sleep(100);
 
   return {
-    isRupiah: currencyAreaRatio > 0.15, // if some content detected
+    isRupiah: objectAreaRatio > 0.15, // if some content detected
     nominal: 'Tidak terdeteksi (gunakan Mode Premium)',
     tahunEmisi: null,
     moneyType: moneyType,
@@ -4129,8 +4095,8 @@ async function analyzeWithCanvas(canvas, width, height) {
     serialMatch: null,
     splitPieces: 1,
     recommendation: buildRecommendation(verdict, integrityPercent, threshold),
-    aiConfidence: calculateConfidence(integrityPercent, damageTypes, currencyAreaRatio),
-    additionalNotes: 'Analisis menggunakan TensorFlow.js + Canvas Pixel Analysis (offline). Untuk identifikasi nominal dan nomor seri, gunakan Mode Premium ⭐',
+    aiConfidence: calculateConfidence(integrityPercent, damageTypes, objectAreaRatio),
+    additionalNotes: 'Analisis menggunakan Heuristik Visual Latar Belakang (offline). Untuk identifikasi nominal dan analisis presisi, gunakan Mode Premium ⭐',
     _mode: 'standard'
   };
 }
