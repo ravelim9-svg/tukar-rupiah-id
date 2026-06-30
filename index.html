@@ -551,46 +551,34 @@
       flex-shrink: 0;
     }
 
-    .bi-emblem {
-      width: 130px;
-      height: 130px;
+    .hero-slideshow {
+      width: 240px;
+      height: 240px;
       background: rgba(255,255,255,0.04);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 36px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.1);
       position: relative;
+      overflow: hidden;
     }
     
-    .bi-emblem::before {
-      content: '';
+    .hero-slideshow .slide {
       position: absolute;
-      inset: -1px;
-      border-radius: 36px;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      backdrop-filter: blur(10px);
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out, transform 8s linear;
+      transform: scale(1.05);
     }
 
-    .bi-emblem-icon { font-size: 48px; }
-
-    .bi-emblem-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.6);
-      letter-spacing: 2px;
-      text-transform: uppercase;
+    .hero-slideshow .slide.active {
+      opacity: 1;
+      transform: scale(1);
     }
 
     @media (max-width: 700px) {
@@ -2249,7 +2237,7 @@
         Real-Time dengan AI
       </h1>
       <p class="hero-desc">
-        Teknologi AI Vision terdepan untuk menganalisis tingkat keutuhan uang rupiah dan menentukan kelayakan penukaran ke Bank Indonesia secara otomatis.
+        Punya uang Rupiah yang sobek, lecek, atau rusak? Jangan buru-buru dibuang! Cukup arahkan ke kamera, dan teknologi AI Vision kami akan otomatis mengecek seberapa utuh uang Anda serta memberitahu apakah masih bisa ditukar di Bank Indonesia. Praktis, cepat, dan 100% akurat!
       </p>
       <div class="hero-stats">
         <div class="hero-stat">
@@ -2270,13 +2258,10 @@
     </div>
 
     <div class="hero-right">
-      <div class="bi-emblem">
-        <svg class="bi-logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 54px; height: 54px; margin-bottom: 2px;">
-          <circle cx="24" cy="24" r="24" fill="#00508B"/>
-          <text x="19" y="34" font-family="'Times New Roman', Times, serif" font-size="29" font-weight="bold" fill="white" text-anchor="middle">B</text>
-          <text x="28" y="34" font-family="'Times New Roman', Times, serif" font-size="29" font-weight="bold" fill="white" stroke="#00508B" stroke-width="1.5" text-anchor="middle">I</text>
-        </svg>
-        <div class="bi-emblem-text">BANK INDONESIA</div>
+      <div class="hero-slideshow">
+        <img src="slide1.png" class="slide active" alt="Uang rusak 1">
+        <img src="slide2.png" class="slide" alt="Uang rusak 2">
+        <img src="slide3.png" class="slide" alt="Uang rusak 3">
       </div>
     </div>
   </div>
@@ -2445,24 +2430,24 @@
         <div class="reg-row">
           <div class="reg-row-icon" style="background:rgba(204,0,1,0.08);">💵</div>
           <div class="reg-row-body">
-            <div class="reg-row-title">Uang Kertas Rusak</div>
-            <div class="reg-row-desc">Keutuhan fisik wajib lebih besar dari 2/3 ukuran aslinya untuk dapat ditukarkan dengan nilai nominal yang sama</div>
+            <div class="reg-row-title">Uang Kertas Sobek/Bolong</div>
+            <div class="reg-row-desc">Tenang, uang Anda masih laku asalkan ukurannya masih lebih dari 2/3 (66.7%) dari ukuran aslinya.</div>
           </div>
           <div class="reg-threshold red">&gt;66.7%</div>
         </div>
         <div class="reg-row">
           <div class="reg-row-icon" style="background:rgba(200,149,42,0.1);">✂️</div>
           <div class="reg-row-body">
-            <div class="reg-row-title">Uang Kertas Terbelah (maks. 2 bagian)</div>
-            <div class="reg-row-desc">Penukaran diizinkan jika kedua nomor seri pada potongan tersebut lengkap dan sama persis</div>
+            <div class="reg-row-title">Uang Kertas Terpotong Jadi Dua</div>
+            <div class="reg-row-desc">Jangan khawatir! Anda bisa menukarnya jika kedua potongannya punya nomor seri yang sama persis dan lengkap.</div>
           </div>
           <div class="reg-threshold gold">✓ Seri</div>
         </div>
         <div class="reg-row">
           <div class="reg-row-icon" style="background:rgba(59,130,246,0.08);">🪙</div>
           <div class="reg-row-body">
-            <div class="reg-row-title">Uang Logam Rusak</div>
-            <div class="reg-row-desc">Keutuhan fisik harus lebih besar dari 1/2 ukuran aslinya untuk dapat ditukarkan</div>
+            <div class="reg-row-title">Uang Logam Penyok/Rusak</div>
+            <div class="reg-row-desc">Tidak masalah! Selama ukuran dan fisiknya masih lebih dari separuh (50%) aslinya, koin Anda aman untuk ditukar.</div>
           </div>
           <div class="reg-threshold blue">&gt;50%</div>
         </div>
@@ -4238,6 +4223,17 @@ window.addEventListener('load', () => {
     if (aiMode === 'standard') preloadTFModel();
   }, 1500);
 });
+</script>
+<script>
+  /* Hero Slideshow Logic */
+  setInterval(() => {
+    const slides = document.querySelectorAll('.hero-slideshow .slide');
+    if(slides.length === 0) return;
+    let activeIdx = Array.from(slides).findIndex(s => s.classList.contains('active'));
+    slides[activeIdx].classList.remove('active');
+    activeIdx = (activeIdx + 1) % slides.length;
+    slides[activeIdx].classList.add('active');
+  }, 4000);
 </script>
 </body>
 </html>
