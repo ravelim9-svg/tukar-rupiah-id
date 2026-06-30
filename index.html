@@ -1,0 +1,3479 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TukarRupiah.id — Deteksi Kerusakan Uang Rupiah AI</title>
+  <meta name="description" content="Aplikasi AI canggih untuk mendeteksi kerusakan uang rupiah secara real-time. Cinta Bangga Paham Rupiah — sesuai regulasi Bank Indonesia." />
+  <meta name="keywords" content="uang rusak, rupiah, bank indonesia, tukar uang, deteksi AI, kamera, cinta bangga paham rupiah" />
+  <meta property="og:title" content="TukarRupiah.id — Deteksi AI Uang Rupiah" />
+  <meta property="og:description" content="Deteksi kerusakan uang rupiah secara real-time dengan AI Vision" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ══════════════════════════════════════════════════
+       DESIGN SYSTEM — BANK INDONESIA × RUPIAH EDITION
+       Color Identity: Merah BI, Putih, Emas Nusantara
+       ══════════════════════════════════════════════════ */
+    :root {
+      /* BI Brand Colors */
+      --bi-red:        #CC0001;
+      --bi-red-dark:   #A00001;
+      --bi-red-deep:   #7A0001;
+      --bi-red-light:  #FF2020;
+      --bi-gold:       #C8952A;
+      --bi-gold-light: #F4B942;
+      --bi-gold-pale:  #FDE9A0;
+
+      /* White System */
+      --white:         #FFFFFF;
+      --off-white:     #F8F5F0;
+      --cream:         #FAF6EE;
+      --warm-gray-1:   #F2EDE6;
+      --warm-gray-2:   #E8E0D5;
+      --warm-gray-3:   #C8BFB2;
+
+      /* Text */
+      --text-dark:     #1A0A02;
+      --text-mid:      #4A3325;
+      --text-soft:     #7A6255;
+      --text-muted:    #A89585;
+      --text-white:    #FFFFFF;
+
+      /* Surfaces */
+      --surface-white:   #FFFFFF;
+      --surface-cream:   #FAF6EE;
+      --surface-card:    rgba(255, 255, 255, 0.92);
+      --surface-glass:   rgba(255, 255, 255, 0.55);
+      --surface-overlay: rgba(26, 10, 2, 0.45);
+
+      /* Borders */
+      --border-light:  rgba(200, 149, 42, 0.15);
+      --border-mid:    rgba(200, 149, 42, 0.30);
+      --border-gold:   rgba(200, 149, 42, 0.55);
+      --border-red:    rgba(204, 0, 1, 0.25);
+
+      /* Gradients */
+      --grad-bi:        linear-gradient(135deg, #CC0001 0%, #A00001 50%, #7A0001 100%);
+      --grad-bi-h:      linear-gradient(135deg, #FF2020 0%, #CC0001 100%);
+      --grad-gold:      linear-gradient(135deg, #F4B942 0%, #C8952A 50%, #A07020 100%);
+      --grad-cream:     linear-gradient(160deg, #FFFFFF 0%, #FAF6EE 40%, #F2EDE6 100%);
+      --grad-hero:      linear-gradient(160deg, #CC0001 0%, #8B0000 40%, #1A0A02 100%);
+      --grad-card:      linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(250,246,238,0.95) 100%);
+      --grad-shine:     linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 50%, transparent 60%);
+
+      /* Shadows */
+      --shadow-xs:     0 1px 4px rgba(26,10,2,0.08);
+      --shadow-sm:     0 4px 12px rgba(26,10,2,0.10);
+      --shadow-md:     0 8px 24px rgba(26,10,2,0.12);
+      --shadow-lg:     0 20px 50px rgba(26,10,2,0.14);
+      --shadow-xl:     0 32px 80px rgba(26,10,2,0.18);
+      --shadow-red:    0 8px 32px rgba(204,0,1,0.25);
+      --shadow-gold:   0 8px 32px rgba(200,149,42,0.25);
+      --shadow-card:   0 4px 20px rgba(26,10,2,0.10), 0 1px 4px rgba(200,149,42,0.08);
+
+      /* Radius */
+      --r-xs:  6px;
+      --r-sm:  10px;
+      --r-md:  16px;
+      --r-lg:  24px;
+      --r-xl:  32px;
+      --r-2xl: 48px;
+      --r-full: 9999px;
+
+      /* Transitions */
+      --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out:    cubic-bezier(0, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--warm-gray-1); }
+    ::-webkit-scrollbar-thumb { background: var(--bi-red); border-radius: 3px; }
+
+    /* ══════════════════════════════════════════════════
+       PARTICLE CANVAS BACKGROUND
+       ══════════════════════════════════════════════════ */
+    #particleCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ══════════════════════════════════════════════════
+       PREMIUM HEADER
+       ══════════════════════════════════════════════════ */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid var(--border-mid);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-emblem {
+      position: relative;
+      width: 42px;
+      height: 42px;
+    }
+
+    .logo-emblem-bg {
+      width: 42px;
+      height: 42px;
+      background: var(--grad-bi);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: var(--shadow-red);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-emblem-bg::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: var(--grad-shine);
+      animation: logoShine 3s ease-in-out infinite;
+    }
+
+    @keyframes logoShine {
+      0%, 100% { transform: translateX(-100%) rotate(15deg); }
+      50% { transform: translateX(100%) rotate(15deg); }
+    }
+
+    .logo-text-group { display: flex; flex-direction: column; }
+
+    .logo-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      background: var(--grad-bi);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+      letter-spacing: -0.3px;
+    }
+
+    .logo-tagline {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--bi-gold);
+    }
+
+    .header-center {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(200,149,42,0.08);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--r-full);
+      padding: 6px 16px;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: livePulse 1.5s ease-in-out infinite;
+      box-shadow: 0 0 6px #22c55e;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.3); }
+    }
+
+    .live-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--bi-gold);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .header-right { display: flex; align-items: center; gap: 10px; }
+
+    .btn-icon {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--border-mid);
+      background: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-smooth);
+      font-size: 15px;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .btn-icon:hover {
+      border-color: var(--bi-red);
+      background: rgba(204,0,1,0.05);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ══════════════════════════════════════════════════
+       HERO BANNER
+       ══════════════════════════════════════════════════ */
+    .hero-banner {
+      background: var(--grad-hero);
+      position: relative;
+      overflow: hidden;
+      padding: 56px 32px 48px;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 80% 50%, rgba(200,149,42,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(255,32,32,0.15) 0%, transparent 50%);
+    }
+
+    /* Decorative rupiah watermark */
+    .hero-watermark {
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      font-size: 280px;
+      font-weight: 900;
+      font-family: 'Space Grotesk', sans-serif;
+      color: rgba(255,255,255,0.04);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -10px;
+    }
+
+    /* Floating rupiah orbs */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-orb-1 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(204,0,1,0.3) 0%, transparent 70%);
+      top: -100px; left: -100px;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+
+    .hero-orb-2 {
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(200,149,42,0.25) 0%, transparent 70%);
+      bottom: -80px; right: 15%;
+      animation: orbFloat 6s ease-in-out infinite reverse;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(20px, -15px) scale(1.05); }
+      66% { transform: translate(-15px, 10px) scale(0.95); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .hero-left { flex: 1; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 16px;
+      background: rgba(200,149,42,0.15);
+      border: 1px solid rgba(200,149,42,0.35);
+      border-radius: var(--r-full);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--bi-gold-light);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      background: var(--bi-gold-light);
+      border-radius: 50%;
+      animation: livePulse 2s ease-in-out infinite;
+    }
+
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 800;
+      color: white;
+      line-height: 1.12;
+      letter-spacing: -0.5px;
+      margin-bottom: 14px;
+    }
+
+    .hero-title span {
+      background: var(--grad-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+      max-width: 460px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 28px;
+      margin-top: 28px;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: white;
+      display: block;
+      line-height: 1;
+    }
+
+    .hero-stat-num.gold { color: var(--bi-gold-light); }
+
+    .hero-stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 4px;
+    }
+
+    .hero-stat-divider {
+      width: 1px;
+      background: rgba(255,255,255,0.12);
+      align-self: stretch;
+    }
+
+    /* BI Logo Signature */
+    .hero-right {
+      flex-shrink: 0;
+    }
+
+    .bi-emblem {
+      width: 120px;
+      height: 120px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      backdrop-filter: blur(10px);
+    }
+
+    .bi-emblem-icon { font-size: 48px; }
+
+    .bi-emblem-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 700px) {
+      .hero-right { display: none; }
+      .hero-stats { gap: 16px; }
+    }
+
+    /* ══════════════════════════════════════════════════
+       CBPR STRIP — CINTA BANGGA PAHAM RUPIAH
+       ══════════════════════════════════════════════════ */
+    .cbpr-strip {
+      background: var(--grad-gold);
+      padding: 10px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cbpr-items {
+      display: flex;
+      gap: 32px;
+      animation: cbprScroll 20s linear infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes cbprScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .cbpr-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--bi-red-deep);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════════════════
+       MAIN LAYOUT
+       ══════════════════════════════════════════════════ */
+    .app-layout {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 32px 80px;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 28px;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 1024px) {
+      .app-layout {
+        grid-template-columns: 1fr;
+        padding: 20px 16px 60px;
+        gap: 20px;
+      }
+    }
+
+    /* ══════════════════════════════════════════════════
+       PREMIUM CARD BASE
+       ══════════════════════════════════════════════════ */
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(12px);
+      transition: all 0.3s var(--ease-smooth);
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200,149,42,0.5), transparent);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      border-color: var(--border-gold);
+      box-shadow: 0 12px 40px rgba(26,10,2,0.12), 0 2px 8px rgba(200,149,42,0.08);
+    }
+
+    .card-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(250,246,238,0.5);
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.2px;
+    }
+
+    .card-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .icon-red { background: rgba(204,0,1,0.10); }
+    .icon-gold { background: rgba(200,149,42,0.12); }
+    .icon-green { background: rgba(34,197,94,0.10); }
+    .icon-blue { background: rgba(59,130,246,0.10); }
+
+    /* ══════════════════════════════════════════════════
+       CAMERA SECTION — PREMIUM
+       ══════════════════════════════════════════════════ */
+    .camera-card { }
+
+    /* Type selector */
+    .type-selector {
+      display: flex;
+      gap: 10px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--cream);
+    }
+
+    .type-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: var(--r-md);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid var(--border-mid);
+      background: white;
+      color: var(--text-soft);
+      transition: all 0.25s var(--ease-smooth);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: -0.2px;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .type-btn:hover {
+      border-color: var(--bi-gold);
+      color: var(--bi-gold);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .type-btn.active {
+      background: var(--grad-bi);
+      border-color: transparent;
+      color: white;
+      box-shadow: var(--shadow-red);
+      transform: translateY(-1px);
+    }
+
+    /* Camera viewport */
+    .camera-viewport {
+      position: relative;
+      aspect-ratio: 16/10;
+      background: #0a0a0a;
+      overflow: hidden;
+    }
+
+    #videoEl {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    #capturedCanvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+      position: absolute;
+      inset: 0;
+    }
+
+    /* Premium scan overlay */
+    .scan-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: none;
+    }
+
+    .scan-overlay.active { display: block; }
+
+    /* Corner brackets */
+    .scan-corners {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 65%;
+    }
+
+    .corner {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-color: var(--bi-red);
+      border-style: solid;
+      transition: all 0.4s var(--ease-smooth);
+    }
+
+    .corner-tl { top: 0; left: 0; border-width: 4px 0 0 4px; border-radius: 4px 0 0 0; }
+    .corner-tr { top: 0; right: 0; border-width: 4px 4px 0 0; border-radius: 0 4px 0 0; }
+    .corner-bl { bottom: 0; left: 0; border-width: 0 0 4px 4px; border-radius: 0 0 0 4px; }
+    .corner-br { bottom: 0; right: 0; border-width: 0 4px 4px 0; border-radius: 0 0 4px 0; }
+
+    /* Animated scan line */
+    .scan-beam {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      top: 17%;
+      height: 3px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(204,0,1,0.3) 15%,
+        rgba(204,0,1,0.9) 50%,
+        rgba(204,0,1,0.3) 85%,
+        transparent 100%
+      );
+      border-radius: 2px;
+      animation: beamScan 2.5s ease-in-out infinite;
+      box-shadow: 0 0 16px rgba(204,0,1,0.5), 0 0 32px rgba(204,0,1,0.2);
+    }
+
+    @keyframes beamScan {
+      0%, 100% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(calc(65vh * 0.45)); opacity: 0.8; }
+    }
+
+    /* AI Detection box overlay (drawn on canvas) */
+    #detectionCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Auto-detect indicator */
+    .auto-status {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(8px);
+      border-radius: var(--r-full);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .auto-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      animation: livePulse 1.5s infinite;
+    }
+
+    .auto-dot.inactive { background: #6b7280; box-shadow: none; animation: none; }
+    .auto-dot.analyzing { background: var(--bi-gold-light); box-shadow: 0 0 8px var(--bi-gold-light); }
+
+    .auto-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    /* Confidence badge on camera */
+    .live-confidence {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--r-md);
+      padding: 10px 14px;
+      text-align: center;
+      min-width: 80px;
+      display: none;
+    }
+
+    .live-confidence.show { display: block; }
+
+    .live-conf-pct {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+      display: block;
+    }
+
+    .live-conf-pct.high { color: #22c55e; }
+    .live-conf-pct.mid { color: var(--bi-gold-light); }
+    .live-conf-pct.low { color: #ef4444; }
+
+    .live-conf-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* Verdict badge on camera */
+    .live-verdict {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 20px;
+      border-radius: var(--r-full);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+      white-space: nowrap;
+      display: none;
+      animation: verdictSlideIn 0.4s var(--ease-spring);
+    }
+
+    @keyframes verdictSlideIn {
+      from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+
+    .live-verdict.show { display: block; }
+    .live-verdict.layak { background: rgba(34,197,94,0.2); border: 1.5px solid #22c55e; color: #22c55e; }
+    .live-verdict.tidak { background: rgba(204,0,1,0.2); border: 1.5px solid var(--bi-red); color: #ff4444; }
+    .live-verdict.marginal { background: rgba(200,149,42,0.2); border: 1.5px solid var(--bi-gold); color: var(--bi-gold-light); }
+
+    /* No camera state */
+    .no-camera {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a0a02 100%);
+    }
+
+    .no-camera-ring {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px solid rgba(200,149,42,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      position: relative;
+    }
+
+    .no-camera-ring::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,149,42,0.15);
+    }
+
+    .no-camera-ring::after {
+      content: '';
+      position: absolute;
+      inset: -16px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,149,42,0.08);
+    }
+
+    .no-camera-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .no-camera-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      max-width: 220px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════════════════════
+       CAMERA CONTROLS
+       ══════════════════════════════════════════════════ */
+    .camera-controls {
+      padding: 20px 24px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: var(--cream);
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* Premium button system */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: var(--r-md);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-smooth);
+      border: none;
+      outline: none;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: -0.1px;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--grad-shine);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+
+    .btn:hover::after { transform: translateX(100%); }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: var(--grad-bi);
+      color: white;
+      box-shadow: var(--shadow-red);
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 12px 32px rgba(204,0,1,0.35);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-gold {
+      background: var(--grad-gold);
+      color: var(--bi-red-deep);
+      box-shadow: var(--shadow-gold);
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(200,149,42,0.4);
+    }
+
+    .btn-outline {
+      background: white;
+      border: 2px solid var(--border-mid);
+      color: var(--text-mid);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--bi-red);
+      color: var(--bi-red);
+      background: rgba(204,0,1,0.03);
+    }
+
+    .btn-ghost {
+      background: rgba(200,149,42,0.08);
+      border: 1px solid var(--border-gold);
+      color: var(--bi-gold);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(200,149,42,0.15);
+      transform: translateY(-1px);
+    }
+
+    /* Auto-detect toggle */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: white;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .toggle-wrap:hover { border-color: var(--bi-red); }
+
+    .toggle-track {
+      width: 38px;
+      height: 22px;
+      background: var(--warm-gray-2);
+      border-radius: 11px;
+      position: relative;
+      transition: background 0.3s;
+      flex-shrink: 0;
+    }
+
+    .toggle-track.on { background: var(--bi-red); }
+
+    .toggle-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s var(--ease-spring);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+
+    .toggle-track.on .toggle-thumb { transform: translateX(16px); }
+
+    .toggle-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-mid);
+      white-space: nowrap;
+    }
+
+    /* Tips */
+    .tips-bar {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border-light);
+      background: rgba(200,149,42,0.04);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+    }
+
+    .tip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-soft);
+      font-weight: 500;
+    }
+
+    .tip::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--bi-gold);
+      flex-shrink: 0;
+    }
+
+    /* Upload input */
+    #uploadInput { display: none; }
+
+    /* ══════════════════════════════════════════════════
+       RESULT PANEL — PREMIUM
+       ══════════════════════════════════════════════════ */
+
+    /* Empty state */
+    .result-empty {
+      padding: 52px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .empty-icon-ring {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px dashed var(--border-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      animation: rotateDash 12s linear infinite;
+    }
+
+    @keyframes rotateDash {
+      to { transform: rotate(360deg); }
+    }
+
+    .result-empty-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-mid);
+    }
+
+    .result-empty-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 220px;
+    }
+
+    /* Loading state */
+    .result-loading {
+      padding: 52px 24px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .ai-spinner {
+      position: relative;
+      width: 72px;
+      height: 72px;
+    }
+
+    .spinner-outer {
+      width: 72px;
+      height: 72px;
+      border: 3px solid var(--warm-gray-2);
+      border-top-color: var(--bi-red);
+      border-right-color: var(--bi-gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .spinner-inner {
+      position: absolute;
+      top: 10px; left: 10px;
+      width: 52px;
+      height: 52px;
+      border: 3px solid var(--warm-gray-2);
+      border-bottom-color: var(--bi-red);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite reverse;
+    }
+
+    .spinner-core {
+      position: absolute;
+      top: 24px; left: 24px;
+      width: 24px;
+      height: 24px;
+      background: var(--grad-bi);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .loading-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      max-width: 240px;
+    }
+
+    .loading-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--cream);
+      border-radius: var(--r-sm);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-soft);
+    }
+
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--warm-gray-2);
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .step-dot.active { background: var(--bi-red); animation: livePulse 1s infinite; }
+    .step-dot.done { background: #22c55e; }
+
+    /* ══════════════════════════════════════════════════
+       RESULT CONTENT — ULTRA PREMIUM
+       ══════════════════════════════════════════════════ */
+    .result-content {
+      display: none;
+      flex-direction: column;
+    }
+
+    .result-content.show { display: flex; }
+
+    /* Verdict hero */
+    .verdict-hero {
+      padding: 32px 24px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .verdict-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.07;
+    }
+
+    .verdict-hero.layak { background: linear-gradient(160deg, rgba(34,197,94,0.08) 0%, rgba(250,246,238,0.3) 100%); }
+    .verdict-hero.tidak { background: linear-gradient(160deg, rgba(204,0,1,0.08) 0%, rgba(250,246,238,0.3) 100%); }
+    .verdict-hero.marginal { background: linear-gradient(160deg, rgba(200,149,42,0.08) 0%, rgba(250,246,238,0.3) 100%); }
+
+    .verdict-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 24px;
+      border-radius: var(--r-full);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      animation: verdictPop 0.5s var(--ease-spring);
+    }
+
+    @keyframes verdictPop {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .verdict-badge.layak {
+      background: rgba(34,197,94,0.12);
+      border: 2px solid rgba(34,197,94,0.35);
+      color: #16a34a;
+    }
+
+    .verdict-badge.tidak {
+      background: rgba(204,0,1,0.08);
+      border: 2px solid rgba(204,0,1,0.25);
+      color: var(--bi-red);
+    }
+
+    .verdict-badge.marginal {
+      background: rgba(200,149,42,0.10);
+      border: 2px solid rgba(200,149,42,0.30);
+      color: var(--bi-gold);
+    }
+
+    .verdict-icon {
+      font-size: 22px;
+      animation: iconSpin 0.5s var(--ease-spring) 0.1s;
+    }
+
+    @keyframes iconSpin {
+      from { transform: scale(0) rotate(-180deg); }
+      to { transform: scale(1) rotate(0deg); }
+    }
+
+    .verdict-desc {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    /* Nominal pill */
+    .nominal-pill {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 5px 14px;
+      background: var(--grad-bi);
+      border-radius: var(--r-full);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      box-shadow: var(--shadow-red);
+    }
+
+    /* ══════════════════════════════════════════════════
+       INTEGRITY GAUGE — LIQUID PREMIUM
+       ══════════════════════════════════════════════════ */
+    .gauge-section {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .gauge-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 14px;
+    }
+
+    .gauge-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+
+    .gauge-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text-dark);
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .gauge-pct {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    /* Circular gauge */
+    .gauge-circular {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .gauge-svg-wrap {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      flex-shrink: 0;
+    }
+
+    .gauge-svg {
+      width: 110px;
+      height: 110px;
+      transform: rotate(-90deg);
+    }
+
+    .gauge-track {
+      fill: none;
+      stroke: var(--warm-gray-2);
+      stroke-width: 8;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1.2s var(--ease-out);
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+    }
+
+    .gauge-fill.high { stroke: url(#gaugeGreenGrad); }
+    .gauge-fill.medium { stroke: url(#gaugeGoldGrad); }
+    .gauge-fill.low { stroke: url(#gaugeRedGrad); }
+
+    .gauge-svg-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .gauge-svg-pct {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: block;
+    }
+
+    .gauge-svg-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Bar gauge */
+    .gauge-right { flex: 1; }
+
+    .gauge-bar-area { }
+
+    .gauge-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .gauge-bar-track {
+      height: 10px;
+      background: var(--warm-gray-2);
+      border-radius: 5px;
+      position: relative;
+      overflow: visible;
+    }
+
+    .gauge-bar-fill {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 1.2s var(--ease-out);
+      position: relative;
+    }
+
+    .gauge-bar-fill.high { background: linear-gradient(90deg, #22c55e, #16a34a); box-shadow: 0 2px 8px rgba(34,197,94,0.3); }
+    .gauge-bar-fill.medium { background: linear-gradient(90deg, var(--bi-gold-light), var(--bi-gold)); box-shadow: 0 2px 8px rgba(200,149,42,0.3); }
+    .gauge-bar-fill.low { background: linear-gradient(90deg, #ef4444, var(--bi-red)); box-shadow: 0 2px 8px rgba(204,0,1,0.3); }
+
+    .gauge-bar-fill::after {
+      content: '';
+      position: absolute;
+      right: 0; top: -3px;
+      width: 16px; height: 16px;
+      background: white;
+      border: 3px solid currentColor;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transform: translateX(50%);
+    }
+
+    .gauge-threshold-marker {
+      position: absolute;
+      top: -16px;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      pointer-events: none;
+    }
+
+    .threshold-line {
+      width: 2px;
+      height: 42px;
+      background: rgba(200,149,42,0.6);
+      margin-top: 14px;
+    }
+
+    .threshold-tip {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--bi-gold);
+      white-space: nowrap;
+      background: rgba(200,149,42,0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(200,149,42,0.25);
+    }
+
+    .gauge-scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* ══════════════════════════════════════════════════
+       DAMAGE ANALYSIS SECTION
+       ══════════════════════════════════════════════════ */
+    .analysis-section {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .detail-card {
+      padding: 12px 14px;
+      background: var(--cream);
+      border: 1px solid var(--border-light);
+      border-radius: var(--r-md);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: all 0.2s;
+    }
+
+    .detail-card:hover {
+      border-color: var(--border-gold);
+      background: rgba(200,149,42,0.04);
+    }
+
+    .detail-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r-sm);
+      background: white;
+      border: 1px solid var(--border-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .detail-body { flex: 1; }
+    .detail-key {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    .detail-val {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    /* Damage tags */
+    .damage-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .dtag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--r-full);
+    }
+
+    .dtag-critical { background: rgba(204,0,1,0.10); border: 1px solid rgba(204,0,1,0.25); color: var(--bi-red); }
+    .dtag-warning { background: rgba(200,149,42,0.10); border: 1px solid rgba(200,149,42,0.25); color: var(--bi-gold); }
+    .dtag-minor { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); color: #2563eb; }
+    .dtag-ok { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); color: #16a34a; }
+
+    /* Confidence bar inline */
+    .conf-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .conf-bar-track {
+      flex: 1;
+      height: 6px;
+      background: var(--warm-gray-2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .conf-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--grad-bi);
+      transition: width 1s var(--ease-out);
+    }
+
+    .conf-val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--bi-red);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* BI Regulation box */
+    .bi-box {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .bi-box-inner {
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(200,149,42,0.06) 0%, rgba(204,0,1,0.04) 100%);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--r-md);
+      font-size: 12px;
+      color: var(--text-mid);
+      line-height: 1.7;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bi-box-inner::before {
+      content: '⚖️';
+      position: absolute;
+      right: 12px;
+      bottom: 8px;
+      font-size: 32px;
+      opacity: 0.1;
+    }
+
+    .bi-box-inner strong { color: var(--bi-red); }
+    .bi-box-inner b { color: var(--bi-gold); }
+
+    /* Result actions */
+    .result-actions {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      gap: 10px;
+      background: var(--cream);
+    }
+
+    /* ══════════════════════════════════════════════════
+       REGULATION INFO CARD
+       ══════════════════════════════════════════════════ */
+    .reg-list {
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .reg-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--cream);
+      border: 1px solid var(--border-light);
+      border-radius: var(--r-md);
+      transition: all 0.2s;
+    }
+
+    .reg-row:hover {
+      border-color: var(--border-gold);
+      transform: translateX(4px);
+    }
+
+    .reg-row-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .reg-row-body { flex: 1; }
+
+    .reg-row-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 2px;
+    }
+
+    .reg-row-desc {
+      font-size: 11px;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    .reg-threshold {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .reg-threshold.red { color: var(--bi-red); }
+    .reg-threshold.gold { color: var(--bi-gold); }
+    .reg-threshold.blue { color: #2563eb; }
+
+    /* ══════════════════════════════════════════════════
+       HISTORY PANEL
+       ══════════════════════════════════════════════════ */
+    .history-list {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .history-empty {
+      padding: 32px 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .h-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .h-item:hover {
+      border-color: var(--border-gold);
+      transform: translateX(3px);
+    }
+
+    .h-thumb {
+      width: 52px;
+      height: 40px;
+      border-radius: var(--r-sm);
+      object-fit: cover;
+      background: var(--warm-gray-1);
+      flex-shrink: 0;
+    }
+
+    .h-info { flex: 1; }
+    .h-verdict { font-size: 12px; font-weight: 800; }
+    .h-verdict.layak { color: #16a34a; }
+    .h-verdict.tidak { color: var(--bi-red); }
+    .h-verdict.marginal { color: var(--bi-gold); }
+    .h-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .h-time { font-size: 10px; color: var(--text-muted); text-align: right; flex-shrink: 0; }
+
+    /* ══════════════════════════════════════════════════
+       SETTINGS MODAL
+       ══════════════════════════════════════════════════ */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(26,10,2,0.5);
+      backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      animation: modalIn 0.35s var(--ease-spring);
+    }
+
+    @keyframes modalIn {
+      from { transform: scale(0.92) translateY(20px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--cream);
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border-mid);
+      background: white;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--text-soft);
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: rgba(204,0,1,0.05);
+      border-color: var(--bi-red);
+      color: var(--bi-red);
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .form-input {
+      padding: 12px 16px;
+      background: var(--cream);
+      border: 2px solid var(--border-light);
+      border-radius: var(--r-md);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--bi-red);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(204,0,1,0.08);
+    }
+
+    .form-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .form-hint a { color: var(--bi-red); text-decoration: none; font-weight: 600; }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      gap: 10px;
+      background: var(--cream);
+    }
+
+    /* Security note */
+    .security-note {
+      padding: 12px 14px;
+      background: rgba(34,197,94,0.06);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: var(--r-md);
+      font-size: 11px;
+      color: #16a34a;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════════════════
+       TOAST
+       ══════════════════════════════════════════════════ */
+    .toast-zone {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 12px 20px;
+      border-radius: var(--r-md);
+      font-size: 13px;
+      font-weight: 600;
+      backdrop-filter: blur(12px);
+      pointer-events: auto;
+      animation: toastIn 0.35s var(--ease-spring);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-md);
+      white-space: nowrap;
+      border: 1px solid;
+    }
+
+    .toast.success { background: rgba(255,255,255,0.95); border-color: rgba(34,197,94,0.3); color: #16a34a; }
+    .toast.error { background: rgba(255,255,255,0.95); border-color: rgba(204,0,1,0.3); color: var(--bi-red); }
+    .toast.info { background: rgba(255,255,255,0.95); border-color: var(--border-gold); color: var(--bi-gold); }
+    .toast.warning { background: rgba(255,255,255,0.95); border-color: rgba(200,149,42,0.4); color: var(--bi-gold); }
+
+    @keyframes toastIn {
+      from { transform: translateY(16px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ══════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════ */
+    .footer {
+      background: var(--text-dark);
+      padding: 32px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      background: var(--grad-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .footer-text {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.8;
+    }
+
+    .footer-text a { color: rgba(200,149,42,0.8); text-decoration: none; }
+    .footer-cbpr {
+      margin-top: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(200,149,42,0.6);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ══════════════════════════════════════════════════
+       RESPONSIVE
+       ══════════════════════════════════════════════════ */
+    @media (max-width: 640px) {
+      .header-inner { padding: 0 16px; }
+      .header-center { display: none; }
+      .hero-banner { padding: 36px 16px 32px; }
+      .hero-stats { gap: 12px; }
+      .hero-stat-num { font-size: 20px; }
+      .camera-controls { flex-wrap: wrap; padding: 14px 16px; }
+      .type-selector { padding: 12px 16px; }
+    }
+
+    @media (max-width: 480px) {
+      .gauge-circular { flex-direction: column; }
+    }
+
+    /* Confetti */
+    @keyframes confettiFall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* API warning bar */
+    .api-alert {
+      margin: 16px 24px 0;
+      padding: 12px 16px;
+      background: rgba(200,149,42,0.08);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--r-md);
+      font-size: 12px;
+      color: var(--bi-gold);
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .api-alert.show { display: flex; }
+    .api-alert button { background: none; border: none; color: var(--bi-red); cursor: pointer; font-weight: 800; font-size: 12px; text-decoration: underline; padding: 0; }
+
+    /* Analyzing overlay on camera */
+    .analyzing-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--warm-gray-2);
+      display: none;
+    }
+
+    .analyzing-bar.show { display: block; }
+    .analyzing-progress {
+      height: 100%;
+      background: var(--grad-bi);
+      animation: analyzeProgress 2s ease-in-out infinite;
+    }
+
+    @keyframes analyzeProgress {
+      0% { width: 0%; }
+      50% { width: 70%; }
+      100% { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Particle background -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-emblem">
+        <div class="logo-emblem-bg">🏦</div>
+      </div>
+      <div class="logo-text-group">
+        <div class="logo-name">TukarRupiah.id</div>
+        <div class="logo-tagline">Cinta Bangga Paham Rupiah</div>
+      </div>
+    </a>
+
+    <div class="header-center">
+      <div class="live-dot" id="headerLiveDot"></div>
+      <span class="live-text" id="headerLiveText">AI Siap</span>
+    </div>
+
+    <div class="header-right">
+      <button class="btn-icon" id="settingsBtn" title="Pengaturan API">⚙️</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero-banner">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-watermark">Rp</div>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Regulasi Bank Indonesia Resmi
+      </div>
+      <h1 class="hero-title">
+        Deteksi Kerusakan<br/>
+        Uang <span>Rupiah</span> Secara<br/>
+        Real-Time dengan AI
+      </h1>
+      <p class="hero-desc">
+        Teknologi AI Vision terdepan untuk menganalisis tingkat keutuhan uang rupiah dan menentukan kelayakan penukaran ke Bank Indonesia secara otomatis.
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-num">Real</span>
+          <div class="hero-stat-label">Time Detection</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num gold">99%</span>
+          <div class="hero-stat-label">Akurasi AI</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">BI</span>
+          <div class="hero-stat-label">Bersertifikat</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="bi-emblem">
+        <div class="bi-emblem-icon">🦅</div>
+        <div class="bi-emblem-text">Bank Indonesia</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CBPR TICKER ═══════════ -->
+<div class="cbpr-strip">
+  <div class="cbpr-items" id="cbprItems">
+    <div class="cbpr-item">❤️ Cinta Rupiah</div>
+    <div class="cbpr-item">🏆 Bangga Rupiah</div>
+    <div class="cbpr-item">📚 Paham Rupiah</div>
+    <div class="cbpr-item">💵 Jaga Uang Anda</div>
+    <div class="cbpr-item">🦅 Bank Indonesia</div>
+    <div class="cbpr-item">⚖️ Regulasi Resmi</div>
+    <div class="cbpr-item">🔍 Deteksi AI</div>
+    <div class="cbpr-item">💰 Tukar Uang Rusak</div>
+    <!-- Duplicate for seamless scroll -->
+    <div class="cbpr-item">❤️ Cinta Rupiah</div>
+    <div class="cbpr-item">🏆 Bangga Rupiah</div>
+    <div class="cbpr-item">📚 Paham Rupiah</div>
+    <div class="cbpr-item">💵 Jaga Uang Anda</div>
+    <div class="cbpr-item">🦅 Bank Indonesia</div>
+    <div class="cbpr-item">⚖️ Regulasi Resmi</div>
+    <div class="cbpr-item">🔍 Deteksi AI</div>
+    <div class="cbpr-item">💰 Tukar Uang Rusak</div>
+  </div>
+</div>
+
+<!-- ═══════════ APP LAYOUT ═══════════ -->
+<div class="app-layout">
+
+  <!-- ══ LEFT COLUMN ══ -->
+  <div class="left-col">
+
+    <!-- Camera Card -->
+    <div class="card camera-card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-red">📷</div>
+          Kamera Deteksi Real-Time
+        </div>
+        <span id="camStatusText" style="font-size:11px;color:var(--text-muted);font-weight:600;">Tidak aktif</span>
+      </div>
+
+      <!-- Type selector -->
+      <div class="type-selector">
+        <button class="type-btn active" id="typeKertas" onclick="setType('kertas')">
+          💵 Uang Kertas
+        </button>
+        <button class="type-btn" id="typeLogam" onclick="setType('logam')">
+          🪙 Uang Logam
+        </button>
+      </div>
+
+      <!-- API Alert -->
+      <div class="api-alert" id="apiAlert">
+        ⚠️ API Key belum diatur.
+        <button onclick="openSettings()">Atur sekarang →</button>
+      </div>
+
+      <!-- Camera viewport -->
+      <div class="camera-viewport" id="cameraViewport">
+        <video id="videoEl" autoplay muted playsinline></video>
+        <canvas id="capturedCanvas"></canvas>
+        <canvas id="detectionCanvas"></canvas>
+
+        <!-- Scan overlay (active when camera on) -->
+        <div class="scan-overlay" id="scanOverlay">
+          <div class="scan-corners">
+            <div class="corner corner-tl"></div>
+            <div class="corner corner-tr"></div>
+            <div class="corner corner-bl"></div>
+            <div class="corner corner-br"></div>
+          </div>
+          <div class="scan-beam"></div>
+          <div class="analyzing-bar" id="analyzingBar">
+            <div class="analyzing-progress"></div>
+          </div>
+        </div>
+
+        <!-- Auto status -->
+        <div class="auto-status" id="autoStatusBadge" style="display:none;">
+          <div class="auto-dot inactive" id="autoDot"></div>
+          <span class="auto-label" id="autoLabel">Auto: OFF</span>
+        </div>
+
+        <!-- Live confidence -->
+        <div class="live-confidence" id="liveConf">
+          <span class="live-conf-pct" id="liveConfPct">--</span>
+          <div class="live-conf-label">Keutuhan</div>
+        </div>
+
+        <!-- Live verdict -->
+        <div class="live-verdict" id="liveVerdict">--</div>
+
+        <!-- No camera state -->
+        <div class="no-camera" id="noCamState">
+          <div class="no-camera-ring">📷</div>
+          <div class="no-camera-title">Kamera Belum Aktif</div>
+          <div class="no-camera-sub">Aktifkan kamera untuk memulai deteksi kerusakan uang rupiah secara real-time</div>
+          <button class="btn btn-primary" onclick="startCamera()" style="margin-top:4px;">
+            🎥 Aktifkan Kamera
+          </button>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="camera-controls">
+        <input type="file" id="uploadInput" accept="image/*" onchange="handleUpload(event)" />
+
+        <div class="toggle-wrap" id="autoToggleWrap" onclick="toggleAutoDetect()" title="Deteksi otomatis saat uang terlihat">
+          <div class="toggle-track" id="autoTrack">
+            <div class="toggle-thumb"></div>
+          </div>
+          <span class="toggle-label">Auto Deteksi</span>
+        </div>
+
+        <button class="btn btn-ghost" onclick="document.getElementById('uploadInput').click()">
+          📤 Upload
+        </button>
+
+        <button class="btn btn-primary" id="analyzeBtn" onclick="captureAndAnalyze()" disabled>
+          🔍 Analisis
+        </button>
+
+        <button class="btn btn-outline" id="retakeBtn" onclick="retake()" style="display:none;">
+          🔄
+        </button>
+      </div>
+
+      <!-- Tips -->
+      <div class="tips-bar">
+        <div class="tip">Letakkan di permukaan datar terang</div>
+        <div class="tip">Seluruh uang dalam frame</div>
+        <div class="tip">Uang terbelah: susun berdampingan</div>
+        <div class="tip">Hindari bayangan & pantulan</div>
+      </div>
+    </div>
+
+    <!-- Regulation Card -->
+    <div class="card" style="margin-top:20px;">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-gold">⚖️</div>
+          Regulasi Penukaran — Bank Indonesia
+        </div>
+      </div>
+      <div class="reg-list">
+        <div class="reg-row">
+          <div class="reg-row-icon" style="background:rgba(204,0,1,0.08);">💵</div>
+          <div class="reg-row-body">
+            <div class="reg-row-title">Uang Kertas Rusak</div>
+            <div class="reg-row-desc">Keutuhan fisik wajib lebih besar dari 2/3 ukuran aslinya untuk dapat ditukarkan dengan nilai nominal yang sama</div>
+          </div>
+          <div class="reg-threshold red">&gt;66.7%</div>
+        </div>
+        <div class="reg-row">
+          <div class="reg-row-icon" style="background:rgba(200,149,42,0.1);">✂️</div>
+          <div class="reg-row-body">
+            <div class="reg-row-title">Uang Kertas Terbelah (maks. 2 bagian)</div>
+            <div class="reg-row-desc">Penukaran diizinkan jika kedua nomor seri pada potongan tersebut lengkap dan sama persis</div>
+          </div>
+          <div class="reg-threshold gold">✓ Seri</div>
+        </div>
+        <div class="reg-row">
+          <div class="reg-row-icon" style="background:rgba(59,130,246,0.08);">🪙</div>
+          <div class="reg-row-body">
+            <div class="reg-row-title">Uang Logam Rusak</div>
+            <div class="reg-row-desc">Keutuhan fisik harus lebih besar dari 1/2 ukuran aslinya untuk dapat ditukarkan</div>
+          </div>
+          <div class="reg-threshold blue">&gt;50%</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ RIGHT COLUMN ══ -->
+  <div class="right-col">
+
+    <!-- Result Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-gold">🔬</div>
+          Hasil Analisis AI
+        </div>
+        <span id="resultTimestamp" style="font-size:11px;color:var(--text-muted);font-weight:600;font-family:'JetBrains Mono',monospace;"></span>
+      </div>
+
+      <!-- Empty -->
+      <div class="result-empty" id="resEmpty">
+        <div class="empty-icon-ring">🔍</div>
+        <div class="result-empty-title">Menunggu Analisis</div>
+        <div class="result-empty-sub">Aktifkan kamera dan aktifkan Auto Deteksi, atau tekan tombol Analisis secara manual</div>
+      </div>
+
+      <!-- Loading -->
+      <div class="result-loading" id="resLoading">
+        <div class="ai-spinner">
+          <div class="spinner-outer"></div>
+          <div class="spinner-inner"></div>
+          <div class="spinner-core">🤖</div>
+        </div>
+        <div class="loading-title">Menganalisis dengan AI...</div>
+        <div class="loading-steps">
+          <div class="loading-step"><div class="step-dot done" id="step1dot"></div>Mengambil frame gambar</div>
+          <div class="loading-step"><div class="step-dot active" id="step2dot"></div>Mengirim ke Gemini AI</div>
+          <div class="loading-step"><div class="step-dot" id="step3dot"></div>Menganalisis kerusakan</div>
+          <div class="loading-step"><div class="step-dot" id="step4dot"></div>Menerapkan regulasi BI</div>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="result-content" id="resContent">
+
+        <!-- SVG gradients (hidden) -->
+        <svg width="0" height="0" style="position:absolute;">
+          <defs>
+            <linearGradient id="gaugeGreenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#22c55e"/>
+              <stop offset="100%" stop-color="#16a34a"/>
+            </linearGradient>
+            <linearGradient id="gaugeGoldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#F4B942"/>
+              <stop offset="100%" stop-color="#C8952A"/>
+            </linearGradient>
+            <linearGradient id="gaugeRedGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#ef4444"/>
+              <stop offset="100%" stop-color="#CC0001"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <!-- Verdict -->
+        <div class="verdict-hero" id="verdictHero">
+          <div class="verdict-badge" id="verdictBadge">
+            <span class="verdict-icon" id="verdictIcon">✅</span>
+            <span id="verdictText">LAYAK DITUKAR</span>
+          </div>
+          <div class="verdict-desc" id="verdictDesc">Uang memenuhi syarat penukaran Bank Indonesia</div>
+          <div class="nominal-pill" id="nominalPill">Rp --</div>
+        </div>
+
+        <!-- Gauge -->
+        <div class="gauge-section">
+          <div class="gauge-label" style="margin-bottom:14px;">
+            <span class="gauge-label">Tingkat Keutuhan Fisik</span>
+            <span style="font-size:11px;color:var(--text-muted);font-weight:600;" id="moneyTypeLabel">Uang Kertas</span>
+          </div>
+
+          <div class="gauge-circular">
+            <div class="gauge-svg-wrap">
+              <svg class="gauge-svg" viewBox="0 0 110 110">
+                <circle class="gauge-track" cx="55" cy="55" r="45"/>
+                <circle class="gauge-fill" id="gaugeCircle" cx="55" cy="55" r="45"/>
+              </svg>
+              <div class="gauge-svg-center">
+                <span class="gauge-svg-pct" id="gaugePct">0%</span>
+                <span class="gauge-svg-label">Utuh</span>
+              </div>
+            </div>
+
+            <div class="gauge-right">
+              <div class="gauge-bar-area">
+                <div class="gauge-bar-label">
+                  <span>0%</span>
+                  <span id="thresholdPctLabel" style="color:var(--bi-gold);font-weight:800;">66.7% min</span>
+                  <span>100%</span>
+                </div>
+                <div class="gauge-bar-track" id="gaugeBarTrack">
+                  <div class="gauge-bar-fill" id="gaugeBarFill" style="width:0%;"></div>
+                  <div class="gauge-threshold-marker" id="thresholdMarker" style="left:66.7%;">
+                    <div class="threshold-tip" id="thresholdTip">66.7%</div>
+                    <div class="threshold-line"></div>
+                  </div>
+                </div>
+                <div class="gauge-scale">
+                  <span>Tidak Layak</span>
+                  <span style="color:var(--bi-gold);font-weight:700;">Batas Minimum</span>
+                  <span>Sangat Baik</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Damage Analysis -->
+        <div class="analysis-section">
+          <div class="section-title">Analisis Kerusakan</div>
+          <div id="analysisList">
+            <!-- filled by JS -->
+          </div>
+        </div>
+
+        <!-- BI Box -->
+        <div class="bi-box">
+          <div class="bi-box-inner" id="biBoxInner">
+            <!-- filled by JS -->
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="result-actions">
+          <button class="btn btn-outline" onclick="copyResult()" style="flex:1;font-size:13px;">
+            📋 Salin Hasil
+          </button>
+          <button class="btn btn-primary" onclick="retake()" style="flex:1;font-size:13px;">
+            🔄 Analisis Baru
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- History Card -->
+    <div class="card" style="margin-top:20px;">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-red">📋</div>
+          Riwayat Analisis
+        </div>
+        <button
+          onclick="clearHistory()"
+          style="font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;font-weight:700;padding:4px 8px;border-radius:6px;transition:color 0.2s;"
+          onmouseover="this.style.color='var(--bi-red)'"
+          onmouseout="this.style.color='var(--text-muted)'"
+        >Hapus Semua</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty">Belum ada riwayat analisis</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="footer">
+  <div class="footer-logo">TukarRupiah.id</div>
+  <div class="footer-text">
+    Didukung oleh <strong style="color:rgba(255,255,255,0.7);">Google Gemini AI</strong> &amp; Regulasi Resmi <a href="https://www.bi.go.id" target="_blank" rel="noopener">Bank Indonesia</a><br/>
+    Hasil analisis bersifat estimasi. Keputusan akhir ada pada petugas Bank Indonesia.<br/>
+    <span style="font-size:10px;">© 2025 TukarRupiah.id. Untuk keperluan edukasi.</span>
+  </div>
+  <div class="footer-cbpr">❤️ Cinta · 🏆 Bangga · 📚 Paham Rupiah</div>
+</footer>
+
+<!-- ═══════════ SETTINGS MODAL ═══════════ -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">⚙️ Pengaturan Gemini AI</div>
+      <button class="modal-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="apiKeyInput">Google Gemini API Key</label>
+        <input type="password" class="form-input" id="apiKeyInput" placeholder="AIza... atau AQ...." autocomplete="off" spellcheck="false"/>
+        <div class="form-hint">
+          Dapatkan API Key gratis di <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio →</a>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="modelSelect">Model AI</label>
+        <select class="form-input" id="modelSelect">
+          <option value="gemini-2.0-flash">Gemini 2.0 Flash (Rekomendasi — Tercepat)</option>
+          <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite (Hemat kuota)</option>
+          <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+          <option value="gemini-1.5-pro">Gemini 1.5 Pro (Akurasi tertinggi)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="autoIntervalInput">Interval Auto-Deteksi (detik)</label>
+        <input type="number" class="form-input" id="autoIntervalInput" value="4" min="2" max="30" step="1"/>
+        <div class="form-hint">Interval minimum antar analisis otomatis (2–30 detik). Nilai lebih kecil = lebih sering analisis = lebih hemat atau lebih boros kuota.</div>
+      </div>
+      <div class="security-note">
+        🔒 API Key hanya disimpan di browser Anda (localStorage). Tidak pernah dikirim ke server lain selain Google API secara langsung.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeSettings()" style="flex:1;">Batal</button>
+      <button class="btn btn-primary" onclick="saveSettings()" style="flex:1;">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast zone -->
+<div class="toast-zone" id="toastZone"></div>
+
+<!-- Hidden canvas for capture -->
+<canvas id="hiddenCvs" style="display:none;"></canvas>
+
+<!-- ════════════════════════════════════════════════════
+     PARTICLE SYSTEM
+     ════════════════════════════════════════════════════ -->
+<script>
+(function initParticles() {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = ['rgba(204,0,1,', 'rgba(200,149,42,', 'rgba(204,0,1,'];
+  const SYMBOLS = ['Rp', '₹', '¥', '€', '$'];
+
+  for (let i = 0; i < 18; i++) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      size: 10 + Math.random() * 20,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: 0.03 + Math.random() * 0.05,
+      text: i < 6 ? 'Rp' : null,
+      r: 2 + Math.random() * 3,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -50) p.x = W + 50;
+      if (p.x > W + 50) p.x = -50;
+      if (p.y < -50) p.y = H + 50;
+      if (p.y > H + 50) p.y = -50;
+
+      ctx.save();
+      if (p.text) {
+        ctx.font = `900 ${p.size}px 'Space Grotesk', sans-serif`;
+        ctx.fillStyle = p.color + p.alpha + ')';
+        ctx.fillText(p.text, p.x, p.y);
+      } else {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color + p.alpha + ')';
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════
+     MAIN APPLICATION
+     ════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─── Constants ─────────────────────────────────── */
+// NOTE: API Key is stored only in localStorage (user-provided via Settings modal)
+const DEFAULT_MODEL   = 'gemini-2.0-flash';
+const DEFAULT_INTERVAL = 4; // seconds
+
+/* ─── State ─────────────────────────────────────── */
+let stream          = null;
+let moneyType       = 'kertas';
+let autoDetect      = false;
+let autoTimer       = null;
+let isAnalyzing     = false;
+let lastAnalysisTs  = 0;
+let currentResult   = null;
+let history         = [];
+let frameCtx        = null;
+
+/* ─── DOM ────────────────────────────────────────── */
+const video        = document.getElementById('videoEl');
+const capCanvas    = document.getElementById('capturedCanvas');
+const detCanvas    = document.getElementById('detectionCanvas');
+const hiddenCvs    = document.getElementById('hiddenCvs');
+const analyzeBtn   = document.getElementById('analyzeBtn');
+const retakeBtn    = document.getElementById('retakeBtn');
+const scanOverlay  = document.getElementById('scanOverlay');
+const noCamState   = document.getElementById('noCamState');
+const autoTrack    = document.getElementById('autoTrack');
+const autoDot      = document.getElementById('autoDot');
+const autoLabel    = document.getElementById('autoLabel');
+const autoStatusBadge = document.getElementById('autoStatusBadge');
+const analyzingBar = document.getElementById('analyzingBar');
+const liveConf     = document.getElementById('liveConf');
+const liveVerdict  = document.getElementById('liveVerdict');
+const liveConfPct  = document.getElementById('liveConfPct');
+const resEmpty     = document.getElementById('resEmpty');
+const resLoading   = document.getElementById('resLoading');
+const resContent   = document.getElementById('resContent');
+const apiAlert     = document.getElementById('apiAlert');
+const historyList  = document.getElementById('historyList');
+
+/* ─── Init ──────────────────────────────────────── */
+(function init() {
+  loadSettings();
+  loadHistory();
+  renderHistory();
+  checkApiKey();
+})();
+
+/* ─── Animate counters ──────────────────────────── */
+function animateCounters() {
+  // Just a cosmetic function for the hero
+}
+
+/* ─── Settings ──────────────────────────────────── */
+function loadSettings() {
+  document.getElementById('apiKeyInput').value  = localStorage.getItem('tr_api_key') || '';
+  document.getElementById('modelSelect').value  = localStorage.getItem('tr_model') || DEFAULT_MODEL;
+  document.getElementById('autoIntervalInput').value = localStorage.getItem('tr_interval') || DEFAULT_INTERVAL;
+}
+
+function saveSettings() {
+  const key      = document.getElementById('apiKeyInput').value.trim();
+  const model    = document.getElementById('modelSelect').value;
+  const interval = parseInt(document.getElementById('autoIntervalInput').value) || DEFAULT_INTERVAL;
+
+  if (!key) { toast('⚠️ Masukkan API Key terlebih dahulu', 'warning'); return; }
+
+  localStorage.setItem('tr_api_key', key);
+  localStorage.setItem('tr_model', model);
+  localStorage.setItem('tr_interval', interval);
+
+  toast('✅ Pengaturan tersimpan!', 'success');
+  closeSettings();
+  checkApiKey();
+}
+
+function openSettings()  { document.getElementById('settingsModal').classList.add('open'); }
+function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+
+document.getElementById('settingsBtn').onclick = openSettings;
+document.getElementById('settingsModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('settingsModal')) closeSettings();
+});
+
+function checkApiKey() {
+  const key = localStorage.getItem('tr_api_key');
+  apiAlert.classList.toggle('show', !key);
+}
+
+/* ─── Type selector ─────────────────────────────── */
+function setType(t) {
+  moneyType = t;
+  document.getElementById('typeKertas').classList.toggle('active', t === 'kertas');
+  document.getElementById('typeLogam').classList.toggle('active', t === 'logam');
+  updateThresholdUI();
+}
+
+function updateThresholdUI() {
+  const thr = moneyType === 'logam' ? 50 : 66.7;
+  document.getElementById('thresholdMarker').style.left = thr + '%';
+  document.getElementById('thresholdTip').textContent = thr + '%';
+  document.getElementById('thresholdPctLabel').textContent = thr + '% min';
+  document.getElementById('moneyTypeLabel').textContent = moneyType === 'logam' ? 'Uang Logam' : 'Uang Kertas';
+}
+
+/* ─── Camera ────────────────────────────────────── */
+async function startCamera() {
+  try {
+    setHeaderStatus('Meminta izin...', 'inactive');
+    const constraints = {
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 960 } }
+    };
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+    video.srcObject = stream;
+    await video.play();
+
+    noCamState.style.display    = 'none';
+    scanOverlay.classList.add('active');
+    autoStatusBadge.style.display = 'flex';
+    analyzeBtn.disabled = false;
+    document.getElementById('camStatusText').textContent = 'Aktif';
+    document.getElementById('camStatusText').style.color = '#22c55e';
+
+    setHeaderStatus('Kamera Aktif', 'active');
+    toast('📷 Kamera aktif!', 'success');
+
+    // Init detection canvas size
+    video.addEventListener('loadedmetadata', () => {
+      detCanvas.width  = video.videoWidth;
+      detCanvas.height = video.videoHeight;
+      frameCtx = detCanvas.getContext('2d');
+    });
+
+  } catch (err) {
+    setHeaderStatus('Kamera Gagal', 'inactive');
+    document.getElementById('camStatusText').textContent = 'Gagal';
+    if (err.name === 'NotAllowedError') {
+      toast('❌ Izin kamera ditolak', 'error');
+    } else {
+      toast('❌ Gagal mengakses kamera: ' + err.message, 'error');
+    }
+  }
+}
+
+function setHeaderStatus(text, state) {
+  const dot  = document.getElementById('headerLiveDot');
+  const txt  = document.getElementById('headerLiveText');
+  txt.textContent = text;
+  dot.className   = 'live-dot';
+  if (state === 'inactive') {
+    dot.style.background = '#6b7280';
+    dot.style.boxShadow  = 'none';
+    dot.style.animation  = 'none';
+  } else if (state === 'analyzing') {
+    dot.style.background = 'var(--bi-gold-light)';
+    dot.style.boxShadow  = '0 0 8px var(--bi-gold-light)';
+  } else {
+    dot.style.background = '#22c55e';
+    dot.style.boxShadow  = '0 0 8px #22c55e';
+    dot.style.animation  = '';
+  }
+}
+
+/* ─── Auto detect toggle ─────────────────────────── */
+function toggleAutoDetect() {
+  autoDetect = !autoDetect;
+  autoTrack.classList.toggle('on', autoDetect);
+
+  if (autoDetect) {
+    if (!stream) { startCamera(); }
+    autoDot.className  = 'auto-dot';
+    autoLabel.textContent = 'Auto: ON';
+    startAutoLoop();
+    toast('🤖 Deteksi otomatis aktif', 'success');
+  } else {
+    autoDot.className  = 'auto-dot inactive';
+    autoLabel.textContent = 'Auto: OFF';
+    stopAutoLoop();
+    toast('⏸ Deteksi otomatis dimatikan', 'info');
+  }
+}
+
+function startAutoLoop() {
+  stopAutoLoop();
+  const interval = (parseInt(localStorage.getItem('tr_interval')) || DEFAULT_INTERVAL) * 1000;
+  autoTimer = setInterval(() => {
+    if (!isAnalyzing && stream && !document.hidden) {
+      captureAndAnalyze(true); // true = auto mode
+    }
+  }, interval);
+}
+
+function stopAutoLoop() {
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+}
+
+/* ─── Capture & Analyze ──────────────────────────── */
+async function captureAndAnalyze(isAuto = false) {
+  if (isAnalyzing) return;
+
+  const apiKey = localStorage.getItem('tr_api_key');
+  if (!apiKey) {
+    toast('⚠️ Atur API Key terlebih dahulu', 'warning');
+    openSettings();
+    return;
+  }
+
+  if (!stream && !capCanvas.style.display === 'block') {
+    toast('❌ Aktifkan kamera terlebih dahulu', 'error');
+    return;
+  }
+
+  isAnalyzing = true;
+  analyzeBtn.disabled = true;
+  analyzingBar.classList.add('show');
+  setHeaderStatus('Menganalisis...', 'analyzing');
+  autoDot.className = 'auto-dot analyzing';
+
+  // Capture frame
+  const w = video.videoWidth  || 640;
+  const h = video.videoHeight || 480;
+  hiddenCvs.width  = w;
+  hiddenCvs.height = h;
+  const hCtx = hiddenCvs.getContext('2d');
+  hCtx.drawImage(video, 0, 0, w, h);
+
+  // Show captured on canvas overlay
+  capCanvas.width  = w;
+  capCanvas.height = h;
+  capCanvas.style.display = 'block';
+  const cCtx = capCanvas.getContext('2d');
+  cCtx.drawImage(hiddenCvs, 0, 0);
+  video.style.display = 'none';
+  retakeBtn.style.display = 'flex';
+
+  const base64 = hiddenCvs.toDataURL('image/jpeg', 0.92).split(',')[1];
+
+  // Show loading panel
+  resEmpty.style.display = 'none';
+  resContent.classList.remove('show');
+  resLoading.style.display = 'flex';
+
+  // Animate loading steps
+  animateLoadingSteps();
+
+  try {
+    const result = await callGemini(base64, apiKey);
+    const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
+
+    displayResult(result);
+    drawDetectionOverlay(result, cCtx, w, h);
+    updateLiveIndicators(result);
+    addHistory(result, thumbUrl);
+
+    toast(result.verdict === 'layak' ? '✅ Analisis selesai — Layak Tukar!' : '❌ Analisis selesai — Tidak Layak', result.verdict === 'layak' ? 'success' : 'error');
+
+  } catch (err) {
+    console.error('Analysis error:', err);
+    resLoading.style.display = 'none';
+    resEmpty.style.display = 'flex';
+    toast('❌ Gagal: ' + err.message, 'error');
+    updateLiveIndicatorsError();
+  } finally {
+    isAnalyzing = false;
+    analyzeBtn.disabled = false;
+    analyzingBar.classList.remove('show');
+    setHeaderStatus(stream ? 'Kamera Aktif' : 'AI Siap', 'active');
+    if (autoDetect) autoDot.className = 'auto-dot';
+    else autoDot.className = 'auto-dot inactive';
+    lastAnalysisTs = Date.now();
+  }
+}
+
+/* ─── Upload handler ─────────────────────────────── */
+function handleUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const apiKey = localStorage.getItem('tr_api_key');
+  if (!apiKey) { toast('⚠️ Atur API Key terlebih dahulu', 'warning'); openSettings(); return; }
+
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const img = new Image();
+    img.onload = async () => {
+      const maxW = 1280, maxH = 960;
+      let w = img.width, h = img.height;
+      if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+      if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+
+      hiddenCvs.width = w; hiddenCvs.height = h;
+      hiddenCvs.getContext('2d').drawImage(img, 0, 0, w, h);
+
+      capCanvas.width = w; capCanvas.height = h;
+      capCanvas.style.display = 'block';
+      const cCtx = capCanvas.getContext('2d');
+      cCtx.drawImage(hiddenCvs, 0, 0);
+      video.style.display = 'none';
+      noCamState.style.display = 'none';
+      scanOverlay.classList.add('active');
+      retakeBtn.style.display = 'flex';
+      analyzeBtn.disabled = false;
+
+      const base64 = hiddenCvs.toDataURL('image/jpeg', 0.92).split(',')[1];
+      isAnalyzing = true;
+      analyzeBtn.disabled = true;
+      analyzingBar.classList.add('show');
+      setHeaderStatus('Menganalisis...', 'analyzing');
+
+      resEmpty.style.display = 'none';
+      resContent.classList.remove('show');
+      resLoading.style.display = 'flex';
+      animateLoadingSteps();
+
+      try {
+        const apiKey = localStorage.getItem('tr_api_key');
+        const result = await callGemini(base64, apiKey);
+        const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
+        displayResult(result);
+        drawDetectionOverlay(result, cCtx, w, h);
+        updateLiveIndicators(result);
+        addHistory(result, thumbUrl);
+        toast(result.verdict === 'layak' ? '✅ Analisis selesai!' : '❌ Analisis selesai', result.verdict === 'layak' ? 'success' : 'error');
+      } catch (err) {
+        resLoading.style.display = 'none';
+        resEmpty.style.display = 'flex';
+        toast('❌ Gagal: ' + err.message, 'error');
+      } finally {
+        isAnalyzing = false;
+        analyzeBtn.disabled = false;
+        analyzingBar.classList.remove('show');
+        setHeaderStatus('AI Siap', 'active');
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+/* ─── Retake ─────────────────────────────────────── */
+function retake() {
+  capCanvas.style.display = 'none';
+  video.style.display = 'block';
+  retakeBtn.style.display = 'none';
+  currentResult = null;
+
+  // Clear detection canvas
+  if (frameCtx) frameCtx.clearRect(0, 0, detCanvas.width, detCanvas.height);
+  const capCtx = capCanvas.getContext('2d');
+  capCtx.clearRect(0, 0, capCanvas.width, capCanvas.height);
+
+  liveConf.classList.remove('show');
+  liveVerdict.classList.remove('show');
+
+  resContent.classList.remove('show');
+  resEmpty.style.display = 'flex';
+  document.getElementById('resultTimestamp').textContent = '';
+
+  if (stream) {
+    scanOverlay.classList.add('active');
+    analyzeBtn.disabled = false;
+    setHeaderStatus('Kamera Aktif', 'active');
+  } else {
+    noCamState.style.display = 'flex';
+    scanOverlay.classList.remove('active');
+    analyzeBtn.disabled = true;
+  }
+}
+
+/* ─── Gemini API ─────────────────────────────────── */
+async function callGemini(base64, apiKey) {
+  const model = localStorage.getItem('tr_model') || DEFAULT_MODEL;
+  const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+  const thrInfo = moneyType === 'logam'
+    ? 'Uang LOGAM: keutuhan > 1/2 (50%) dari ukuran asli agar bisa ditukar.'
+    : 'Uang KERTAS: keutuhan > 2/3 (66.7%) dari ukuran asli. Jika terbelah maks 2 bagian, nomor seri kedua bagian harus sama.';
+
+  const prompt = `Kamu adalah sistem AI forensik terdepan milik aplikasi TukarRupiah.id untuk mendeteksi kerusakan uang rupiah Indonesia.
+
+JENIS UANG YANG SEDANG DIANALISIS: ${moneyType === 'logam' ? 'UANG LOGAM' : 'UANG KERTAS'}
+
+REGULASI BANK INDONESIA:
+${thrInfo}
+
+TUGAS ANALISIS MENDALAM:
+1. Konfirmasi apakah gambar adalah uang rupiah Indonesia
+2. Identifikasi nominal (contoh: Rp 100.000, Rp 50.000, dst.)
+3. Analisis SEMUA area kerusakan secara detail:
+   - Robek/sobekan (perkirakan ukuran dan lokasinya)
+   - Terbakar/hangus
+   - Dimakan rayap/serangga
+   - Noda permanen (tinta, minyak, dll.)
+   - Coretan/tulisan di atas uang
+   - Lubang/perforasi
+   - Kusut/lecek parah
+   - Bagian hilang/tidak ada
+4. Estimasi PERSENTASE KEUTUHAN fisik secara akurat (0-100%)
+5. Untuk uang kertas terbelah: periksa apakah nomor seri visible di kedua sisi
+6. Tentukan VERDICT berdasarkan regulasi BI
+
+RESPONS WAJIB dalam format JSON murni ini (TANPA markdown/komentar):
+{
+  "isRupiah": true,
+  "nominal": "Rp 50.000",
+  "tahunEmisi": "2022",
+  "moneyType": "${moneyType}",
+  "integrityPercent": 78,
+  "verdict": "layak",
+  "verdictReason": "Keutuhan 78% melebihi batas minimum 66.7% untuk uang kertas",
+  "damageTypes": ["Robek sudut kanan atas (~2cm)", "Noda tinta tengah"],
+  "damageDescription": "Terdapat robekan di sudut kanan atas sepanjang kurang lebih 2 cm. Ada noda tinta gelap di bagian depan. Tepi uang lusuh namun tidak mengurangi keutuhan signifikan.",
+  "damageRegions": [
+    {"label": "Robek", "x": 0.80, "y": 0.05, "w": 0.15, "h": 0.20},
+    {"label": "Noda", "x": 0.40, "y": 0.40, "w": 0.20, "h": 0.20}
+  ],
+  "serialVisible": true,
+  "serialMatch": null,
+  "splitPieces": 1,
+  "recommendation": "Uang ini masih dapat ditukarkan ke Bank Indonesia atau bank umum terdekat.",
+  "aiConfidence": 88,
+  "additionalNotes": "Disarankan segera menukar sebelum kondisi bertambah buruk"
+}
+
+"verdict" harus salah satu dari: "layak" | "tidak" | "marginal"
+- layak: keutuhan di atas batas minimum BI
+- tidak: keutuhan di bawah atau sama dengan batas minimum
+- marginal: keutuhan dalam ±5% dari batas minimum (perlu konfirmasi fisik)
+
+damageRegions: koordinat relatif (0-1) dari area kerusakan pada gambar untuk visualisasi overlay.
+
+Jika BUKAN uang rupiah, kembalikan dengan isRupiah: false dan integrityPercent: 0.`;
+
+  const body = {
+    contents: [{
+      parts: [
+        { text: prompt },
+        { inlineData: { mimeType: 'image/jpeg', data: base64 } }
+      ]
+    }],
+    generationConfig: {
+      temperature: 0.05,
+      maxOutputTokens: 1500,
+      responseMimeType: 'application/json'
+    },
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' }
+    ]
+  };
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.error?.message || `HTTP ${res.status} — Periksa API Key Anda`);
+  }
+
+  const data = await res.json();
+  if (!data.candidates?.[0]) throw new Error('Tidak ada respons dari AI');
+
+  const rawText = data.candidates[0].content.parts[0].text;
+  let parsed;
+
+  try {
+    parsed = JSON.parse(rawText);
+  } catch {
+    const m = rawText.match(/\{[\s\S]*\}/);
+    if (m) parsed = JSON.parse(m[0]);
+    else throw new Error('Format respons AI tidak valid');
+  }
+
+  return parsed;
+}
+
+/* ─── Animate loading steps ──────────────────────── */
+let stepTimer = null;
+function animateLoadingSteps() {
+  const dots = ['step1dot','step2dot','step3dot','step4dot'];
+  dots.forEach(id => {
+    document.getElementById(id).className = 'step-dot';
+  });
+  document.getElementById('step1dot').className = 'step-dot done';
+  document.getElementById('step2dot').className = 'step-dot active';
+
+  let step = 2;
+  if (stepTimer) clearInterval(stepTimer);
+  stepTimer = setInterval(() => {
+    if (step < dots.length) {
+      document.getElementById(dots[step - 1]).className = 'step-dot done';
+      if (step < dots.length) {
+        document.getElementById(dots[step]).className = 'step-dot active';
+      }
+      step++;
+    } else {
+      clearInterval(stepTimer);
+    }
+  }, 600);
+}
+
+/* ─── Draw detection overlay ─────────────────────── */
+function drawDetectionOverlay(result, ctx, w, h) {
+  ctx.clearRect(0, 0, w, h);
+
+  if (!result.damageRegions || result.damageRegions.length === 0) return;
+
+  result.damageRegions.forEach((region, i) => {
+    const rx = region.x * w;
+    const ry = region.y * h;
+    const rw = region.w * w;
+    const rh = region.h * h;
+
+    // Damage box
+    ctx.save();
+    ctx.strokeStyle = result.verdict === 'layak' ? 'rgba(245,158,11,0.9)' : 'rgba(204,0,1,0.9)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 3]);
+    ctx.strokeRect(rx, ry, rw, rh);
+
+    // Filled overlay
+    ctx.fillStyle = result.verdict === 'layak' ? 'rgba(245,158,11,0.15)' : 'rgba(204,0,1,0.15)';
+    ctx.fillRect(rx, ry, rw, rh);
+
+    // Label
+    ctx.setLineDash([]);
+    ctx.fillStyle = result.verdict === 'layak' ? 'rgba(245,158,11,0.9)' : 'rgba(204,0,1,0.9)';
+    ctx.font = 'bold 11px Plus Jakarta Sans, sans-serif';
+    ctx.fillText(region.label || 'Kerusakan', rx + 4, ry + 14);
+
+    ctx.restore();
+  });
+
+  // Money bounding box (whole)
+  ctx.save();
+  ctx.strokeStyle = result.verdict === 'layak' ? 'rgba(34,197,94,0.6)' : 'rgba(204,0,1,0.5)';
+  ctx.lineWidth = 2;
+  const pad = 20;
+  ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+  ctx.restore();
+}
+
+/* ─── Live indicators on camera ─────────────────── */
+function updateLiveIndicators(result) {
+  const pct = result.integrityPercent || 0;
+
+  liveConf.classList.add('show');
+  liveConfPct.textContent = pct + '%';
+  liveConfPct.className = 'live-conf-pct';
+  if (pct > 75) liveConfPct.classList.add('high');
+  else if (pct > 50) liveConfPct.classList.add('mid');
+  else liveConfPct.classList.add('low');
+
+  liveVerdict.classList.add('show', result.verdict);
+  liveVerdict.className = 'live-verdict show ' + result.verdict;
+
+  const labels = {
+    layak:    '✅ LAYAK DITUKAR',
+    tidak:    '❌ TIDAK LAYAK',
+    marginal: '⚠️ CEK FISIK'
+  };
+  liveVerdict.textContent = labels[result.verdict] || '';
+}
+
+function updateLiveIndicatorsError() {
+  liveConf.classList.remove('show');
+  liveVerdict.classList.remove('show');
+}
+
+/* ─── Display result ─────────────────────────────── */
+function displayResult(result) {
+  currentResult = result;
+  resLoading.style.display = 'none';
+
+  // Timestamp
+  document.getElementById('resultTimestamp').textContent =
+    new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  // Verdict
+  const vh  = document.getElementById('verdictHero');
+  const vb  = document.getElementById('verdictBadge');
+  const vi  = document.getElementById('verdictIcon');
+  const vt  = document.getElementById('verdictText');
+  const vd  = document.getElementById('verdictDesc');
+  const np  = document.getElementById('nominalPill');
+
+  vh.className  = 'verdict-hero ' + result.verdict;
+  vb.className  = 'verdict-badge ' + result.verdict;
+
+  const verdictData = {
+    layak:    { icon: '✅', text: 'LAYAK DITUKAR', desc: 'Uang memenuhi syarat keutuhan minimum Bank Indonesia' },
+    tidak:    { icon: '❌', text: 'TIDAK LAYAK TUKAR', desc: 'Uang tidak memenuhi syarat keutuhan minimum Bank Indonesia' },
+    marginal: { icon: '⚠️', text: 'PERLU CEK FISIK', desc: 'Keutuhan mendekati batas minimum — disarankan cek langsung ke BI' }
+  };
+
+  const vd_data = verdictData[result.verdict] || verdictData.marginal;
+  vi.textContent = vd_data.icon;
+  vt.textContent = vd_data.text;
+  vd.textContent = result.verdictReason || vd_data.desc;
+  np.textContent = result.nominal || 'Rupiah';
+
+  // Gauge
+  const pct       = Math.min(100, Math.max(0, result.integrityPercent || 0));
+  const threshold = (result.moneyType === 'logam') ? 50 : 66.7;
+  const circumference = 283;
+  const offset    = circumference - (pct / 100) * circumference;
+
+  const gaugeCircle = document.getElementById('gaugeCircle');
+  const gaugePct    = document.getElementById('gaugePct');
+  const gaugeBar    = document.getElementById('gaugeBarFill');
+
+  gaugeCircle.className = 'gauge-fill ';
+  gaugeBar.className    = 'gauge-bar-fill ';
+
+  if (pct > threshold + 5) {
+    gaugeCircle.classList.add('high');
+    gaugeBar.classList.add('high');
+  } else if (pct >= threshold - 5) {
+    gaugeCircle.classList.add('medium');
+    gaugeBar.classList.add('medium');
+  } else {
+    gaugeCircle.classList.add('low');
+    gaugeBar.classList.add('low');
+  }
+
+  // Animate
+  setTimeout(() => {
+    gaugeCircle.style.strokeDashoffset = offset;
+    gaugeBar.style.width = pct + '%';
+    // Animate number
+    animateNumber(gaugePct, 0, pct, 1200, v => v + '%');
+  }, 150);
+
+  // Threshold
+  document.getElementById('thresholdMarker').style.left = threshold + '%';
+  document.getElementById('thresholdTip').textContent = threshold + '%';
+  document.getElementById('thresholdPctLabel').textContent = threshold + '% min';
+  document.getElementById('moneyTypeLabel').textContent = result.moneyType === 'logam' ? 'Uang Logam' : 'Uang Kertas';
+
+  // Analysis list
+  const al = document.getElementById('analysisList');
+  const dtags = (result.damageTypes || []).map(d => {
+    const cls = d.toLowerCase().match(/bakar|rayap|hancur|hilang/) ? 'dtag-critical'
+              : d.toLowerCase().match(/robek|sobekan|noda|kotor/)  ? 'dtag-warning'
+              : d.toLowerCase().match(/kusut|lecek|lecek/)          ? 'dtag-minor'
+              : 'dtag-ok';
+    return `<span class="dtag ${cls}">${d}</span>`;
+  }).join('');
+
+  al.innerHTML = `
+    <div class="detail-card">
+      <div class="detail-icon">💵</div>
+      <div class="detail-body">
+        <div class="detail-key">Nominal Teridentifikasi</div>
+        <div class="detail-val">
+          ${result.nominal || 'Tidak terdeteksi'}
+          ${result.tahunEmisi ? `<span style="font-size:11px;color:var(--text-muted);margin-left:4px;">Emisi ${result.tahunEmisi}</span>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-card">
+      <div class="detail-icon">⚠️</div>
+      <div class="detail-body">
+        <div class="detail-key">Jenis Kerusakan Terdeteksi</div>
+        <div class="detail-val">
+          <div class="damage-tags" style="margin-top:4px;">
+            ${dtags || '<span class="dtag dtag-ok">Tidak ada kerusakan signifikan</span>'}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-card">
+      <div class="detail-icon">🔬</div>
+      <div class="detail-body">
+        <div class="detail-key">Deskripsi Kerusakan</div>
+        <div class="detail-val" style="font-size:12px;line-height:1.65;">${result.damageDescription || '—'}</div>
+      </div>
+    </div>
+
+    ${result.splitPieces > 1 ? `
+    <div class="detail-card" style="border-color:rgba(200,149,42,0.25);">
+      <div class="detail-icon">✂️</div>
+      <div class="detail-body">
+        <div class="detail-key">Uang Terbelah — ${result.splitPieces} Bagian</div>
+        <div class="detail-val" style="font-size:12px;">
+          Nomor seri terlihat: <strong>${result.serialVisible ? '✓ Ya' : '✗ Tidak'}</strong><br/>
+          ${result.serialMatch !== null ? `Nomor seri cocok: <strong style="color:${result.serialMatch ? '#16a34a' : 'var(--bi-red)'}">${result.serialMatch ? '✓ Ya — layak tukar' : '✗ Tidak cocok atau tidak terlihat'}</strong>` : 'Perlu verifikasi manual nomor seri'}
+        </div>
+      </div>
+    </div>
+    ` : ''}
+
+    <div class="detail-card">
+      <div class="detail-icon">💡</div>
+      <div class="detail-body">
+        <div class="detail-key">Rekomendasi</div>
+        <div class="detail-val" style="font-size:12px;line-height:1.65;">${result.recommendation || '—'}</div>
+      </div>
+    </div>
+
+    <div class="detail-card" style="border-color:rgba(59,130,246,0.2);background:rgba(59,130,246,0.03);">
+      <div class="detail-icon">🤖</div>
+      <div class="detail-body">
+        <div class="detail-key">Tingkat Keyakinan AI</div>
+        <div class="detail-val">
+          <div class="conf-bar-wrap">
+            <div class="conf-bar-track">
+              <div class="conf-bar-fill" style="width:${result.aiConfidence || 0}%"></div>
+            </div>
+            <div class="conf-val">${result.aiConfidence || 0}%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // BI Box
+  const biBox = document.getElementById('biBoxInner');
+  const pctFormatted = pct.toFixed(1);
+  if (result.moneyType === 'logam') {
+    biBox.innerHTML = `<strong>📜 Regulasi BI — Uang Logam:</strong> Keutuhan fisik harus lebih besar dari <b>½ (50%)</b> ukuran aslinya. Hasil analisis: <strong>${pctFormatted}%</strong> — ${pct > 50 ? '<span style="color:#16a34a;font-weight:700;">✓ Memenuhi syarat</span>' : '<span style="color:var(--bi-red);font-weight:700;">✗ Tidak memenuhi syarat</span>'}.${result.additionalNotes ? `<br/><span style="font-size:11px;color:var(--text-muted);">ℹ️ ${result.additionalNotes}</span>` : ''}`;
+  } else if (result.splitPieces > 1) {
+    biBox.innerHTML = `<strong>📜 Regulasi BI — Uang Kertas Terbelah:</strong> Diizinkan maksimal <b>2 bagian</b>. Kedua potongan wajib memiliki <strong>nomor seri yang lengkap dan sama persis</strong>. ${result.serialMatch === true ? '<span style="color:#16a34a;font-weight:700;">✓ Nomor seri cocok</span>' : '<span style="color:var(--bi-gold);font-weight:700;">⚠️ Verifikasi nomor seri secara langsung</span>'}.${result.additionalNotes ? `<br/><span style="font-size:11px;color:var(--text-muted);">ℹ️ ${result.additionalNotes}</span>` : ''}`;
+  } else {
+    biBox.innerHTML = `<strong>📜 Regulasi BI — Uang Kertas:</strong> Keutuhan fisik wajib lebih besar dari <b>⅔ (66.7%)</b> ukuran aslinya. Hasil analisis: <strong>${pctFormatted}%</strong> — ${pct > 66.7 ? '<span style="color:#16a34a;font-weight:700;">✓ Memenuhi syarat</span>' : '<span style="color:var(--bi-red);font-weight:700;">✗ Tidak memenuhi syarat</span>'}.${result.additionalNotes ? `<br/><span style="font-size:11px;color:var(--text-muted);">ℹ️ ${result.additionalNotes}</span>` : ''}`;
+  }
+
+  resContent.classList.add('show');
+
+  if (result.verdict === 'layak') spawnConfetti();
+
+  // Scroll to result on mobile
+  if (window.innerWidth < 1024) {
+    setTimeout(() => {
+      document.querySelector('.result-content.show')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  }
+}
+
+/* ─── Animate number ─────────────────────────────── */
+function animateNumber(el, from, to, duration, format = v => v) {
+  const start = performance.now();
+  function step(ts) {
+    const progress = Math.min((ts - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const val = Math.round(from + (to - from) * ease);
+    el.textContent = format(val);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ─── Copy result ────────────────────────────────── */
+function copyResult() {
+  if (!currentResult) return;
+  const r = currentResult;
+  const text = [
+    'TukarRupiah.id — Hasil Analisis AI',
+    '='.repeat(40),
+    `Nominal     : ${r.nominal || '—'}`,
+    `Jenis       : ${r.moneyType === 'logam' ? 'Uang Logam' : 'Uang Kertas'}`,
+    `Keutuhan    : ${r.integrityPercent}%`,
+    `Verdict     : ${r.verdict === 'layak' ? '✅ LAYAK DITUKAR' : r.verdict === 'tidak' ? '❌ TIDAK LAYAK' : '⚠️ PERLU CEK FISIK'}`,
+    `Kerusakan   : ${(r.damageTypes || []).join(', ') || 'Tidak ada'}`,
+    '',
+    `Deskripsi   : ${r.damageDescription || '—'}`,
+    `Rekomendasi : ${r.recommendation || '—'}`,
+    '',
+    'Regulasi Bank Indonesia:',
+    '  • Uang Kertas: keutuhan > 66.7%',
+    '  • Uang Logam: keutuhan > 50%',
+    '  • Uang Terbelah: nomor seri harus sama',
+    '',
+    `Diperiksa   : ${new Date().toLocaleString('id-ID')}`,
+    'TukarRupiah.id — Cinta Bangga Paham Rupiah'
+  ].join('\n');
+
+  navigator.clipboard.writeText(text)
+    .then(() => toast('📋 Hasil disalin!', 'success'))
+    .catch(() => toast('❌ Gagal menyalin', 'error'));
+}
+
+/* ─── Confetti ───────────────────────────────────── */
+function spawnConfetti() {
+  const COLORS = ['#CC0001','#C8952A','#F4B942','#FFFFFF','#22c55e','#3b82f6'];
+  if (!document.getElementById('confStyle')) {
+    const s = document.createElement('style');
+    s.id = 'confStyle';
+    s.textContent = '@keyframes confettiFall { 0% { transform: translateY(-10px) rotate(0deg); opacity:1; } 100% { transform: translateY(105vh) rotate(720deg); opacity:0; } }';
+    document.head.appendChild(s);
+  }
+  for (let i = 0; i < 50; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      const size = 5 + Math.random() * 8;
+      el.style.cssText = `
+        position:fixed; top:-10px; left:${Math.random()*100}vw;
+        width:${size}px; height:${size * (1 + Math.random())}px;
+        background:${COLORS[Math.floor(Math.random()*COLORS.length)]};
+        border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
+        z-index:9999; pointer-events:none;
+        animation:confettiFall ${1.5+Math.random()*2}s ease-in forwards;
+        transform:rotate(${Math.random()*360}deg);
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, i * 40);
+  }
+}
+
+/* ─── History ────────────────────────────────────── */
+function addHistory(result, thumb) {
+  history.unshift({ id: Date.now(), result, thumb,
+    time: new Date().toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' }),
+    date: new Date().toLocaleDateString('id-ID', { day:'numeric', month:'short' })
+  });
+  if (history.length > 10) history.pop();
+  saveHistory();
+  renderHistory();
+}
+
+function saveHistory() {
+  try {
+    localStorage.setItem('tr_hist', JSON.stringify(
+      history.map(e => ({
+        id: e.id, time: e.time, date: e.date,
+        verdict: e.result.verdict,
+        pct: e.result.integrityPercent,
+        nominal: e.result.nominal,
+        thumb: e.thumb ? e.thumb.substring(0, 600) : null
+      }))
+    ));
+  } catch {}
+}
+
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem('tr_hist');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      history = parsed.map(m => ({
+        id: m.id, time: m.time, date: m.date,
+        thumb: m.thumb,
+        result: { verdict: m.verdict, integrityPercent: m.pct, nominal: m.nominal }
+      }));
+    }
+  } catch {}
+}
+
+function renderHistory() {
+  if (history.length === 0) {
+    historyList.innerHTML = '<div class="history-empty">📭 Belum ada riwayat analisis</div>';
+    return;
+  }
+
+  historyList.innerHTML = history.map(e => {
+    const { verdict, integrityPercent, nominal } = e.result;
+    const vlabel = { layak: '✅ LAYAK DITUKAR', tidak: '❌ TIDAK LAYAK', marginal: '⚠️ CEK FISIK' };
+    const thumb = e.thumb
+      ? `<img class="h-thumb" src="${e.thumb}" alt="" />`
+      : `<div class="h-thumb" style="display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--border-light);">${verdict === 'layak' ? '💵' : '💸'}</div>`;
+
+    return `
+      <div class="h-item">
+        ${thumb}
+        <div class="h-info">
+          <div class="h-verdict ${verdict}">${vlabel[verdict] || verdict}</div>
+          <div class="h-sub">${nominal || 'Rupiah'} · Keutuhan: ${integrityPercent || 0}%</div>
+        </div>
+        <div class="h-time">${e.date}<br/>${e.time}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function clearHistory() {
+  if (history.length === 0) return;
+  history = [];
+  localStorage.removeItem('tr_hist');
+  renderHistory();
+  toast('🗑️ Riwayat dihapus', 'info');
+}
+
+/* ─── Toast ──────────────────────────────────────── */
+function toast(msg, type = 'info', dur = 3500) {
+  const zone = document.getElementById('toastZone');
+  const el   = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  zone.appendChild(el);
+  setTimeout(() => {
+    el.style.transition = 'all 0.3s';
+    el.style.opacity    = '0';
+    el.style.transform  = 'translateY(10px)';
+    setTimeout(() => el.remove(), 300);
+  }, dur);
+}
+
+/* ─── Keyboard shortcuts ─────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeSettings();
+  if (e.key === ' ' && !['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) {
+    e.preventDefault();
+    if (!analyzeBtn.disabled) captureAndAnalyze();
+  }
+  if (e.key === 'a' && e.ctrlKey) { e.preventDefault(); toggleAutoDetect(); }
+});
+
+/* ─── Welcome toast ──────────────────────────────── */
+setTimeout(() => {
+  const key = localStorage.getItem('tr_api_key');
+  if (key) {
+    toast('👋 Selamat datang! Aktifkan kamera untuk memulai', 'info', 4000);
+  } else {
+    toast('🔑 Atur API Key di ⚙️ untuk menggunakan AI', 'warning', 5000);
+  }
+}, 800);
+</script>
+</body>
+</html>
