@@ -782,9 +782,111 @@
     /* ══════════════════════════════════════════════════
        CAMERA SECTION — PREMIUM
        ══════════════════════════════════════════════════ */
-    .camera-card { }
+    /* ══ Camera Glass Enhancements ══ */
+    .camera-card {
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    /* Pulse ring on camera viewport */
+    .camera-viewport {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .camera-viewport::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(0,80,139,0.08) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Scan beam animation */
+    @keyframes scanBeam {
+      0%   { top: 8%; opacity: 0.9; }
+      45%  { opacity: 1; }
+      50%  { top: 88%; opacity: 0.9; }
+      95%  { opacity: 1; }
+      100% { top: 8%; opacity: 0.9; }
+    }
+
+    /* Corner pulse */
+    @keyframes cornerPulse {
+      0%, 100% { opacity: 0.7; box-shadow: 0 0 0 0 rgba(0,80,139,0); }
+      50%       { opacity: 1;   box-shadow: 0 0 8px 2px rgba(0,80,139,0.4); }
+    }
+
+    .scan-overlay.active .corner {
+      animation: cornerPulse 2s infinite;
+    }
+
+    /* Glass result loading */
+    .result-loading {
+      background: linear-gradient(135deg, rgba(0,80,139,0.04) 0%, rgba(0,80,139,0.01) 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(0,80,139,0.08);
+    }
+
+    /* Camera action btn glow */
+    #analyzeBtn:not(:disabled) {
+      box-shadow: 0 4px 20px rgba(0,80,139,0.35), 0 2px 6px rgba(0,80,139,0.2);
+      transition: box-shadow 0.25s, transform 0.15s;
+    }
+    #analyzeBtn:not(:disabled):hover {
+      box-shadow: 0 6px 28px rgba(0,80,139,0.45), 0 2px 8px rgba(0,80,139,0.25);
+      transform: translateY(-1px);
+    }
+    #analyzeBtn:not(:disabled):active { transform: translateY(0); }
+
+    /* Glassmorphism result verdict */
+    .verdict-hero.layak {
+      background: linear-gradient(135deg, rgba(22,163,74,0.12) 0%, rgba(22,163,74,0.04) 100%);
+      border-color: rgba(22,163,74,0.3);
+      backdrop-filter: blur(8px);
+    }
+    .verdict-hero.tidak {
+      background: linear-gradient(135deg, rgba(204,0,1,0.12) 0%, rgba(204,0,1,0.04) 100%);
+      border-color: rgba(204,0,1,0.3);
+      backdrop-filter: blur(8px);
+    }
+    .verdict-hero.marginal {
+      background: linear-gradient(135deg, rgba(200,149,42,0.12) 0%, rgba(200,149,42,0.04) 100%);
+      border-color: rgba(200,149,42,0.3);
+      backdrop-filter: blur(8px);
+    }
+
+    /* Detection hint text */
+    .scan-hint {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: rgba(255,255,255,0.9);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+      z-index: 10;
+      pointer-events: none;
+      letter-spacing: 0.3px;
+    }
+
+    /* Analyzing spinner glow */
+    @keyframes spinnerGlow {
+      0%, 100% { filter: drop-shadow(0 0 4px rgba(0,80,139,0.4)); }
+      50%       { filter: drop-shadow(0 0 12px rgba(0,80,139,0.8)); }
+    }
+    .ai-spinner { animation: spinnerGlow 2s ease-in-out infinite; }
 
     /* Type selector */
+
     .type-selector {
       display: flex;
       gap: 10px;
@@ -2463,11 +2565,14 @@
         <div class="no-camera" id="noCamState">
           <div class="no-camera-ring">📷</div>
           <div class="no-camera-title">Kamera Belum Aktif</div>
-          <div class="no-camera-sub">Aktifkan kamera untuk memulai deteksi kerusakan uang rupiah secara real-time</div>
+          <div class="no-camera-sub">Letakkan uang di permukaan datar dengan cahaya cukup, lalu aktifkan kamera</div>
           <button class="btn btn-primary" onclick="startCamera()" style="margin-top:4px;">
             🎥 Aktifkan Kamera
           </button>
         </div>
+
+        <!-- Scan hint (shown when camera active) -->
+        <div class="scan-hint" id="scanHint" style="display:none;">Arahkan uang ke kamera — isi seluruh frame</div>
       </div>
 
       <!-- Controls -->
@@ -2965,7 +3070,11 @@ async function startCamera() {
     document.getElementById('camStatusText').style.color = '#22c55e';
 
     setHeaderStatus('Kamera Aktif', 'active');
-    toast('📷 Kamera aktif!', 'success');
+    toast('✅ Kamera aktif — arahkan uang ke tengah frame!', 'success');
+
+    // Show scan hint
+    const scanHint = document.getElementById('scanHint');
+    if (scanHint) scanHint.style.display = 'block';
 
     // Init detection canvas size
     video.addEventListener('loadedmetadata', () => {
@@ -3048,8 +3157,10 @@ async function captureAndAnalyzeGemini(isAuto = false) {
     return;
   }
 
-  if (!stream && !capCanvas.style.display === 'block') {
-    toast('❌ Aktifkan kamera terlebih dahulu', 'error');
+  const hasLiveCamera = stream && video && video.readyState >= 2;
+  const hasCaptured   = capCanvas && capCanvas.style.display === 'block';
+  if (!hasLiveCamera && !hasCaptured) {
+    toast('❌ Aktifkan kamera atau upload gambar terlebih dahulu', 'error');
     return;
   }
 
@@ -3059,13 +3170,13 @@ async function captureAndAnalyzeGemini(isAuto = false) {
   setHeaderStatus('Menganalisis...', 'analyzing');
   autoDot.className = 'auto-dot analyzing';
 
-  // Capture frame
-  const w = video.videoWidth  || 640;
-  const h = video.videoHeight || 480;
+  const srcW = hasLiveCamera ? (video.videoWidth || 640) : (capCanvas.width || 640);
+  const srcH = hasLiveCamera ? (video.videoHeight || 480) : (capCanvas.height || 480);
+  const w = srcW, h = srcH;
   hiddenCvs.width  = w;
   hiddenCvs.height = h;
   const hCtx = hiddenCvs.getContext('2d');
-  hCtx.drawImage(video, 0, 0, w, h);
+  hCtx.drawImage(hasLiveCamera ? video : capCanvas, 0, 0, w, h);
 
   // Show captured on canvas overlay
   capCanvas.width  = w;
@@ -3073,8 +3184,10 @@ async function captureAndAnalyzeGemini(isAuto = false) {
   capCanvas.style.display = 'block';
   const cCtx = capCanvas.getContext('2d');
   cCtx.drawImage(hiddenCvs, 0, 0);
-  video.style.display = 'none';
+  if (video) video.style.display = 'none';
   retakeBtn.style.display = 'flex';
+  const scanHintGem = document.getElementById('scanHint');
+  if (scanHintGem) scanHintGem.style.display = 'none';
 
   const base64 = hiddenCvs.toDataURL('image/jpeg', 0.92).split(',')[1];
 
@@ -3203,6 +3316,8 @@ function retake() {
   if (stream) {
     scanOverlay.classList.add('active');
     analyzeBtn.disabled = false;
+    const scanHint = document.getElementById('scanHint');
+    if (scanHint) scanHint.style.display = 'block';
     setHeaderStatus('Kamera Aktif', 'active');
   } else {
     noCamState.style.display = 'flex';
@@ -3891,14 +4006,18 @@ async function captureAndAnalyze(isAuto = false) {
 /* ─── Standard Mode: TF.js + Canvas Analysis ─────────── */
 async function captureAndAnalyzeStandard(isAuto = false) {
   if (isAnalyzing) return;
-  if (!stream && !capCanvas.style.display === 'block') {
-    toast('❌ Aktifkan kamera terlebih dahulu', 'error');
+
+  // Fixed: correct check if camera is active OR we already have a captured image
+  const hasLiveCamera = stream && video && video.readyState >= 2;
+  const hasCaptured   = capCanvas && capCanvas.style.display === 'block';
+  if (!hasLiveCamera && !hasCaptured) {
+    toast('❌ Aktifkan kamera atau upload gambar terlebih dahulu', 'error');
     return;
   }
 
-  // Ensure TF is initialized
-  if (!tfModel) {
-    await preloadTFModel();
+  // Ensure TF is initialized (graceful — we don't strictly need TF for canvas analysis)
+  if (!tfModel && !tfModelLoading) {
+    preloadTFModel(); // fire and forget, analysis still runs
   }
 
   isAnalyzing = true;
@@ -3907,21 +4026,26 @@ async function captureAndAnalyzeStandard(isAuto = false) {
   setHeaderStatus('Menganalisis...', 'analyzing');
   autoDot.className = 'auto-dot analyzing';
 
-  // Capture frame
-  const w = video.videoWidth  || 640;
-  const h = video.videoHeight || 480;
+  // ── Capture frame ──────────────────────────────────────────────
+  let sourceEl = hasCaptured ? capCanvas : video;
+  const w = (hasLiveCamera ? video.videoWidth  : capCanvas.width)  || 640;
+  const h = (hasLiveCamera ? video.videoHeight : capCanvas.height) || 480;
+
   hiddenCvs.width  = w;
   hiddenCvs.height = h;
   const hCtx = hiddenCvs.getContext('2d');
-  hCtx.drawImage(video, 0, 0, w, h);
+  hCtx.drawImage(sourceEl, 0, 0, w, h);
 
-  // Show captured
-  capCanvas.width = w; capCanvas.height = h;
+  // Show captured frame
+  capCanvas.width  = w;
+  capCanvas.height = h;
   capCanvas.style.display = 'block';
   const cCtx = capCanvas.getContext('2d');
   cCtx.drawImage(hiddenCvs, 0, 0);
-  video.style.display = 'none';
+  if (video) video.style.display = 'none';
   retakeBtn.style.display = 'flex';
+  const scanHint = document.getElementById('scanHint');
+  if (scanHint) scanHint.style.display = 'none';
 
   // Show loading
   resEmpty.style.display = 'none';
@@ -3938,8 +4062,12 @@ async function captureAndAnalyzeStandard(isAuto = false) {
     updateLiveIndicators(result);
     addHistory(result, thumbUrl);
 
-    toast(result.verdict === 'layak' ? '✅ Analisis selesai — Layak Tukar!' : '❌ Analisis selesai — Tidak Layak',
-      result.verdict === 'layak' ? 'success' : 'error');
+    const msg = result.verdict === 'layak'
+      ? '✅ Analisis selesai — Layak Tukar!'
+      : result.verdict === 'marginal'
+        ? '⚠️ Analisis selesai — Perlu Cek Fisik'
+        : '❌ Analisis selesai — Tidak Layak';
+    toast(msg, result.verdict === 'layak' ? 'success' : result.verdict === 'marginal' ? 'warning' : 'error');
 
   } catch (err) {
     console.error('Standard analysis error:', err);
@@ -3959,132 +4087,151 @@ async function captureAndAnalyzeStandard(isAuto = false) {
 
 /* ─── Canvas Pixel Analysis Engine ───────────────────── */
 async function analyzeWithCanvas(canvas, width, height) {
-  // Small delay to let UI update
   await sleep(200);
 
   const ctx = canvas.getContext('2d');
   const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data; // RGBA array
+  const data = imageData.data;
 
-  /* ── Step 1: Detect currency region ─────────────────
-     Find the main "paper-like" region by color heuristics.
-     Indonesian banknotes have warm paper tones.
-  ─────────────────────────────────────────────────── */
-  await sleep(100);
+  // ── Step 1: Detect background color adaptively ────────────
   document.getElementById('step2dot').className = 'step-dot done';
   document.getElementById('step3dot').className = 'step-dot active';
+  await sleep(80);
 
   const totalPixels = width * height;
-  let edgeR = 0, edgeG = 0, edgeB = 0, edgeCount = 0;
-  
-  // 1. Sample background color from edges
-  for (let y = 0; y < height; y += 5) {
-    for (let x = 0; x < width; x += 5) {
-      if (x < 20 || x > width - 20 || y < 20 || y > height - 20) {
-        const idx = (y * width + x) * 4;
-        edgeR += data[idx]; edgeG += data[idx+1]; edgeB += data[idx+2];
+  const bw = Math.max(15, Math.floor(width  * 0.08));
+  const bh = Math.max(15, Math.floor(height * 0.08));
+  let edgeR=0, edgeG=0, edgeB=0, edgeCount=0;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (x < bw || x >= width-bw || y < bh || y >= height-bh) {
+        const i = (y*width+x)*4;
+        edgeR += data[i]; edgeG += data[i+1]; edgeB += data[i+2];
         edgeCount++;
       }
     }
   }
-  const bgR = edgeCount > 0 ? edgeR / edgeCount : 0;
-  const bgG = edgeCount > 0 ? edgeG / edgeCount : 0;
-  const bgB = edgeCount > 0 ? edgeB / edgeCount : 0;
+  const bgR = edgeCount > 0 ? edgeR/edgeCount : 180;
+  const bgG = edgeCount > 0 ? edgeG/edgeCount : 180;
+  const bgB = edgeCount > 0 ? edgeB/edgeCount : 180;
 
-  // 2. Identify object pixels (differs from background)
-  let objectPixels = 0;
-  let darkPixels = 0;
-  let brightHoles = 0;
-  let minX = width, maxX = 0, minY = height, maxY = 0;
+  // ── Step 2: Classify pixels ────────────────────────────────
+  let objPx=0, darkPx=0, holePx=0, stainPx=0;
+  let minX=width, maxX=0, minY=height, maxY=0;
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      const idx = (y * width + x) * 4;
-      const r = data[idx], g = data[idx+1], b = data[idx+2];
-      
-      const colorDiff = Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB);
-      if (colorDiff > 60) { // Object pixel
-        objectPixels++;
-        if (x < minX) minX = x;
-        if (x > maxX) maxX = x;
-        if (y < minY) minY = y;
-        if (y > maxY) maxY = y;
+      const i = (y*width+x)*4;
+      const r=data[i], g=data[i+1], b=data[i+2];
+      const lum = 0.299*r + 0.587*g + 0.114*b;
+      const diff = Math.abs(r-bgR) + Math.abs(g-bgG) + Math.abs(b-bgB);
 
-        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-        if (lum < 50) darkPixels++;
-        if (lum > 220) brightHoles++;
+      if (diff > 40) { // object pixel
+        objPx++;
+        minX=Math.min(minX,x); maxX=Math.max(maxX,x);
+        minY=Math.min(minY,y); maxY=Math.max(maxY,y);
+        if (lum < 40) darkPx++;
+        if (lum > 230) holePx++;
+        const rn=r/255, gn=g/255, bn=b/255;
+        const cmax=Math.max(rn,gn,bn), cmin=Math.min(rn,gn,bn);
+        const sat = cmax===0 ? 0 : (cmax-cmin)/cmax;
+        if (sat > 0.4 && lum > 40 && lum < 200) stainPx++;
       }
     }
   }
 
-  const objectAreaRatio = objectPixels / totalPixels;
-  
-  await sleep(150);
+  const objRatio = objPx / totalPixels;
+
+  await sleep(130);
   document.getElementById('step3dot').className = 'step-dot done';
   document.getElementById('step4dot').className = 'step-dot active';
 
-  // 3. If no object detected or too small
-  if (objectAreaRatio < 0.05) {
+  // ── Step 3: No object guard ────────────────────────────────
+  if (objRatio < 0.06) {
+    await sleep(80);
+    document.getElementById('step4dot').className = 'step-dot done';
     return {
-      pct: 0,
+      isRupiah: false,
+      nominal: '-',
+      tahunEmisi: null,
+      moneyType,
+      integrityPercent: 0,
       verdict: 'tidak',
-      desc: 'Tidak ada uang atau objek dominan yang terdeteksi di depan kamera.',
-      details: ['Gagal mendeteksi objek. Kamera hanya melihat latar belakang.'],
-      serialMatch: null,
-      additionalNotes: 'Harap pastikan uang berada di tengah kamera dengan pencahayaan cukup dan kontras dengan latar belakang.'
+      verdictReason: 'Tidak ada objek terdeteksi. Pastikan uang terlihat jelas dan kontras dengan permukaan.',
+      damageTypes: ['Objek tidak terdeteksi'],
+      damageDescription: 'Kamera tidak mendeteksi objek uang. Letakkan uang di permukaan berwarna kontras (putih/hitam) dengan cahaya merata.',
+      damageRegions: [],
+      serialVisible: false, serialMatch: null, splitPieces: 1,
+      recommendation: 'Pastikan uang mengisi ±60% area kamera. Hindari bayangan dan cahaya terlalu terang.',
+      aiConfidence: 10,
+      additionalNotes: 'Analisis Standard (offline) — Mode Premium tersedia untuk deteksi nominal akurat.',
+      _mode: 'standard'
     };
   }
 
-  // 4. Calculate integrity
-  const boxWidth = Math.max(1, maxX - minX);
-  const boxHeight = Math.max(1, maxY - minY);
-  const boxArea = boxWidth * boxHeight;
-  
-  const fillRatio = objectPixels / boxArea;
-  const darkRatio = darkPixels / objectPixels;
-  const holeRatio = brightHoles / objectPixels;
+  // ── Step 4: Integrity calculation ─────────────────────────
+  const boxW = Math.max(1, maxX - minX);
+  const boxH = Math.max(1, maxY - minY);
+  const boxArea = boxW * boxH;
+
+  const fillRatio  = objPx / boxArea;
+  const darkRatio  = objPx > 0 ? darkPx  / objPx : 0;
+  const holeRatio  = objPx > 0 ? holePx  / objPx : 0;
+  const stainRatio = objPx > 0 ? stainPx / objPx : 0;
+
+  // Edge tear detection
+  let tearScore = 0;
+  const edgeStep = Math.max(1, Math.floor(height / 50));
+  for (let row = bh; row < height-bh; row += edgeStep) {
+    let rs=-1, re=-1;
+    for (let col = 0; col < width; col++) {
+      const i=(row*width+col)*4;
+      const diff=Math.abs(data[i]-bgR)+Math.abs(data[i+1]-bgG)+Math.abs(data[i+2]-bgB);
+      if (diff>40) { if(rs===-1) rs=col; re=col; }
+    }
+    if (rs > width*0.1) tearScore++;
+    if (re > 0 && re < width*0.9) tearScore++;
+  }
+  const tearNorm = Math.min(tearScore/30, 1);
 
   let deductions = 0;
-  if (fillRatio < 0.85) deductions += (0.85 - fillRatio) * 100 * 2.5; // Missing corners/torn
-  deductions += darkRatio * 100 * 2.0; // Burned
-  deductions += holeRatio * 100 * 1.5; // Holes
+  if (fillRatio < 0.88) deductions += (0.88-fillRatio)*120;
+  deductions += darkRatio  * 220;
+  deductions += holeRatio  * 180;
+  deductions += stainRatio * 70;
+  deductions += tearNorm   * 22;
+  if (objRatio < 0.18) deductions += (0.18-objRatio)*80;
 
-  let integrityPercent = Math.max(0, Math.min(100, 100 - deductions));
-  integrityPercent = Math.round(integrityPercent);
+  let integrityPercent = Math.max(0, Math.min(100, Math.round(100 - deductions)));
 
-  // 5. Classification
+  // ── Step 5: Classify damage ────────────────────────────────
   const damageTypes = [];
-  if (fillRatio < 0.8) damageTypes.push('Area Hilang/Terkoyak');
-  if (darkRatio > 0.05) damageTypes.push('Terbakar/Hangus');
-  if (holeRatio > 0.05) damageTypes.push('Berlubang/Bolong');
-  
-  if (damageTypes.length === 0 && integrityPercent > 95) {
-    damageTypes.push('Kondisi Utuh');
-  }
+  if (fillRatio  < 0.80)  damageTypes.push('Area Hilang/Terkoyak');
+  if (darkRatio  > 0.04)  damageTypes.push('Terbakar/Hangus');
+  if (holeRatio  > 0.04)  damageTypes.push('Berlubang/Bolong');
+  if (stainRatio > 0.07)  damageTypes.push('Noda/Coretan');
+  if (tearNorm   > 0.25)  damageTypes.push('Tepi Sobek/Tidak Rata');
+  if (!damageTypes.length && integrityPercent >= 85) damageTypes.push('Kondisi Baik / Utuh');
 
   const threshold = moneyType === 'logam' ? 50 : 66.7;
-  let verdict;
-  if (integrityPercent > threshold + 5) verdict = 'layak';
-  else if (integrityPercent < threshold - 5) verdict = 'tidak';
-  else verdict = 'marginal';
+  const verdict = integrityPercent > threshold+5 ? 'layak'
+                : integrityPercent < threshold-5 ? 'tidak'
+                : 'marginal';
 
-  /* ── Step 6: Damage region estimation ───────────── */
+  const damageDescription = damageTypes.includes('Kondisi Baik / Utuh')
+    ? `Uang terlihat dalam kondisi baik. Estimasi keutuhan: ${integrityPercent}%.`
+    : `Terdeteksi: ${damageTypes.join(', ')}. Estimasi keutuhan: ${integrityPercent}%.`;
+
   const damageRegions = estimateDamageRegions(data, width, height);
-
-  let damageDescription = '';
-  if (damageTypes.length === 0) {
-    damageDescription = 'Uang terlihat dalam kondisi baik. Tidak terdeteksi kerusakan signifikan dari analisis bentuk dan warna.';
-  } else {
-    damageDescription = `Terdapat indikasi: ${damageTypes.join(', ')}.`;
-  }
-
-  await sleep(100);
+  await sleep(80);
+  document.getElementById('step4dot').className = 'step-dot done';
 
   return {
-    isRupiah: objectAreaRatio > 0.15, // if some content detected
-    nominal: 'Tidak terdeteksi (gunakan Mode Premium)',
+    isRupiah: objRatio > 0.1,
+    nominal: 'Tidak terdeteksi (gunakan Mode Premium ⭐)',
     tahunEmisi: null,
-    moneyType: moneyType,
+    moneyType,
     integrityPercent,
     verdict,
     verdictReason: buildVerdictReason(integrityPercent, threshold, verdict),
@@ -4095,8 +4242,8 @@ async function analyzeWithCanvas(canvas, width, height) {
     serialMatch: null,
     splitPieces: 1,
     recommendation: buildRecommendation(verdict, integrityPercent, threshold),
-    aiConfidence: calculateConfidence(integrityPercent, damageTypes, objectAreaRatio),
-    additionalNotes: 'Analisis menggunakan Heuristik Visual Latar Belakang (offline). Untuk identifikasi nominal dan analisis presisi, gunakan Mode Premium ⭐',
+    aiConfidence: calculateConfidence(integrityPercent, damageTypes, objRatio),
+    additionalNotes: 'Analisis Standard offline (deteksi piksel adaptif). Untuk identifikasi nominal & presisi tinggi, gunakan Mode Premium ⭐',
     _mode: 'standard'
   };
 }
