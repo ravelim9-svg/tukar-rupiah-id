@@ -2384,11 +2384,33 @@
       <div class="intro-divider-line"></div>
     </div>
     <div class="intro-cbpr" id="introCBPR">
-      <div class="cbpr-word" id="cbprW1"><span class="cbpr-emoji">❤️</span><span class="cbpr-text">CINTA</span></div>
+      <div class="cbpr-word" id="cbprW1">
+        <div class="cbpr-icon-wrap" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.3);">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 21C12 21 3 14.5 3 8.5C3 5.42 5.42 3 8.5 3C10.24 3 11.81 3.89 12 5C12.19 3.89 13.76 3 15.5 3C18.58 3 21 5.42 21 8.5C21 14.5 12 21 12 21Z" fill="#ef4444" stroke="#fca5a5" stroke-width="0.5"/>
+          </svg>
+        </div>
+        <span class="cbpr-text">CINTA</span>
+      </div>
       <div class="cbpr-sep" id="cbprS1">•</div>
-      <div class="cbpr-word" id="cbprW2"><span class="cbpr-emoji">🏆</span><span class="cbpr-text">BANGGA</span></div>
+      <div class="cbpr-word" id="cbprW2">
+        <div class="cbpr-icon-wrap" style="background:rgba(234,179,8,0.15);border-color:rgba(234,179,8,0.3);">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L14.09 8.26L21 9.27L16.5 13.64L17.64 20.59L12 17.27L6.36 20.59L7.5 13.64L3 9.27L9.91 8.26L12 2Z" fill="#eab308" stroke="#fde047" stroke-width="0.5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="cbpr-text">BANGGA</span>
+      </div>
       <div class="cbpr-sep" id="cbprS2">•</div>
-      <div class="cbpr-word" id="cbprW3"><span class="cbpr-emoji">📚</span><span class="cbpr-text">PAHAM RUPIAH</span></div>
+      <div class="cbpr-word" id="cbprW3">
+        <div class="cbpr-icon-wrap" style="background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.3);">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="9" fill="#3b82f6" stroke="#93c5fd" stroke-width="0.5"/>
+            <text x="12" y="16.5" text-anchor="middle" font-family="serif" font-weight="bold" font-size="11" fill="white">Rp</text>
+          </svg>
+        </div>
+        <span class="cbpr-text">PAHAM RUPIAH</span>
+      </div>
     </div>
     <div class="intro-appname" id="introAppname">
       <span class="ian-t">Tukar</span><span class="ian-r">Rupiah</span><span class="ian-i">.id</span>
@@ -2434,7 +2456,10 @@
 .intro-cbpr{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;justify-content:center;}
 .cbpr-word{display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0;transform:translateY(16px) scale(.85);transition:opacity .5s ease,transform .5s cubic-bezier(.34,1.4,.64,1);}
 .cbpr-word.show{opacity:1;transform:translateY(0) scale(1);}
-.cbpr-emoji{font-size:22px;}
+.cbpr-icon-wrap{width:48px;height:48px;border-radius:14px;border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:8px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:transform .3s ease,box-shadow .3s ease;}
+.cbpr-word.show .cbpr-icon-wrap{animation:iconPop .5s cubic-bezier(.34,1.56,.64,1) forwards;}
+@keyframes iconPop{0%{transform:scale(0.5);opacity:0;}100%{transform:scale(1);opacity:1;}}
+.cbpr-icon-wrap svg{width:26px;height:26px;}
 .cbpr-text{font-family:'Space Grotesk',sans-serif;font-size:clamp(10px,2.5vw,13px);font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.9);text-transform:uppercase;}
 .cbpr-sep{color:rgba(244,185,66,.6);font-size:18px;opacity:0;transition:opacity .4s ease;}
 .cbpr-sep.show{opacity:1;}
