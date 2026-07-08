@@ -2367,11 +2367,10 @@
       <svg class="intro-logo-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="60" cy="60" r="58" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
         <circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <circle cx="60" cy="60" r="48" fill="#00508B" class="logo-fill"/>
-        <circle cx="60" cy="60" r="44" fill="#003A6A"/>
-        <path d="M30 30 A40 40 0 0 1 90 30" stroke="rgba(255,255,255,0.18)" stroke-width="3" stroke-linecap="round" fill="none"/>
-        <text x="38" y="76" font-family="'Times New Roman',serif" font-size="50" font-weight="bold" fill="white" class="logo-letter-b">B</text>
-        <text x="70" y="76" font-family="'Times New Roman',serif" font-size="50" font-weight="bold" fill="rgba(255,255,255,0.9)" class="logo-letter-i">I</text>
+        <ellipse cx="60" cy="60" rx="46" ry="38" fill="#00508B" class="logo-fill"/>
+        <ellipse cx="60" cy="60" rx="42" ry="34" fill="#003A6A"/>
+        <path class="logo-letter-b" d="M 37 42 H 51 C 58 42 62 45 62 50 C 62 53 59 56 55 58 C 61 59 65 62 65 68 C 65 74 60 78 51 78 H 37 Z M 46 50 V 56 H 50 C 53 56 54 54 54 53 C 54 51 53 50 50 50 Z M 46 64 V 71 H 52 C 55 71 56 69 56 67 C 56 65 55 64 52 64 Z" fill="white"/>
+        <path class="logo-letter-i" d="M 58 42 H 74 V 49 H 69 V 71 H 74 V 78 H 58 V 71 H 63 V 49 H 58 Z" fill="#F4B942" style="mix-blend-mode: hard-light"/>
       </svg>
     </div>
     <div class="intro-bank-name" id="introBankName">
@@ -2421,7 +2420,7 @@
       <div class="intro-loadbar-pct" id="introLoadPct">0%</div>
     </div>
   </div>
-  <div class="intro-bottom" id="introBottom">Dibuat oleh <strong>Debora Septarina</strong> &middot; Aplikasi Edukasi Keuangan</div>
+  <div class="intro-bottom" id="introBottom">Dibuat oleh <strong>Debora Seftarina</strong> &middot; Aplikasi Edukasi Keuangan</div>
 </div>
 
 <style>
@@ -2539,10 +2538,11 @@
     <a href="#" class="logo">
       <!-- Bank Indonesia official-style SVG logo -->
       <div class="logo-emblem">
-        <svg class="bi-logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="24" cy="24" r="24" fill="#00508B"/>
-          <text x="19" y="34" font-family="'Times New Roman', Times, serif" font-size="29" font-weight="bold" fill="white" text-anchor="middle">B</text>
-          <text x="28" y="34" font-family="'Times New Roman', Times, serif" font-size="29" font-weight="bold" fill="white" stroke="#00508B" stroke-width="1.5" text-anchor="middle">I</text>
+        <svg class="bi-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="50" rx="46" ry="36" fill="#00508B"/>
+          <ellipse cx="50" cy="50" rx="42" ry="32" fill="#003A6A"/>
+          <path d="M 32 34 H 46 C 53 34 57 38 57 43 C 57 46 55 49 51 50 C 57 51 61 55 61 61 C 61 67 57 71 46 71 H 32 Z M 40 42 V 49 H 45 C 48 49 50 47 50 45.5 C 50 44 48 42 45 42 Z M 40 56 V 64 H 47 C 50 64 52 62 52 60 C 52 58 50 56 47 56 Z" fill="white"/>
+          <path d="M 54 34 H 72 V 41 H 67 V 64 H 72 V 71 H 54 V 64 H 59 V 41 H 54 Z" fill="#F4B942"/>
         </svg>
       </div>
       <div class="logo-text-group">
@@ -2998,14 +2998,14 @@
     </svg>
     <div class="footer-bi-text">
       <div class="footer-bi-name">Edukasi Keuangan</div>
-      <div class="footer-bi-desc">Dibuat oleh Debora Septarina</div>
+      <div class="footer-bi-desc">Dibuat oleh Debora Seftarina</div>
     </div>
   </div>
   <div class="footer-logo">TukarRupiah.id</div>
   <div class="footer-text">
     Aplikasi simulasi ini dibuat secara independen untuk tujuan edukasi masyarakat.<br/>
     Hasil analisis bersifat estimasi dan didukung oleh teknologi AI Vision.<br/>
-    <span style="font-size:10px;">&copy; 2025 TukarRupiah.id - Dibuat oleh Debora Septarina</span>
+    <span style="font-size:10px;">&copy; 2025 TukarRupiah.id - Dibuat oleh Debora Seftarina</span>
   </div>
   <div class="footer-cbpr">❤️ Cinta &middot; 🏆 Bangga &middot; 📚 Paham Rupiah</div>
 </footer>
@@ -3775,17 +3775,17 @@ function displayResult(result) {
   const gaugePct    = document.getElementById('gaugePct');
   const gaugeBar    = document.getElementById('gaugeBarFill');
 
-  gaugeCircle.className = 'gauge-fill ';
+  gaugeCircle.setAttribute('class', 'gauge-fill');
   gaugeBar.className    = 'gauge-bar-fill ';
 
   if (pct > threshold + 5) {
-    gaugeCircle.classList.add('high');
+    gaugeCircle.setAttribute('class', 'gauge-fill high');
     gaugeBar.classList.add('high');
   } else if (pct >= threshold - 5) {
-    gaugeCircle.classList.add('medium');
+    gaugeCircle.setAttribute('class', 'gauge-fill medium');
     gaugeBar.classList.add('medium');
   } else {
-    gaugeCircle.classList.add('low');
+    gaugeCircle.setAttribute('class', 'gauge-fill low');
     gaugeBar.classList.add('low');
   }
 
