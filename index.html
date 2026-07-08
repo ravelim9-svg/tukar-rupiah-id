@@ -3357,21 +3357,43 @@ async function captureAndAnalyzeGemini(isAuto = false) {
   animateLoadingSteps();
 
   try {
-    const result = await callGemini(base64, apiKey);
-    const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
+    let result;
+    try {
+      result = await callGemini(base64, apiKey);
+    } catch (geminiErr) {
+      console.warn('Gemini error (fallback):', geminiErr);
+      result = {
+        isRupiah: false, nominal: '-', tahunEmisi: null, moneyType,
+        integrityPercent: 0, verdict: 'marginal',
+        verdictReason: 'Gagal terhubung ke Gemini AI. Periksa koneksi internet dan API Key Anda.',
+        damageTypes: ['⚠️ Gagal terhubung ke AI'],
+        damageDescription: 'Koneksi ke Gemini AI gagal: ' + geminiErr.message + '. Coba Mode Standard (offline) jika tidak ada koneksi.',
+        damageRegions: [], serialVisible: false, serialMatch: null, splitPieces: 1,
+        recommendation: 'Periksa API Key di menu Pengaturan ⚙️, atau gunakan Mode Standard untuk analisis offline.',
+        aiConfidence: 0,
+        additionalNotes: 'Pastikan API Key valid dan kuota Gemini API belum habis.',
+        _mode: 'gemini'
+      };
+    }
 
+    const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
     displayResult(result);
     drawDetectionOverlay(result, cCtx, w, h);
     updateLiveIndicators(result);
     addHistory(result, thumbUrl);
 
-    toast(result.verdict === 'layak' ? '✅ Analisis selesai — Layak Tukar!' : '❌ Analisis selesai — Tidak Layak', result.verdict === 'layak' ? 'success' : 'error');
+    const msg = result.verdict === 'layak'
+      ? '✅ Analisis selesai — Layak Tukar!'
+      : result.verdict === 'marginal'
+        ? '⚠️ Analisis selesai — Perlu Cek Fisik'
+        : '❌ Analisis selesai — Tidak Layak';
+    toast(msg, result.verdict === 'layak' ? 'success' : result.verdict === 'marginal' ? 'warning' : 'error');
 
   } catch (err) {
-    console.error('Analysis error:', err);
+    console.error('Fatal error:', err);
     resLoading.style.display = 'none';
     resEmpty.style.display = 'flex';
-    toast('❌ Gagal: ' + err.message, 'error');
+    toast('❌ Error fatal: ' + err.message, 'error');
     updateLiveIndicatorsError();
   } finally {
     isAnalyzing = false;
@@ -4211,9 +4233,32 @@ async function captureAndAnalyzeStandard(isAuto = false) {
   animateLoadingSteps();
 
   try {
-    const result = await analyzeWithCanvas(hiddenCvs, w, h);
-    const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
+    let result;
+    try {
+      result = await analyzeWithCanvas(hiddenCvs, w, h);
+    } catch (analysisErr) {
+      // Analisis error → tampilkan hasil default "tidak bisa dianalisis" daripada kosong
+      console.warn('Canvas analysis error (fallback):', analysisErr);
+      result = {
+        isRupiah: false,
+        nominal: '-',
+        tahunEmisi: null,
+        moneyType,
+        integrityPercent: 0,
+        verdict: 'marginal',
+        verdictReason: 'Analisis tidak dapat diselesaikan. Coba lagi dengan pencahayaan lebih baik.',
+        damageTypes: ['⚠️ Gagal menganalisis'],
+        damageDescription: 'Terjadi kesalahan saat memproses gambar. Pastikan uang terlihat jelas dan coba lagi.',
+        damageRegions: [],
+        serialVisible: false, serialMatch: null, splitPieces: 1,
+        recommendation: 'Coba lagi: letakkan uang di permukaan putih dengan cahaya merata, isi ±70% frame kamera.',
+        aiConfidence: 0,
+        additionalNotes: 'Error teknis: ' + analysisErr.message,
+        _mode: 'standard'
+      };
+    }
 
+    const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
     displayResult(result);
     drawDetectionOverlay(result, cCtx, w, h);
     updateLiveIndicators(result);
@@ -4227,10 +4272,11 @@ async function captureAndAnalyzeStandard(isAuto = false) {
     toast(msg, result.verdict === 'layak' ? 'success' : result.verdict === 'marginal' ? 'warning' : 'error');
 
   } catch (err) {
-    console.error('Standard analysis error:', err);
+    // Hanya jika benar-benar fatal (misal displayResult error)
+    console.error('Fatal error:', err);
     resLoading.style.display = 'none';
     resEmpty.style.display = 'flex';
-    toast('❌ Analisis gagal: ' + err.message, 'error');
+    toast('❌ Error fatal: ' + err.message, 'error');
     updateLiveIndicatorsError();
   } finally {
     isAnalyzing = false;
