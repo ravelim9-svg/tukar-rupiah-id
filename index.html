@@ -3121,7 +3121,7 @@
 
 const RUPIAH_ASPECT = {1000:2.169,2000:2.169,5000:2.200,10000:2.231,20000:2.277,50000:2.308,100000:2.323};
 const DEFAULT_ASPECT  = 2.23;
-const STABLE_NEEDED   = 10;
+const STABLE_NEEDED   = 5;
 const DETECT_INTERVAL = 150;
 const OBJ_FILL_THR    = 0.80;
 
@@ -3224,23 +3224,18 @@ function detectFrame(){
 }
 
 function estimateFill(data,w,h){
-  const BW=Math.max(6,Math.floor(w*0.05)),BH=Math.max(6,Math.floor(h*0.05));
-  let bR=0,bG=0,bB=0,bN=0;
-  const corners=[[0,0],[w-BW,0],[0,h-BH],[w-BW,h-BH]];
-  for(let y=0;y<BH;y++)for(let x=0;x<BW;x++){
-    corners.forEach(([ox,oy])=>{const i=((oy+y)*w+(ox+x))*4;bR+=data[i];bG+=data[i+1];bB+=data[i+2];bN++;});
-  }
-  const avgR=bN>0?bR/bN:180,avgG=bN>0?bG/bN:180,avgB=bN>0?bB/bN:180;
-  
   const rowCount=new Int32Array(h);
   const colCount=new Int32Array(w);
-  let objCount=0;
+  let edgeCount=0;
   
-  for(let y=BH;y<h-BH;y+=2){
-    for(let x=BW;x<w-BW;x+=2){
+  // Edge Detection Math
+  for(let y=4;y<h-4;y+=2){
+    for(let x=4;x<w-4;x+=2){
       const i=(y*w+x)*4;
-      if(Math.abs(data[i]-avgR)+Math.abs(data[i+1]-avgG)+Math.abs(data[i+2]-avgB)>40){
-        objCount++;
+      // Simple edge diff: current pixel vs pixel 4 steps away
+      const edge = Math.abs(data[i]-data[i+16]) + Math.abs(data[i]-data[i+w*16]);
+      if(edge > 25){
+        edgeCount++;
         rowCount[y]++;
         colCount[x]++;
       }
@@ -3248,8 +3243,8 @@ function estimateFill(data,w,h){
   }
   
   let minX=w,maxX=0,minY=h,maxY=0;
-  const colThresh = (h-2*BH)/2 * 0.1; // 10% of tested height
-  const rowThresh = (w-2*BW)/2 * 0.1; // 10% of tested width
+  const colThresh = 3; // minimal noise filtering
+  const rowThresh = 3;
   
   for(let x=0;x<w;x++){
     if(colCount[x]>colThresh){if(x<minX)minX=x;if(x>maxX)maxX=x;}
@@ -3260,21 +3255,14 @@ function estimateFill(data,w,h){
   
   if (minX > maxX || minY > maxY) return 0;
   
-  // Guide box: X: 10% - 90%, Y: 27.5% - 72.5%
-  const guideMinX = w * 0.1, guideMaxX = w * 0.9;
-  const guideMinY = h * 0.275, guideMaxY = h * 0.725;
-  
-  // We want the object's bounding box to be relatively close to the guide box
-  // It shouldn't be too small, and it shouldn't be totally off-center.
   const objW = maxX - minX;
   const objH = maxY - minY;
-  const guideW = guideMaxX - guideMinX;
-  const guideH = guideMaxY - guideMinY;
+  const guideW = w * 0.8;
+  const guideH = h * 0.45;
   
   const wRatio = objW / guideW;
   const hRatio = objH / guideH;
   
-  // If the object fills at least 60% of the guide box width and height, and its center is near the guide box center.
   const objCx = minX + objW/2;
   const objCy = minY + objH/2;
   const guideCx = w/2;
@@ -3283,8 +3271,9 @@ function estimateFill(data,w,h){
   const distCx = Math.abs(objCx - guideCx) / w;
   const distCy = Math.abs(objCy - guideCy) / h;
   
-  if (wRatio > 0.5 && hRatio > 0.5 && distCx < 0.15 && distCy < 0.15) {
-     return 1.0; // Trigger lock immediately
+  // To trigger lock, the object must be quite large compared to guide box, and centered.
+  if (wRatio > 0.6 && hRatio > 0.6 && distCx < 0.15 && distCy < 0.20) {
+     return 1.0; 
   }
   return 0;
 }
@@ -3332,37 +3321,31 @@ async function analyzeRupiah(canvas,w,h){
   const imgData=ctx.getImageData(0,0,w,h);
   const data=imgData.data;
   
-  const BW=Math.max(10,Math.floor(w*0.05)),BH=Math.max(10,Math.floor(h*0.05));
-  let eR=0,eG=0,eB=0,eN=0;
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
-    if(x<BW||x>=w-BW||y<BH||y>=h-BH){const i=(y*w+x)*4;eR+=data[i];eG+=data[i+1];eB+=data[i+2];eN++;}
-  }
-  const bgR=eN>0?eR/eN:180,bgG=eN>0?eG/eN:180,bgB=eN>0?eB/eN:180;
-  
   const rowCount=new Int32Array(h);
   const colCount=new Int32Array(w);
-  let objPx=0,darkPx=0,sumR=0,sumG=0,sumB=0;
+  let edgeCount=0, darkPx=0;
   
-  for(let y=0;y<h;y++){
-    for(let x=0;x<w;x++){
+  // Edge detection for bounding box
+  for(let y=4;y<h-4;y+=2){
+    for(let x=4;x<w-4;x+=2){
       const i=(y*w+x)*4;
       const r=data[i],g=data[i+1],b=data[i+2];
-      const lum=0.299*r+0.587*g+0.114*b;
-      const diff=Math.abs(r-bgR)+Math.abs(g-bgG)+Math.abs(b-bgB);
+      const edge = Math.abs(r-data[i+16]) + Math.abs(r-data[i+w*16]);
       
-      if(diff>40){
-        objPx++;
+      if(edge > 25){
+        edgeCount++;
         rowCount[y]++;
         colCount[x]++;
-        sumR+=r;sumG+=g;sumB+=b;
+        
+        const lum=0.299*r+0.587*g+0.114*b;
         if(lum<38)darkPx++;
       }
     }
   }
   
   let minX=w,maxX=0,minY=h,maxY=0;
-  const colThresh = h * 0.05; // at least 5% of height must be object pixels to count as bounding box edge
-  const rowThresh = w * 0.05; 
+  const colThresh = 4;
+  const rowThresh = 4;
   
   for(let x=0;x<w;x++){
     if(colCount[x]>colThresh){if(x<minX)minX=x;if(x>maxX)maxX=x;}
@@ -3374,13 +3357,9 @@ async function analyzeRupiah(canvas,w,h){
   updateLoadingStep(3);
   let nominal=null,nominalSource='unknown';
   try{const o=await detectNominalOCR(canvas);if(o.nominal){nominal=o.nominal;nominalSource='ocr';}}catch(e){}
-  if(!nominal&&objPx>500){
-    const est=estimateNominalByColor(sumR/objPx,sumG/objPx,sumB/objPx);
-    if(est){nominal=est;nominalSource='color_estimate';}
-  }
   
   let boxW=Math.max(1,maxX-minX),boxH=Math.max(1,maxY-minY);
-  if (objPx < (w*h*0.1) || minX>maxX || minY>maxY) { boxW = w; boxH = h; } 
+  if (edgeCount < (w*h*0.01) || minX>maxX || minY>maxY) { boxW = w; boxH = h; } 
   if (boxH > boxW) { const temp=boxW; boxW=boxH; boxH=temp; }
   
   const nomNum=nominal?parseInt(nominal.replace(/[^0-9]/g,'')):0;
@@ -3394,7 +3373,7 @@ async function analyzeRupiah(canvas,w,h){
      integrityPct = (stdAspect / currentAspect) * 100;
   }
   
-  const darkRatio=objPx>0?darkPx/objPx:0;
+  const darkRatio=edgeCount>0?darkPx/edgeCount:0;
   integrityPct = Math.max(0, Math.min(100, Math.round(integrityPct - (darkRatio*100))));
   
   const threshold=moneyType==='logam'?50:66.7;
