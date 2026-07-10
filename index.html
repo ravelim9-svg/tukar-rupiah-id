@@ -3477,8 +3477,7 @@ function toast(msg,type='info'){
 function copyResult(){
   if(!currentResult)return;
   const r=currentResult;
-  const txt='TukarRupiah.id — Hasil Analisis
-'
+  const txt='TukarRupiah.id — Hasil Analisis\\n'
     +'Nominal    : '+r.nominal+' '+(r.nominalSource==='ocr'?'(Terbaca dari scan)':'(Estimasi)')+'\n'
     +'Sisa Fisik : '+r.integrityPercent+'%\n'
     +'Threshold  : '+r.threshold+'%\n'
