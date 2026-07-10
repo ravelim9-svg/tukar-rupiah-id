@@ -1,24 +1,24 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TukarRupiah.id — Deteksi Kerusakan Uang Rupiah AI</title>
-  <meta name="description" content="Aplikasi AI canggih untuk mendeteksi kerusakan uang rupiah secara real-time. Cinta Bangga Paham Rupiah — sesuai regulasi Bank Indonesia." />
+  <title>TukarRupiah.id â€” Deteksi Kerusakan Uang Rupiah AI</title>
+  <meta name="description" content="Aplikasi AI canggih untuk mendeteksi kerusakan uang rupiah secara real-time. Cinta Bangga Paham Rupiah â€” sesuai regulasi Bank Indonesia." />
   <meta name="keywords" content="uang rusak, rupiah, bank indonesia, tukar uang, deteksi AI, kamera, cinta bangga paham rupiah" />
-  <meta property="og:title" content="TukarRupiah.id — Deteksi AI Uang Rupiah" />
+  <meta property="og:title" content="TukarRupiah.id â€” Deteksi AI Uang Rupiah" />
   <meta property="og:description" content="Deteksi kerusakan uang rupiah secara real-time dengan AI Vision" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <!-- TensorFlow.js — Runs AI directly in browser, no API key needed -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+  <!-- Tesseract.js â€” OCR baca angka nominal uang, berjalan 100% offline di browser -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 
   <style>
-    /* ══════════════════════════════════════════════════
-       DESIGN SYSTEM — BANK INDONESIA × RUPIAH EDITION
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       DESIGN SYSTEM â€” BANK INDONESIA Ã— RUPIAH EDITION
        Color Identity: Merah BI, Putih, Emas Nusantara
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     :root {
       /* BI Brand Colors */
       --bi-blue:       #00508B;
@@ -112,9 +112,9 @@
     ::-webkit-scrollbar-track { background: var(--warm-gray-1); }
     ::-webkit-scrollbar-thumb { background: var(--bi-red); border-radius: 3px; }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        PARTICLE CANVAS BACKGROUND
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     #particleCanvas {
       position: fixed;
       top: 0; left: 0;
@@ -124,9 +124,9 @@
       opacity: 0.4;
     }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        PREMIUM HEADER
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .header {
       position: sticky;
       top: 0;
@@ -260,7 +260,7 @@
 
     .header-right { display: flex; align-items: center; gap: 10px; }
 
-    /* ── Mode Selector ─────────────────────── */
+    /* â”€â”€ Mode Selector â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .mode-selector {
       display: flex;
       background: rgba(26,10,2,0.04);
@@ -299,7 +299,7 @@
       box-shadow: var(--shadow-red);
     }
 
-    /* ── Mode Banner ────────────────────────── */
+    /* â”€â”€ Mode Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .mode-banner {
       display: flex;
       align-items: center;
@@ -331,7 +331,7 @@
     .mode-banner.std .mode-dot { background: #22c55e; box-shadow: 0 0 6px #22c55e; animation: livePulse 2s infinite; }
     .mode-banner.pro .mode-dot { background: var(--bi-red); box-shadow: 0 0 6px var(--bi-red); animation: livePulse 2s infinite; }
 
-    /* ── TF.js progress bar ─────────────────── */
+    /* â”€â”€ TF.js progress bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .tfjs-loader {
       padding: 16px 24px;
       border-bottom: 1px solid var(--border-light);
@@ -386,9 +386,9 @@
       box-shadow: var(--shadow-sm);
     }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        HERO BANNER
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .hero-banner {
       background: var(--grad-hero);
       position: relative;
@@ -653,9 +653,9 @@
       }
     }
 
-    /* ══════════════════════════════════════════════════
-       CBPR STRIP — CINTA BANGGA PAHAM RUPIAH
-       ══════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       CBPR STRIP â€” CINTA BANGGA PAHAM RUPIAH
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .cbpr-strip {
       background: #1A0A02;
       border-top: 1px solid rgba(244,185,66,0.15);
@@ -693,9 +693,9 @@
       flex-shrink: 0;
     }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        MAIN LAYOUT
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .app-layout {
       max-width: 1280px;
       margin: 0 auto;
@@ -716,9 +716,9 @@
       }
     }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        PREMIUM CARD BASE
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .card {
       background: var(--surface-card);
       border: 1px solid var(--border-light);
@@ -779,10 +779,10 @@
     .icon-green { background: rgba(34,197,94,0.10); }
     .icon-blue { background: rgba(59,130,246,0.10); }
 
-    /* ══════════════════════════════════════════════════
-       CAMERA SECTION — PREMIUM
-       ══════════════════════════════════════════════════ */
-    /* ══ Camera Glass Enhancements ══ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       CAMERA SECTION â€” PREMIUM
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    /* â•â• Camera Glass Enhancements â•â• */
     .camera-card {
       background: rgba(255,255,255,0.93);
       backdrop-filter: blur(20px);
@@ -1176,9 +1176,9 @@
       line-height: 1.6;
     }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        CAMERA CONTROLS
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .camera-controls {
       padding: 20px 24px;
       display: flex;
@@ -1354,9 +1354,9 @@
     /* Upload input */
     #uploadInput { display: none; }
 
-    /* ══════════════════════════════════════════════════
-       RESULT PANEL — PREMIUM
-       ══════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       RESULT PANEL â€” PREMIUM
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
     /* Empty state */
     .result-empty {
@@ -1488,9 +1488,9 @@
     .step-dot.active { background: var(--bi-red); animation: livePulse 1s infinite; }
     .step-dot.done { background: #22c55e; }
 
-    /* ══════════════════════════════════════════════════
-       RESULT CONTENT — ULTRA PREMIUM
-       ══════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       RESULT CONTENT â€” ULTRA PREMIUM
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .result-content {
       display: none;
       flex-direction: column;
@@ -1584,9 +1584,9 @@
       box-shadow: var(--shadow-red);
     }
 
-    /* ══════════════════════════════════════════════════
-       INTEGRITY GAUGE — LIQUID PREMIUM
-       ══════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       INTEGRITY GAUGE â€” LIQUID PREMIUM
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .gauge-section {
       padding: 20px 24px;
       border-top: 1px solid var(--border-light);
@@ -1771,9 +1771,9 @@
       font-weight: 600;
     }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        DAMAGE ANALYSIS SECTION
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .analysis-section {
       padding: 16px 24px;
       border-top: 1px solid var(--border-light);
@@ -1906,7 +1906,7 @@
     }
 
     .bi-box-inner::before {
-      content: '⚖️';
+      content: 'âš–ï¸';
       position: absolute;
       right: 12px;
       bottom: 8px;
@@ -1926,9 +1926,9 @@
       background: var(--cream);
     }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        REGULATION INFO CARD
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .reg-list {
       padding: 16px 24px;
       display: flex;
@@ -1989,9 +1989,9 @@
     .reg-threshold.gold { color: var(--bi-gold); }
     .reg-threshold.blue { color: #2563eb; }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        HISTORY PANEL
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .history-list {
       padding: 12px;
       display: flex;
@@ -2042,9 +2042,9 @@
     .h-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
     .h-time { font-size: 10px; color: var(--text-muted); text-align: right; flex-shrink: 0; }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        SETTINGS MODAL
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -2176,9 +2176,9 @@
       line-height: 1.5;
     }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        TOAST
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .toast-zone {
       position: fixed;
       bottom: 28px;
@@ -2217,9 +2217,9 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        FOOTER
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .footer {
       background: var(--text-dark);
       padding: 32px;
@@ -2282,9 +2282,9 @@
       text-transform: uppercase;
     }
 
-    /* ══════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        RESPONSIVE
-       ══════════════════════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     @media (max-width: 640px) {
       .header-inner { padding: 0 16px; }
       .header-center { display: none; }
@@ -2351,9 +2351,9 @@
 <!-- Particle background -->
 <canvas id="particleCanvas"></canvas>
 
-<!-- ═══════════════════════════════════════════════════════
-     🎬 INTRO SPLASH SCREEN — Bank Indonesia × Rupiah
-     ═══════════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     ðŸŽ¬ INTRO SPLASH SCREEN â€” Bank Indonesia Ã— Rupiah
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="introSplash">
   <canvas id="introCanvas"></canvas>
   <div class="intro-rings">
@@ -2379,7 +2379,7 @@
     <div class="intro-bank-sub" id="introBankSub">BANK SENTRAL REPUBLIK INDONESIA</div>
     <div class="intro-divider" id="introDivider">
       <div class="intro-divider-line"></div>
-      <div class="intro-divider-diamond">◆</div>
+      <div class="intro-divider-diamond">â—†</div>
       <div class="intro-divider-line"></div>
     </div>
     <div class="intro-cbpr" id="introCBPR">
@@ -2391,7 +2391,7 @@
         </div>
         <span class="cbpr-text">CINTA</span>
       </div>
-      <div class="cbpr-sep" id="cbprS1">•</div>
+      <div class="cbpr-sep" id="cbprS1">â€¢</div>
       <div class="cbpr-word" id="cbprW2">
         <div class="cbpr-icon-wrap" style="background:rgba(234,179,8,0.15);border-color:rgba(234,179,8,0.3);">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2400,7 +2400,7 @@
         </div>
         <span class="cbpr-text">BANGGA</span>
       </div>
-      <div class="cbpr-sep" id="cbprS2">•</div>
+      <div class="cbpr-sep" id="cbprS2">â€¢</div>
       <div class="cbpr-word" id="cbprW3">
         <div class="cbpr-icon-wrap" style="background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.3);">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2414,7 +2414,7 @@
     <div class="intro-appname" id="introAppname">
       <span class="ian-t">Tukar</span><span class="ian-r">Rupiah</span><span class="ian-i">.id</span>
     </div>
-    <div class="intro-apptag" id="introApptag">Deteksi Kerusakan Uang Rupiah dengan AI — Untuk Edukasi</div>
+    <div class="intro-apptag" id="introApptag">Deteksi Kerusakan Uang Rupiah dengan AI â€” Untuk Edukasi</div>
     <div class="intro-loadbar-wrap" id="introLoadbar">
       <div class="intro-loadbar-track"><div class="intro-loadbar-fill" id="introLoadFill"></div></div>
       <div class="intro-loadbar-pct" id="introLoadPct">0%</div>
@@ -2483,7 +2483,7 @@
 (function(){
   var splash=document.getElementById('introSplash');
   // Floating rupiah particles
-  var SYMS=['Rp 100K','Rp 50K','Rp 20K','Rp 10K','Rp 5K','Rp 2K','Rp 1K','💵','💰','🏦','Rp','₹'];
+  var SYMS=['Rp 100K','Rp 50K','Rp 20K','Rp 10K','Rp 5K','Rp 2K','Rp 1K','ðŸ’µ','ðŸ’°','ðŸ¦','Rp','â‚¹'];
   for(var i=0;i<26;i++){
     var el=document.createElement('div');
     el.className='rupiah-particle';
@@ -2557,20 +2557,15 @@
     </div>
 
     <div class="header-right">
-      <div class="mode-selector" id="modeSelector">
-        <button class="mode-btn active-std" id="modeStdBtn" onclick="setAIMode('standard')">
-          🧠 Standard
-        </button>
-        <button class="mode-btn" id="modeProBtn" onclick="setAIMode('premium')">
-          ⭐ Premium
-        </button>
+      <div class="mode-scanner-badge">
+        <div class="mode-dot active"></div>
+        <span style="font-size:11px;font-weight:700;color:var(--text-muted);">SCANNER AKTIF</span>
       </div>
-      <button class="btn-icon" id="settingsBtn" title="Pengaturan API">⚙️</button>
     </div>
   </div>
 </header>
 
-<!-- ═══════════ HERO ═══════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â• HERO â•â•â•â•â•â•â•â•â•â•â• -->
 <section class="hero-banner">
   <div class="hero-orb hero-orb-1"></div>
   <div class="hero-orb hero-orb-2"></div>
@@ -2636,40 +2631,40 @@
   </div>
 </section>
 
-<!-- ═══════════ CBPR TICKER ═══════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â• CBPR TICKER â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="cbpr-strip">
   <div class="cbpr-items" id="cbprItems">
-    <div class="cbpr-item">❤️ Cinta Rupiah</div>
-    <div class="cbpr-item">🏆 Bangga Rupiah</div>
-    <div class="cbpr-item">📚 Paham Rupiah</div>
-    <div class="cbpr-item">💵 Jaga Uang Anda</div>
-    <div class="cbpr-item">🦅 Bank Indonesia</div>
-    <div class="cbpr-item">⚖️ Regulasi Resmi</div>
-    <div class="cbpr-item">🔍 Deteksi AI</div>
-    <div class="cbpr-item">💰 Tukar Uang Rusak</div>
+    <div class="cbpr-item">â¤ï¸ Cinta Rupiah</div>
+    <div class="cbpr-item">ðŸ† Bangga Rupiah</div>
+    <div class="cbpr-item">ðŸ“š Paham Rupiah</div>
+    <div class="cbpr-item">ðŸ’µ Jaga Uang Anda</div>
+    <div class="cbpr-item">ðŸ¦… Bank Indonesia</div>
+    <div class="cbpr-item">âš–ï¸ Regulasi Resmi</div>
+    <div class="cbpr-item">ðŸ” Deteksi AI</div>
+    <div class="cbpr-item">ðŸ’° Tukar Uang Rusak</div>
     <!-- Duplicate for seamless scroll -->
-    <div class="cbpr-item">❤️ Cinta Rupiah</div>
-    <div class="cbpr-item">🏆 Bangga Rupiah</div>
-    <div class="cbpr-item">📚 Paham Rupiah</div>
-    <div class="cbpr-item">💵 Jaga Uang Anda</div>
-    <div class="cbpr-item">🦅 Bank Indonesia</div>
-    <div class="cbpr-item">⚖️ Regulasi Resmi</div>
-    <div class="cbpr-item">🔍 Deteksi AI</div>
-    <div class="cbpr-item">💰 Tukar Uang Rusak</div>
+    <div class="cbpr-item">â¤ï¸ Cinta Rupiah</div>
+    <div class="cbpr-item">ðŸ† Bangga Rupiah</div>
+    <div class="cbpr-item">ðŸ“š Paham Rupiah</div>
+    <div class="cbpr-item">ðŸ’µ Jaga Uang Anda</div>
+    <div class="cbpr-item">ðŸ¦… Bank Indonesia</div>
+    <div class="cbpr-item">âš–ï¸ Regulasi Resmi</div>
+    <div class="cbpr-item">ðŸ” Deteksi AI</div>
+    <div class="cbpr-item">ðŸ’° Tukar Uang Rusak</div>
   </div>
 </div>
 
-<!-- ═══════════ APP LAYOUT ═══════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â• APP LAYOUT â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="app-layout">
 
-  <!-- ══ LEFT COLUMN ══ -->
+  <!-- â•â• LEFT COLUMN â•â• -->
   <div class="left-col">
 
     <!-- Camera Card -->
     <div class="card camera-card">
       <div class="card-header">
         <div class="card-title">
-          <div class="card-icon icon-red">📷</div>
+          <div class="card-icon icon-red">ðŸ“·</div>
           Kamera Deteksi Real-Time
         </div>
         <span id="camStatusText" style="font-size:11px;color:var(--text-muted);font-weight:600;">Tidak aktif</span>
@@ -2678,35 +2673,21 @@
       <!-- Type selector -->
       <div class="type-selector">
         <button class="type-btn active" id="typeKertas" onclick="setType('kertas')">
-          💵 Uang Kertas
+          ðŸ’µ Uang Kertas
         </button>
         <button class="type-btn" id="typeLogam" onclick="setType('logam')">
-          🪙 Uang Logam
+          ðŸª™ Uang Logam
         </button>
       </div>
 
-      <!-- Mode Banner -->
+      <!-- Status Banner -->
       <div class="mode-banner std" id="modeBanner">
-        <div class="mode-dot"></div>
-        <span id="modeBannerText">Mode Standard — TensorFlow.js (Offline, tanpa API Key)</span>
+        <div class="mode-dot" id="scanStatusDot"></div>
+        <span id="modeBannerText">ðŸ“ Analisis Matematika Geometri â€” Offline, Tanpa API Key</span>
       </div>
 
-      <!-- TF.js loader -->
-      <div class="tfjs-loader" id="tfjsLoader">
-        <div class="tfjs-loader-label">
-          <span id="tfjsLoaderLabel">Memuat model TensorFlow.js...</span>
-          <span id="tfjsLoaderPct">0%</span>
-        </div>
-        <div class="tfjs-bar-track">
-          <div class="tfjs-bar-fill" id="tfjsBarFill" style="width:0%"></div>
-        </div>
-      </div>
-
-      <!-- API Alert -->
-      <div class="api-alert" id="apiAlert">
-        ⚠️ API Key belum diatur.
-        <button onclick="openSettings()">Atur sekarang →</button>
-      </div>
+      <!-- Guide box overlay indicator -->
+      <div id="lockIndicatorBar" style="display:none;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-align:center;margin-bottom:8px;transition:all .3s;"></div>
 
       <!-- Camera viewport -->
       <div class="camera-viewport" id="cameraViewport">
@@ -2745,39 +2726,28 @@
 
         <!-- No camera state -->
         <div class="no-camera" id="noCamState">
-          <div class="no-camera-ring">📷</div>
+          <div class="no-camera-ring">ðŸ“·</div>
           <div class="no-camera-title">Kamera Belum Aktif</div>
           <div class="no-camera-sub">Letakkan uang di permukaan datar dengan cahaya cukup, lalu aktifkan kamera</div>
           <button class="btn btn-primary" onclick="startCamera()" style="margin-top:4px;">
-            🎥 Aktifkan Kamera
+            ðŸŽ¥ Aktifkan Kamera
           </button>
         </div>
 
         <!-- Scan hint (shown when camera active) -->
-        <div class="scan-hint" id="scanHint" style="display:none;">Arahkan uang ke kamera — isi seluruh frame</div>
+        <div class="scan-hint" id="scanHint" style="display:none;">Arahkan uang ke kamera â€” isi seluruh frame</div>
       </div>
 
       <!-- Controls -->
       <div class="camera-controls">
-        <input type="file" id="uploadInput" accept="image/*" onchange="handleUpload(event)" />
+        <input type="file" id="uploadInput" accept="image/*" onchange="handleUpload(event)" style="display:none;" />
 
-        <div class="toggle-wrap" id="autoToggleWrap" onclick="toggleAutoDetect()" title="Deteksi otomatis saat uang terlihat">
-          <div class="toggle-track" id="autoTrack">
-            <div class="toggle-thumb"></div>
-          </div>
-          <span class="toggle-label">Auto Deteksi</span>
-        </div>
-
-        <button class="btn btn-ghost" onclick="document.getElementById('uploadInput').click()">
-          📤 Upload
+        <button class="btn btn-ghost" onclick="document.getElementById('uploadInput').click()" style="flex:1;">
+          ðŸ“¤ Upload Foto
         </button>
 
-        <button class="btn btn-primary" id="analyzeBtn" onclick="captureAndAnalyze()" disabled>
-          🔍 Analisis
-        </button>
-
-        <button class="btn btn-outline" id="retakeBtn" onclick="retake()" style="display:none;">
-          🔄
+        <button class="btn btn-primary" id="resetScanBtn" onclick="resetScan()" style="flex:1;display:none;">
+          ðŸ”„ Scan Ulang
         </button>
       </div>
 
@@ -2794,13 +2764,13 @@
     <div class="card" style="margin-top:20px;">
       <div class="card-header">
         <div class="card-title">
-          <div class="card-icon icon-gold">⚖️</div>
-          Regulasi Penukaran — Bank Indonesia
+          <div class="card-icon icon-gold">âš–ï¸</div>
+          Regulasi Penukaran â€” Bank Indonesia
         </div>
       </div>
       <div class="reg-list">
         <div class="reg-row">
-          <div class="reg-row-icon" style="background:rgba(204,0,1,0.08);">💵</div>
+          <div class="reg-row-icon" style="background:rgba(204,0,1,0.08);">ðŸ’µ</div>
           <div class="reg-row-body">
             <div class="reg-row-title">Uang Kertas Sobek/Bolong</div>
             <div class="reg-row-desc">Tenang, uang Anda masih laku asalkan ukurannya masih lebih dari 2/3 (66.7%) dari ukuran aslinya.</div>
@@ -2808,15 +2778,15 @@
           <div class="reg-threshold red">&gt;66.7%</div>
         </div>
         <div class="reg-row">
-          <div class="reg-row-icon" style="background:rgba(200,149,42,0.1);">✂️</div>
+          <div class="reg-row-icon" style="background:rgba(200,149,42,0.1);">âœ‚ï¸</div>
           <div class="reg-row-body">
             <div class="reg-row-title">Uang Kertas Terpotong Jadi Dua</div>
             <div class="reg-row-desc">Jangan khawatir! Anda bisa menukarnya jika kedua potongannya punya nomor seri yang sama persis dan lengkap.</div>
           </div>
-          <div class="reg-threshold gold">✓ Seri</div>
+          <div class="reg-threshold gold">âœ“ Seri</div>
         </div>
         <div class="reg-row">
-          <div class="reg-row-icon" style="background:rgba(59,130,246,0.08);">🪙</div>
+          <div class="reg-row-icon" style="background:rgba(59,130,246,0.08);">ðŸª™</div>
           <div class="reg-row-body">
             <div class="reg-row-title">Uang Logam Penyok/Rusak</div>
             <div class="reg-row-desc">Tidak masalah! Selama ukuran dan fisiknya masih lebih dari separuh (50%) aslinya, koin Anda aman untuk ditukar.</div>
@@ -2828,14 +2798,14 @@
 
   </div>
 
-  <!-- ══ RIGHT COLUMN ══ -->
+  <!-- â•â• RIGHT COLUMN â•â• -->
   <div class="right-col">
 
     <!-- Result Card -->
     <div class="card">
       <div class="card-header">
         <div class="card-title">
-          <div class="card-icon icon-gold">🔬</div>
+          <div class="card-icon icon-gold">ðŸ”¬</div>
           Hasil Analisis AI
         </div>
         <span id="resultTimestamp" style="font-size:11px;color:var(--text-muted);font-weight:600;font-family:'JetBrains Mono',monospace;"></span>
@@ -2843,7 +2813,7 @@
 
       <!-- Empty -->
       <div class="result-empty" id="resEmpty">
-        <div class="empty-icon-ring">🔍</div>
+        <div class="empty-icon-ring">ðŸ”</div>
         <div class="result-empty-title">Menunggu Analisis</div>
         <div class="result-empty-sub">Aktifkan kamera dan aktifkan Auto Deteksi, atau tekan tombol Analisis secara manual</div>
       </div>
@@ -2853,7 +2823,7 @@
         <div class="ai-spinner">
           <div class="spinner-outer"></div>
           <div class="spinner-inner"></div>
-          <div class="spinner-core">🤖</div>
+          <div class="spinner-core">ðŸ¤–</div>
         </div>
         <div class="loading-title">Menganalisis dengan AI...</div>
         <div class="loading-steps">
@@ -2888,7 +2858,7 @@
         <!-- Verdict -->
         <div class="verdict-hero" id="verdictHero">
           <div class="verdict-badge" id="verdictBadge">
-            <span class="verdict-icon" id="verdictIcon">✅</span>
+            <span class="verdict-icon" id="verdictIcon">âœ…</span>
             <span id="verdictText">LAYAK DITUKAR</span>
           </div>
           <div class="verdict-desc" id="verdictDesc">Uang memenuhi syarat penukaran Bank Indonesia</div>
@@ -2910,7 +2880,7 @@
               </svg>
               <div class="gauge-svg-center">
                 <span class="gauge-svg-pct" id="gaugePct">0%</span>
-                <span class="gauge-svg-label">Utuh</span>
+                <span class="gauge-svg-label">Sisa Fisik Kertas</span>
               </div>
             </div>
 
@@ -2956,10 +2926,10 @@
         <!-- Actions -->
         <div class="result-actions">
           <button class="btn btn-outline" onclick="copyResult()" style="flex:1;font-size:13px;">
-            📋 Salin Hasil
+            ðŸ“‹ Salin Hasil
           </button>
           <button class="btn btn-primary" onclick="retake()" style="flex:1;font-size:13px;">
-            🔄 Analisis Baru
+            ðŸ”„ Analisis Baru
           </button>
         </div>
 
@@ -2970,7 +2940,7 @@
     <div class="card" style="margin-top:20px;">
       <div class="card-header">
         <div class="card-title">
-          <div class="card-icon icon-red">📋</div>
+          <div class="card-icon icon-red">ðŸ“‹</div>
           Riwayat Analisis
         </div>
         <button
@@ -2988,7 +2958,7 @@
   </div>
 </div>
 
-<!-- ═══════════ FOOTER ═══════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â• -->
 <footer class="footer">
   <div class="footer-bi-badge">
     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:40px;height:40px;">
@@ -3007,48 +2977,10 @@
     Hasil analisis bersifat estimasi dan didukung oleh teknologi AI Vision.<br/>
     <span style="font-size:10px;">&copy; 2025 TukarRupiah.id - Dibuat oleh Debora Seftarina</span>
   </div>
-  <div class="footer-cbpr">❤️ Cinta &middot; 🏆 Bangga &middot; 📚 Paham Rupiah</div>
+  <div class="footer-cbpr">â¤ï¸ Cinta &middot; ðŸ† Bangga &middot; ðŸ“š Paham Rupiah</div>
 </footer>
 
-<!-- ═══════════ SETTINGS MODAL ═══════════ -->
-<div class="modal-overlay" id="settingsModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">⚙️ Pengaturan Gemini AI</div>
-      <button class="modal-close" onclick="closeSettings()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label" for="apiKeyInput">Google Gemini API Key</label>
-        <input type="password" class="form-input" id="apiKeyInput" placeholder="AIza... atau AQ...." autocomplete="off" spellcheck="false"/>
-        <div class="form-hint">
-          Dapatkan API Key gratis di <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio →</a>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="modelSelect">Model AI</label>
-        <select class="form-input" id="modelSelect">
-          <option value="gemini-2.0-flash">Gemini 2.0 Flash (Rekomendasi — Tercepat)</option>
-          <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite (Hemat kuota)</option>
-          <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-          <option value="gemini-1.5-pro">Gemini 1.5 Pro (Akurasi tertinggi)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="autoIntervalInput">Interval Auto-Deteksi (detik)</label>
-        <input type="number" class="form-input" id="autoIntervalInput" value="4" min="2" max="30" step="1"/>
-        <div class="form-hint">Interval minimum antar analisis otomatis (2–30 detik). Nilai lebih kecil = lebih sering analisis = lebih hemat atau lebih boros kuota.</div>
-      </div>
-      <div class="security-note">
-        🔒 API Key hanya disimpan di browser Anda (localStorage). Tidak pernah dikirim ke server lain selain Google API secara langsung.
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeSettings()" style="flex:1;">Batal</button>
-      <button class="btn btn-primary" onclick="saveSettings()" style="flex:1;">💾 Simpan</button>
-    </div>
-  </div>
-</div>
+<!-- Settings modal removed â€” app is now fully offline, no API needed -->
 
 <!-- Toast zone -->
 <div class="toast-zone" id="toastZone"></div>
@@ -3056,9 +2988,9 @@
 <!-- Hidden canvas for capture -->
 <canvas id="hiddenCvs" style="display:none;"></canvas>
 
-<!-- ════════════════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      PARTICLE SYSTEM
-     ════════════════════════════════════════════════════ -->
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <script>
 (function initParticles() {
   const canvas = document.getElementById('particleCanvas');
@@ -3074,7 +3006,7 @@
   window.addEventListener('resize', resize);
 
   const COLORS = ['rgba(204,0,1,', 'rgba(200,149,42,', 'rgba(204,0,1,'];
-  const SYMBOLS = ['Rp', '₹', '¥', '€', '$'];
+  const SYMBOLS = ['Rp', 'â‚¹', 'Â¥', 'â‚¬', '$'];
 
   for (let i = 0; i < 18; i++) {
     particles.push({
@@ -3120,1637 +3052,441 @@
 })();
 </script>
 
+
 <!-- ════════════════════════════════════════════════════
-     MAIN APPLICATION
+     MAIN APPLICATION — Engine Matematika Geometri
+     Tanpa API Key, 100% Offline
      ════════════════════════════════════════════════════ -->
 <script>
 'use strict';
 
-/* ─── Constants ─────────────────────────────────── */
-// NOTE: API Key is stored only in localStorage (user-provided via Settings modal)
-const DEFAULT_MODEL   = 'gemini-2.0-flash';
-const DEFAULT_INTERVAL = 4; // seconds
+const RUPIAH_ASPECT = {1000:2.169,2000:2.169,5000:2.200,10000:2.231,20000:2.277,50000:2.308,100000:2.323};
+const DEFAULT_ASPECT  = 2.23;
+const STABLE_NEEDED   = 10;
+const DETECT_INTERVAL = 150;
+const OBJ_FILL_THR    = 0.30;
 
-/* ─── State ─────────────────────────────────────── */
-let stream          = null;
-let moneyType       = 'kertas';
-let autoDetect      = false;
-let autoTimer       = null;
-let isAnalyzing     = false;
-let lastAnalysisTs  = 0;
-let currentResult   = null;
-let history         = [];
-let frameCtx        = null;
+let stream=null,moneyType='kertas',scanState='idle',stableCount=0,detectLoopId=null;
+let isAnalyzing=false,currentResult=null,history=[],ocrWorker=null,ocrReady=false;
 
-/* ─── DOM ────────────────────────────────────────── */
-const video        = document.getElementById('videoEl');
-const capCanvas    = document.getElementById('capturedCanvas');
-const detCanvas    = document.getElementById('detectionCanvas');
-const hiddenCvs    = document.getElementById('hiddenCvs');
-const analyzeBtn   = document.getElementById('analyzeBtn');
-const retakeBtn    = document.getElementById('retakeBtn');
-const scanOverlay  = document.getElementById('scanOverlay');
-const noCamState   = document.getElementById('noCamState');
-const autoTrack    = document.getElementById('autoTrack');
-const autoDot      = document.getElementById('autoDot');
-const autoLabel    = document.getElementById('autoLabel');
-const autoStatusBadge = document.getElementById('autoStatusBadge');
-const analyzingBar = document.getElementById('analyzingBar');
-const liveConf     = document.getElementById('liveConf');
-const liveVerdict  = document.getElementById('liveVerdict');
-const liveConfPct  = document.getElementById('liveConfPct');
-const resEmpty     = document.getElementById('resEmpty');
-const resLoading   = document.getElementById('resLoading');
-const resContent   = document.getElementById('resContent');
-const apiAlert     = document.getElementById('apiAlert');
-const historyList  = document.getElementById('historyList');
+const video      = document.getElementById('videoEl');
+const capCanvas  = document.getElementById('capturedCanvas');
+const hiddenCvs  = document.getElementById('hiddenCvs');
+const resEmpty   = document.getElementById('resEmpty');
+const resLoading = document.getElementById('resLoading');
+const resContent = document.getElementById('resContent');
+const historyList= document.getElementById('historyList');
+const noCamState = document.getElementById('noCamState');
+const resetScanBtn=document.getElementById('resetScanBtn');
 
-/* ─── Init ──────────────────────────────────────── */
-(function init() {
-  loadSettings();
-  loadHistory();
+(async function init(){
   renderHistory();
-  checkApiKey();
+  initOCR();
+  renderEmptyState();
+  startCamera();
 })();
 
-/* ─── Animate counters ──────────────────────────── */
-function animateCounters() {
-  // Just a cosmetic function for the hero
+async function initOCR(){
+  try{
+    if(typeof Tesseract==='undefined'){ocrReady=false;return;}
+    ocrWorker=await Tesseract.createWorker('eng',1,{logger:()=>{}});
+    await ocrWorker.setParameters({tessedit_char_whitelist:'0123456789.'});
+    ocrReady=true;
+    console.log('OCR siap');
+  }catch(e){ocrReady=false;console.warn('OCR tidak tersedia:',e.message);}
 }
 
-/* ─── Settings ──────────────────────────────────── */
-function loadSettings() {
-  const apiKeyEl   = document.getElementById('apiKeyInput');
-  const modelEl    = document.getElementById('modelSelect');
-  const intervalEl = document.getElementById('autoIntervalInput');
-  if (apiKeyEl)   apiKeyEl.value   = localStorage.getItem('tr_api_key') || '';
-  if (modelEl)    modelEl.value    = localStorage.getItem('tr_model')   || DEFAULT_MODEL;
-  if (intervalEl) intervalEl.value = localStorage.getItem('tr_interval') || DEFAULT_INTERVAL;
-}
-
-function saveSettings() {
-  const key      = document.getElementById('apiKeyInput').value.trim();
-  const model    = document.getElementById('modelSelect').value;
-  const interval = parseInt(document.getElementById('autoIntervalInput').value) || DEFAULT_INTERVAL;
-
-  if (!key) { toast('⚠️ Masukkan API Key terlebih dahulu', 'warning'); return; }
-
-  localStorage.setItem('tr_api_key', key);
-  localStorage.setItem('tr_model', model);
-  localStorage.setItem('tr_interval', interval);
-
-  toast('✅ Pengaturan tersimpan!', 'success');
-  closeSettings();
-  checkApiKey();
-}
-
-function openSettings()  { document.getElementById('settingsModal').classList.add('open'); }
-function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
-
-document.getElementById('settingsBtn').onclick = openSettings;
-document.getElementById('settingsModal').addEventListener('click', e => {
-  if (e.target === document.getElementById('settingsModal')) closeSettings();
-});
-
-function checkApiKey() {
-  const key = localStorage.getItem('tr_api_key');
-  apiAlert.classList.toggle('show', !key);
-}
-
-/* ─── Type selector ─────────────────────────────── */
-function setType(t) {
-  moneyType = t;
-  document.getElementById('typeKertas').classList.toggle('active', t === 'kertas');
-  document.getElementById('typeLogam').classList.toggle('active', t === 'logam');
-  updateThresholdUI();
-}
-
-function updateThresholdUI() {
-  const thr = moneyType === 'logam' ? 50 : 66.7;
-  document.getElementById('thresholdMarker').style.left = thr + '%';
-  document.getElementById('thresholdTip').textContent = thr + '%';
-  document.getElementById('thresholdPctLabel').textContent = thr + '% min';
-  document.getElementById('moneyTypeLabel').textContent = moneyType === 'logam' ? 'Uang Logam' : 'Uang Kertas';
-}
-
-/* ─── Camera ────────────────────────────────────── */
-async function startCamera() {
-  try {
-    setHeaderStatus('Meminta izin...', 'inactive');
-    const constraints = {
-      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 960 } }
-    };
-    stream = await navigator.mediaDevices.getUserMedia(constraints);
-    video.srcObject = stream;
+async function startCamera(){
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}},audio:false});
+    video.srcObject=stream;
     await video.play();
-
-    noCamState.style.display    = 'none';
-    scanOverlay.classList.add('active');
-    autoStatusBadge.style.display = 'flex';
-    analyzeBtn.disabled = false;
-    document.getElementById('camStatusText').textContent = 'Aktif';
-    document.getElementById('camStatusText').style.color = '#22c55e';
-
-    setHeaderStatus('Kamera Aktif', 'active');
-    toast('✅ Kamera aktif — arahkan uang ke tengah frame!', 'success');
-
-    // Show scan hint
-    const scanHint = document.getElementById('scanHint');
-    if (scanHint) scanHint.style.display = 'block';
-
-    // Init detection canvas size
-    video.addEventListener('loadedmetadata', () => {
-      detCanvas.width  = video.videoWidth;
-      detCanvas.height = video.videoHeight;
-      frameCtx = detCanvas.getContext('2d');
-    });
-
-  } catch (err) {
-    setHeaderStatus('Kamera Gagal', 'inactive');
-    document.getElementById('camStatusText').textContent = 'Gagal';
-    if (err.name === 'NotAllowedError') {
-      toast('❌ Izin kamera ditolak', 'error');
-    } else {
-      toast('❌ Gagal mengakses kamera: ' + err.message, 'error');
-    }
+    noCamState.style.display='none';
+    video.style.display='block';
+    capCanvas.style.display='none';
+    setScanState('scanning');
+    setHeader('Kamera Aktif — Arahkan Uang','active');
+  }catch(e){
+    noCamState.style.display='flex';
+    setHeader('Kamera tidak tersedia','error');
+    console.error('Kamera error:',e);
   }
 }
 
-function setHeaderStatus(text, state) {
-  const dot  = document.getElementById('headerLiveDot');
-  const txt  = document.getElementById('headerLiveText');
-  txt.textContent = text;
-  dot.className   = 'live-dot';
-  if (state === 'inactive') {
-    dot.style.background = '#6b7280';
-    dot.style.boxShadow  = 'none';
-    dot.style.animation  = 'none';
-  } else if (state === 'analyzing') {
-    dot.style.background = 'var(--bi-gold-light)';
-    dot.style.boxShadow  = '0 0 8px var(--bi-gold-light)';
+function setScanState(state){
+  scanState=state;
+  const bar=document.getElementById('lockIndicatorBar');
+  const corners=document.querySelectorAll('.corner');
+  if(state==='scanning'){
+    stableCount=0;
+    video.style.display='block';capCanvas.style.display='none';
+    if(resetScanBtn)resetScanBtn.style.display='none';
+    if(bar){
+      bar.style.cssText='display:block;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-align:center;margin-bottom:8px;background:rgba(244,185,66,0.12);color:var(--bi-gold);border:1px solid rgba(244,185,66,0.3);transition:all .3s;';
+      bar.textContent='🔍 Arahkan uang ke kotak panduan — otomatis terkunci saat terdeteksi';
+    }
+    corners.forEach(c=>{c.style.borderColor='rgba(255,255,255,0.5)';});
+    startDetectLoop();
+  } else if(state==='locked'){
+    stopDetectLoop();
+    if(bar){
+      bar.style.cssText='display:block;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-align:center;margin-bottom:8px;background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.35);transition:all .3s;';
+      bar.textContent='✅ Terkunci — Menghitung keutuhan fisik uang...';
+    }
+    corners.forEach(c=>{c.style.borderColor='#22c55e';});
+  }
+}
+
+function startDetectLoop(){stopDetectLoop();detectLoopId=setInterval(detectFrame,DETECT_INTERVAL);}
+function stopDetectLoop(){if(detectLoopId){clearInterval(detectLoopId);detectLoopId=null;}}
+
+function detectFrame(){
+  if(scanState!=='scanning'||!stream)return;
+  const vw=video.videoWidth,vh=video.videoHeight;
+  if(!vw||!vh)return;
+  const SW=320,SH=Math.round(SW*vh/vw);
+  hiddenCvs.width=SW;hiddenCvs.height=SH;
+  const ctx=hiddenCvs.getContext('2d');
+  ctx.drawImage(video,0,0,SW,SH);
+  const fill=estimateFill(ctx.getImageData(0,0,SW,SH).data,SW,SH);
+  const bar=document.getElementById('lockIndicatorBar');
+  const corners=document.querySelectorAll('.corner');
+  if(fill>=OBJ_FILL_THR){
+    stableCount++;
+    const pct=Math.min(100,Math.round(stableCount/STABLE_NEEDED*100));
+    if(bar)bar.textContent='🟡 Objek terdeteksi '+pct+'% — Tahan posisi uang...';
+    corners.forEach(c=>{c.style.borderColor='rgba(244,185,66,'+(0.5+pct/200)+')';});
+    if(stableCount>=STABLE_NEEDED)lockAndAnalyze();
   } else {
-    dot.style.background = '#22c55e';
-    dot.style.boxShadow  = '0 0 8px #22c55e';
-    dot.style.animation  = '';
+    if(stableCount>0)stableCount=Math.max(0,stableCount-2);
+    if(bar)bar.textContent='🔍 Arahkan uang ke kotak panduan...';
+    corners.forEach(c=>{c.style.borderColor='rgba(255,255,255,0.5)';});
   }
 }
 
-/* ─── Auto detect toggle ─────────────────────────── */
-function toggleAutoDetect() {
-  autoDetect = !autoDetect;
-  autoTrack.classList.toggle('on', autoDetect);
-
-  if (autoDetect) {
-    if (!stream) { startCamera(); }
-    autoDot.className  = 'auto-dot';
-    autoLabel.textContent = 'Auto: ON';
-    startAutoLoop();
-    toast('🤖 Deteksi otomatis aktif', 'success');
-  } else {
-    autoDot.className  = 'auto-dot inactive';
-    autoLabel.textContent = 'Auto: OFF';
-    stopAutoLoop();
-    toast('⏸ Deteksi otomatis dimatikan', 'info');
+function estimateFill(data,w,h){
+  const BW=Math.max(6,Math.floor(w*0.05)),BH=Math.max(6,Math.floor(h*0.05));
+  let bR=0,bG=0,bB=0,bN=0;
+  const corners=[[0,0],[w-BW,0],[0,h-BH],[w-BW,h-BH]];
+  for(let y=0;y<BH;y++)for(let x=0;x<BW;x++){
+    corners.forEach(([ox,oy])=>{const i=((oy+y)*w+(ox+x))*4;bR+=data[i];bG+=data[i+1];bB+=data[i+2];bN++;});
   }
+  const avgR=bN>0?bR/bN:180,avgG=bN>0?bG/bN:180,avgB=bN>0?bB/bN:180;
+  let obj=0,total=0;
+  for(let y=BH;y<h-BH;y+=3)for(let x=BW;x<w-BW;x+=3){
+    const i=(y*w+x)*4;
+    if(Math.abs(data[i]-avgR)+Math.abs(data[i+1]-avgG)+Math.abs(data[i+2]-avgB)>35)obj++;
+    total++;
+  }
+  return total>0?obj/total:0;
 }
 
-function startAutoLoop() {
-  stopAutoLoop();
-  const interval = (parseInt(localStorage.getItem('tr_interval')) || DEFAULT_INTERVAL) * 1000;
-  autoTimer = setInterval(() => {
-    if (!isAnalyzing && stream && !document.hidden) {
-      captureAndAnalyze(true); // true = auto mode
-    }
-  }, interval);
-}
-
-function stopAutoLoop() {
-  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
-}
-
-/* ─── Capture & Analyze (Gemini / Premium path) ──── */
-async function captureAndAnalyzeGemini(isAuto = false) {
-  if (isAnalyzing) return;
-
-  const apiKey = localStorage.getItem('tr_api_key');
-  if (!apiKey) {
-    toast('⚠️ Atur API Key terlebih dahulu', 'warning');
-    openSettings();
-    return;
-  }
-
-  const hasLiveCamera = stream && video && video.readyState >= 2;
-  const hasCaptured   = capCanvas && capCanvas.style.display === 'block';
-  if (!hasLiveCamera && !hasCaptured) {
-    toast('❌ Aktifkan kamera atau upload gambar terlebih dahulu', 'error');
-    return;
-  }
-
-  isAnalyzing = true;
-  analyzeBtn.disabled = true;
-  analyzingBar.classList.add('show');
-  setHeaderStatus('Menganalisis...', 'analyzing');
-  autoDot.className = 'auto-dot analyzing';
-
-  const srcW = hasLiveCamera ? (video.videoWidth || 640) : (capCanvas.width || 640);
-  const srcH = hasLiveCamera ? (video.videoHeight || 480) : (capCanvas.height || 480);
-  const w = srcW, h = srcH;
-  hiddenCvs.width  = w;
-  hiddenCvs.height = h;
-  const hCtx = hiddenCvs.getContext('2d');
-  hCtx.drawImage(hasLiveCamera ? video : capCanvas, 0, 0, w, h);
-
-  // Show captured on canvas overlay
-  capCanvas.width  = w;
-  capCanvas.height = h;
-  capCanvas.style.display = 'block';
-  const cCtx = capCanvas.getContext('2d');
-  cCtx.drawImage(hiddenCvs, 0, 0);
-  if (video) video.style.display = 'none';
-  retakeBtn.style.display = 'flex';
-  const scanHintGem = document.getElementById('scanHint');
-  if (scanHintGem) scanHintGem.style.display = 'none';
-
-  const base64 = hiddenCvs.toDataURL('image/jpeg', 0.92).split(',')[1];
-
-  // Show loading panel
-  resEmpty.style.display = 'none';
-  resContent.classList.remove('show');
-  resLoading.style.display = 'flex';
-
-  // Animate loading steps
-  animateLoadingSteps();
-
-  try {
-    let result;
-    try {
-      result = await callGemini(base64, apiKey);
-    } catch (geminiErr) {
-      console.warn('Gemini error (fallback):', geminiErr);
-      result = {
-        isRupiah: false, nominal: '-', tahunEmisi: null, moneyType,
-        integrityPercent: 0, verdict: 'marginal',
-        verdictReason: 'Gagal terhubung ke Gemini AI. Periksa koneksi internet dan API Key Anda.',
-        damageTypes: ['⚠️ Gagal terhubung ke AI'],
-        damageDescription: 'Koneksi ke Gemini AI gagal: ' + geminiErr.message + '. Coba Mode Standard (offline) jika tidak ada koneksi.',
-        damageRegions: [], serialVisible: false, serialMatch: null, splitPieces: 1,
-        recommendation: 'Periksa API Key di menu Pengaturan ⚙️, atau gunakan Mode Standard untuk analisis offline.',
-        aiConfidence: 0,
-        additionalNotes: 'Pastikan API Key valid dan kuota Gemini API belum habis.',
-        _mode: 'gemini'
-      };
-    }
-
-    const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
+async function lockAndAnalyze(){
+  if(isAnalyzing)return;
+  isAnalyzing=true;
+  setScanState('locked');
+  const vw=video.videoWidth||640,vh=video.videoHeight||480;
+  capCanvas.width=vw;capCanvas.height=vh;
+  capCanvas.getContext('2d').drawImage(video,0,0,vw,vh);
+  video.style.display='none';capCanvas.style.display='block';
+  resEmpty.style.display='none';resLoading.style.display='flex';resContent.style.display='none';
+  updateLoadingStep(1);
+  try{
+    updateLoadingStep(2);
+    const result=await analyzeRupiah(capCanvas,vw,vh);
+    updateLoadingStep(4);await sleep(200);
+    currentResult=result;
     displayResult(result);
-    drawDetectionOverlay(result, cCtx, w, h);
-    updateLiveIndicators(result);
-    addHistory(result, thumbUrl);
-
-    const msg = result.verdict === 'layak'
-      ? '✅ Analisis selesai — Layak Tukar!'
-      : result.verdict === 'marginal'
-        ? '⚠️ Analisis selesai — Perlu Cek Fisik'
-        : '❌ Analisis selesai — Tidak Layak';
-    toast(msg, result.verdict === 'layak' ? 'success' : result.verdict === 'marginal' ? 'warning' : 'error');
-
-  } catch (err) {
-    console.error('Fatal error:', err);
-    resLoading.style.display = 'none';
-    resEmpty.style.display = 'flex';
-    toast('❌ Error fatal: ' + err.message, 'error');
-    updateLiveIndicatorsError();
-  } finally {
-    isAnalyzing = false;
-    analyzeBtn.disabled = false;
-    analyzingBar.classList.remove('show');
-    setHeaderStatus(stream ? 'Kamera Aktif' : 'AI Siap', 'active');
-    if (autoDetect) autoDot.className = 'auto-dot';
-    else autoDot.className = 'auto-dot inactive';
-    lastAnalysisTs = Date.now();
-  }
+    addHistory(result,capCanvas.toDataURL('image/jpeg',0.35));
+    if(resetScanBtn)resetScanBtn.style.display='block';
+    const bar=document.getElementById('lockIndicatorBar');
+    if(bar){bar.style.cssText='display:block;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-align:center;margin-bottom:8px;background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.35);';bar.textContent='✅ Analisis selesai — Klik "Scan Ulang" untuk scan uang baru';}
+    setHeader('Analisis selesai','active');
+    toast('✅ Selesai: '+result.integrityPercent+'% keutuhan fisik','success');
+  }catch(e){
+    console.error('Analisis error:',e);
+    resLoading.style.display='none';
+    renderEmptyState('Gagal menganalisis. Coba scan ulang.');
+    resetScan();
+  }finally{isAnalyzing=false;}
 }
 
-/* ─── Upload handler ─────────────────────────────── */
-function handleUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+function resetScan(){
+  video.style.display='block';capCanvas.style.display='none';
+  if(resetScanBtn)resetScanBtn.style.display='none';
+  setScanState('scanning');
+  setHeader('Kamera Aktif — Arahkan Uang ke Kamera','active');
+  if(!isAnalyzing){resContent.style.display='none';renderEmptyState();}
+}
 
-  const apiKey = localStorage.getItem('tr_api_key');
-  if (!apiKey) { toast('⚠️ Atur API Key terlebih dahulu', 'warning'); openSettings(); return; }
-
-  const reader = new FileReader();
-  reader.onload = async e => {
-    const img = new Image();
-    img.onload = async () => {
-      const maxW = 1280, maxH = 960;
-      let w = img.width, h = img.height;
-      if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
-      if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
-
-      hiddenCvs.width = w; hiddenCvs.height = h;
-      hiddenCvs.getContext('2d').drawImage(img, 0, 0, w, h);
-
-      capCanvas.width = w; capCanvas.height = h;
-      capCanvas.style.display = 'block';
-      const cCtx = capCanvas.getContext('2d');
-      cCtx.drawImage(hiddenCvs, 0, 0);
-      video.style.display = 'none';
-      noCamState.style.display = 'none';
-      scanOverlay.classList.add('active');
-      retakeBtn.style.display = 'flex';
-      analyzeBtn.disabled = false;
-
-      const base64 = hiddenCvs.toDataURL('image/jpeg', 0.92).split(',')[1];
-      isAnalyzing = true;
-      analyzeBtn.disabled = true;
-      analyzingBar.classList.add('show');
-      setHeaderStatus('Menganalisis...', 'analyzing');
-
-      resEmpty.style.display = 'none';
-      resContent.classList.remove('show');
-      resLoading.style.display = 'flex';
-      animateLoadingSteps();
-
-      try {
-        const apiKey = localStorage.getItem('tr_api_key');
-        const result = await callGemini(base64, apiKey);
-        const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
-        displayResult(result);
-        drawDetectionOverlay(result, cCtx, w, h);
-        updateLiveIndicators(result);
-        addHistory(result, thumbUrl);
-        toast(result.verdict === 'layak' ? '✅ Analisis selesai!' : '❌ Analisis selesai', result.verdict === 'layak' ? 'success' : 'error');
-      } catch (err) {
-        resLoading.style.display = 'none';
-        resEmpty.style.display = 'flex';
-        toast('❌ Gagal: ' + err.message, 'error');
-      } finally {
-        isAnalyzing = false;
-        analyzeBtn.disabled = false;
-        analyzingBar.classList.remove('show');
-        setHeaderStatus('AI Siap', 'active');
+async function analyzeRupiah(canvas,w,h){
+  const ctx=canvas.getContext('2d');
+  const imgData=ctx.getImageData(0,0,w,h);
+  const data=imgData.data;
+  const BW=Math.max(20,Math.floor(w*0.09)),BH=Math.max(20,Math.floor(h*0.09));
+  let eR=0,eG=0,eB=0,eN=0;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    if(x<BW||x>=w-BW||y<BH||y>=h-BH){const i=(y*w+x)*4;eR+=data[i];eG+=data[i+1];eB+=data[i+2];eN++;}
+  }
+  const bgR=eN>0?eR/eN:180,bgG=eN>0?eG/eN:180,bgB=eN>0?eB/eN:180;
+  let objPx=0,darkPx=0,holePx=0,stainPx=0;
+  let minX=w,maxX=0,minY=h,maxY=0,sumR=0,sumG=0,sumB=0;
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const i=(y*w+x)*4;
+      const r=data[i],g=data[i+1],b=data[i+2];
+      const lum=0.299*r+0.587*g+0.114*b;
+      const diff=Math.abs(r-bgR)+Math.abs(g-bgG)+Math.abs(b-bgB);
+      let edge=0;
+      if(x<w-2&&y<h-2){edge=Math.abs(r-data[i+8])+Math.abs(g-data[i+9])+Math.abs(r-data[(y+2)*w*4+x*4])+Math.abs(g-data[(y+2)*w*4+x*4+1]);}
+      if(diff>38||edge>35){
+        objPx++;
+        if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;
+        sumR+=r;sumG+=g;sumB+=b;
+        if(lum<38)darkPx++;
+        if(lum>232)holePx++;
+        const cmax=Math.max(r,g,b)/255,cmin=Math.min(r,g,b)/255;
+        const sat=cmax===0?0:(cmax-cmin)/cmax;
+        if(sat>0.38&&lum>45&&lum<195)stainPx++;
       }
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-  event.target.value = '';
-}
-
-/* ─── Retake ─────────────────────────────────────── */
-function retake() {
-  capCanvas.style.display = 'none';
-  video.style.display = 'block';
-  retakeBtn.style.display = 'none';
-  currentResult = null;
-
-  // Clear detection canvas
-  if (frameCtx) frameCtx.clearRect(0, 0, detCanvas.width, detCanvas.height);
-  const capCtx = capCanvas.getContext('2d');
-  capCtx.clearRect(0, 0, capCanvas.width, capCanvas.height);
-
-  liveConf.classList.remove('show');
-  liveVerdict.classList.remove('show');
-
-  resContent.classList.remove('show');
-  resEmpty.style.display = 'flex';
-  document.getElementById('resultTimestamp').textContent = '';
-
-  if (stream) {
-    scanOverlay.classList.add('active');
-    analyzeBtn.disabled = false;
-    const scanHint = document.getElementById('scanHint');
-    if (scanHint) scanHint.style.display = 'block';
-    setHeaderStatus('Kamera Aktif', 'active');
-  } else {
-    noCamState.style.display = 'flex';
-    scanOverlay.classList.remove('active');
-    analyzeBtn.disabled = true;
-  }
-}
-
-/* ─── Gemini API ─────────────────────────────────── */
-async function callGemini(base64, apiKey) {
-  const model = localStorage.getItem('tr_model') || DEFAULT_MODEL;
-  const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-  const thrInfo = moneyType === 'logam'
-    ? 'Uang LOGAM: keutuhan > 1/2 (50%) dari ukuran asli agar bisa ditukar.'
-    : 'Uang KERTAS: keutuhan > 2/3 (66.7%) dari ukuran asli. Jika terbelah maks 2 bagian, nomor seri kedua bagian harus sama.';
-
-  const prompt = `Kamu adalah sistem AI forensik terdepan milik aplikasi TukarRupiah.id untuk mendeteksi kerusakan uang rupiah Indonesia.
-
-JENIS UANG YANG SEDANG DIANALISIS: ${moneyType === 'logam' ? 'UANG LOGAM' : 'UANG KERTAS'}
-
-REGULASI BANK INDONESIA:
-${thrInfo}
-
-TUGAS ANALISIS MENDALAM:
-1. Konfirmasi apakah gambar adalah uang rupiah Indonesia
-2. Identifikasi nominal (contoh: Rp 100.000, Rp 50.000, dst.)
-3. Analisis SEMUA area kerusakan secara detail:
-   - Robek/sobekan (perkirakan ukuran dan lokasinya)
-   - Terbakar/hangus
-   - Dimakan rayap/serangga
-   - Noda permanen (tinta, minyak, dll.)
-   - Coretan/tulisan di atas uang
-   - Lubang/perforasi
-   - Kusut/lecek parah
-   - Bagian hilang/tidak ada
-4. Estimasi PERSENTASE KEUTUHAN fisik secara akurat (0-100%)
-5. Untuk uang kertas terbelah: periksa apakah nomor seri visible di kedua sisi
-6. Tentukan VERDICT berdasarkan regulasi BI
-
-RESPONS WAJIB dalam format JSON murni ini (TANPA markdown/komentar):
-{
-  "isRupiah": true,
-  "nominal": "Rp 50.000",
-  "tahunEmisi": "2022",
-  "moneyType": "${moneyType}",
-  "integrityPercent": 78,
-  "verdict": "layak",
-  "verdictReason": "Keutuhan 78% melebihi batas minimum 66.7% untuk uang kertas",
-  "damageTypes": ["Robek sudut kanan atas (~2cm)", "Noda tinta tengah"],
-  "damageDescription": "Terdapat robekan di sudut kanan atas sepanjang kurang lebih 2 cm. Ada noda tinta gelap di bagian depan. Tepi uang lusuh namun tidak mengurangi keutuhan signifikan.",
-  "damageRegions": [
-    {"label": "Robek", "x": 0.80, "y": 0.05, "w": 0.15, "h": 0.20},
-    {"label": "Noda", "x": 0.40, "y": 0.40, "w": 0.20, "h": 0.20}
-  ],
-  "serialVisible": true,
-  "serialMatch": null,
-  "splitPieces": 1,
-  "recommendation": "Uang ini masih dapat ditukarkan ke Bank Indonesia atau bank umum terdekat.",
-  "aiConfidence": 88,
-  "additionalNotes": "Disarankan segera menukar sebelum kondisi bertambah buruk"
-}
-
-"verdict" harus salah satu dari: "layak" | "tidak" | "marginal"
-- layak: keutuhan di atas batas minimum BI
-- tidak: keutuhan di bawah atau sama dengan batas minimum
-- marginal: keutuhan dalam ±5% dari batas minimum (perlu konfirmasi fisik)
-
-damageRegions: koordinat relatif (0-1) dari area kerusakan pada gambar untuk visualisasi overlay.
-
-Jika BUKAN uang rupiah, kembalikan dengan isRupiah: false dan integrityPercent: 0.`;
-
-  const body = {
-    contents: [{
-      parts: [
-        { text: prompt },
-        { inlineData: { mimeType: 'image/jpeg', data: base64 } }
-      ]
-    }],
-    generationConfig: {
-      temperature: 0.05,
-      maxOutputTokens: 1500,
-      responseMimeType: 'application/json'
-    },
-    safetySettings: [
-      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
-      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' }
-    ]
-  };
-
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || `HTTP ${res.status} — Periksa API Key Anda`);
-  }
-
-  const data = await res.json();
-  if (!data.candidates?.[0]) throw new Error('Tidak ada respons dari AI');
-
-  const rawText = data.candidates[0].content.parts[0].text;
-  let parsed;
-
-  try {
-    parsed = JSON.parse(rawText);
-  } catch {
-    const m = rawText.match(/\{[\s\S]*\}/);
-    if (m) parsed = JSON.parse(m[0]);
-    else throw new Error('Format respons AI tidak valid');
-  }
-
-  return parsed;
-}
-
-/* ─── Animate loading steps ──────────────────────── */
-let stepTimer = null;
-function animateLoadingSteps() {
-  const dots = ['step1dot','step2dot','step3dot','step4dot'];
-  dots.forEach(id => {
-    document.getElementById(id).className = 'step-dot';
-  });
-  document.getElementById('step1dot').className = 'step-dot done';
-  document.getElementById('step2dot').className = 'step-dot active';
-
-  let step = 2;
-  if (stepTimer) clearInterval(stepTimer);
-  stepTimer = setInterval(() => {
-    if (step < dots.length) {
-      document.getElementById(dots[step - 1]).className = 'step-dot done';
-      if (step < dots.length) {
-        document.getElementById(dots[step]).className = 'step-dot active';
-      }
-      step++;
-    } else {
-      clearInterval(stepTimer);
     }
-  }, 600);
+  }
+  updateLoadingStep(3);
+  let nominal=null,nominalSource='unknown';
+  try{const o=await detectNominalOCR(canvas);if(o.nominal){nominal=o.nominal;nominalSource='ocr';}}catch(e){}
+  if(!nominal&&objPx>500){
+    const est=estimateNominalByColor(sumR/objPx,sumG/objPx,sumB/objPx);
+    if(est){nominal=est;nominalSource='color_estimate';}
+  }
+  const boxW=Math.max(1,maxX-minX),boxH=Math.max(1,maxY-minY);
+  const nomNum=nominal?parseInt(nominal.replace(/[^0-9]/g,'')):0;
+  const aspect=RUPIAH_ASPECT[nomNum]||DEFAULT_ASPECT;
+  let expectedArea;
+  if(boxW>=boxH){const eW=boxH*aspect;expectedArea=Math.max(boxW,eW)*boxH;}
+  else{const eH=boxW*aspect;expectedArea=boxW*Math.max(boxH,eH);}
+  const fillRatio=Math.min(1.0,objPx/expectedArea);
+  const darkRatio=objPx>0?darkPx/objPx:0,holeRatio=objPx>0?holePx/objPx:0,stainRatio=objPx>0?stainPx/objPx:0;
+  const damagePenalty=(darkRatio*100*0.7)+(holeRatio*100*0.4);
+  let integrityPct=Math.max(0,Math.min(100,Math.round(fillRatio*100-damagePenalty)));
+  const threshold=moneyType==='logam'?50:66.7;
+  let verdict=integrityPct>threshold+5?'layak':integrityPct>=threshold-5?'marginal':'tidak';
+  const conditionNotes=[];
+  if(darkRatio>0.12)conditionNotes.push({type:'critical',text:'Area terbakar/hangus terdeteksi'});
+  if(holeRatio>0.08)conditionNotes.push({type:'critical',text:'Lubang besar atau bagian fisik hilang'});
+  if(stainRatio>0.15)conditionNotes.push({type:'warning',text:'Noda pada permukaan uang'});
+  if(integrityPct>=85&&darkRatio<0.05)conditionNotes.push({type:'ok',text:'Kondisi fisik masih baik'});
+  if(conditionNotes.length===0)conditionNotes.push({type:'ok',text:'Tidak ada kerusakan parah terdeteksi'});
+  const vd={layak:'Sisa fisik '+integrityPct+'% melebihi batas minimum BI ('+threshold+'%) — uang dapat ditukar',marginal:'Sisa fisik '+integrityPct+'% mendekati batas minimum BI ('+threshold+'%) — disarankan verifikasi fisik di bank',tidak:'Sisa fisik '+integrityPct+'% di bawah batas minimum BI ('+threshold+'%) — tidak memenuhi syarat'};
+  return{isRupiah:(objPx/(w*h))>0.06,nominal:nominal||'Tidak teridentifikasi',nominalSource,moneyType,integrityPercent:integrityPct,verdict,verdictReason:vd[verdict],conditionNotes,threshold,damageRegions:[],serialVisible:false,serialMatch:null,splitPieces:1,_fillRatioRaw:Math.round(fillRatio*100),_mode:'standard'};
 }
 
-/* ─── Draw detection overlay ─────────────────────── */
-function drawDetectionOverlay(result, ctx, w, h) {
-  ctx.clearRect(0, 0, w, h);
-
-  if (!result.damageRegions || result.damageRegions.length === 0) return;
-
-  result.damageRegions.forEach((region, i) => {
-    const rx = region.x * w;
-    const ry = region.y * h;
-    const rw = region.w * w;
-    const rh = region.h * h;
-
-    // Damage box
-    ctx.save();
-    ctx.strokeStyle = result.verdict === 'layak' ? 'rgba(245,158,11,0.9)' : 'rgba(204,0,1,0.9)';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 3]);
-    ctx.strokeRect(rx, ry, rw, rh);
-
-    // Filled overlay
-    ctx.fillStyle = result.verdict === 'layak' ? 'rgba(245,158,11,0.15)' : 'rgba(204,0,1,0.15)';
-    ctx.fillRect(rx, ry, rw, rh);
-
-    // Label
-    ctx.setLineDash([]);
-    ctx.fillStyle = result.verdict === 'layak' ? 'rgba(245,158,11,0.9)' : 'rgba(204,0,1,0.9)';
-    ctx.font = 'bold 11px Plus Jakarta Sans, sans-serif';
-    ctx.fillText(region.label || 'Kerusakan', rx + 4, ry + 14);
-
-    ctx.restore();
-  });
-
-  // Money bounding box (whole)
-  ctx.save();
-  ctx.strokeStyle = result.verdict === 'layak' ? 'rgba(34,197,94,0.6)' : 'rgba(204,0,1,0.5)';
-  ctx.lineWidth = 2;
-  const pad = 20;
-  ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
-  ctx.restore();
+async function detectNominalOCR(canvas){
+  if(!ocrReady||!ocrWorker)return{nominal:null};
+  const w=canvas.width,h=canvas.height;
+  const tmp=document.createElement('canvas');tmp.width=w;tmp.height=h;
+  const tc=tmp.getContext('2d');tc.drawImage(canvas,0,0);
+  const d=tc.getImageData(0,0,w,h);
+  for(let i=0;i<d.data.length;i+=4){
+    const lum=0.299*d.data[i]+0.587*d.data[i+1]+0.114*d.data[i+2];
+    const c=Math.min(255,Math.max(0,(lum-128)*2.2+128));
+    d.data[i]=d.data[i+1]=d.data[i+2]=c;
+  }
+  tc.putImageData(d,0,0);
+  const{data:{text}}=await ocrWorker.recognize(tmp);
+  const denoms=[100000,50000,20000,10000,5000,2000,1000];
+  const raw=text.replace(/\s+/g,'');
+  for(const dn of denoms){if(raw.includes(dn.toString()))return{nominal:'Rp '+dn.toLocaleString('id-ID')};}
+  const fmt=['100.000','50.000','20.000','10.000','5.000','2.000','1.000'];
+  for(let i=0;i<fmt.length;i++){if(text.includes(fmt[i])||text.replace(/,/g,'.').includes(fmt[i]))return{nominal:'Rp '+denoms[i].toLocaleString('id-ID')};}
+  return{nominal:null};
 }
 
-/* ─── Live indicators on camera ─────────────────── */
-function updateLiveIndicators(result) {
-  const pct = result.integrityPercent || 0;
+function estimateNominalByColor(r,g,b){
+  if(r>g*1.4&&r>b*1.4&&r>130)return'Rp 100.000';
+  if(b>r*1.2&&b>g*1.1&&b>100)return'Rp 50.000';
+  if(g>r*1.15&&g>b*1.1&&g>110)return'Rp 20.000';
+  if(r>g*1.1&&b>g*1.1&&Math.abs(r-b)<45)return'Rp 10.000';
+  if(r>g&&g>b&&r>120&&r<210)return'Rp 5.000';
+  if(b>r&&b>g&&Math.abs(r-g)<30&&b<160)return'Rp 2.000';
+  if(Math.abs(r-g)<20&&Math.abs(g-b)<20&&r>80&&r<170)return'Rp 1.000';
+  return null;
+}
 
-  liveConf.classList.add('show');
-  liveConfPct.textContent = pct + '%';
-  liveConfPct.className = 'live-conf-pct';
-  if (pct > 75) liveConfPct.classList.add('high');
-  else if (pct > 50) liveConfPct.classList.add('mid');
-  else liveConfPct.classList.add('low');
+function displayResult(result){
+  resLoading.style.display='none';resEmpty.style.display='none';resContent.style.display='block';
+  const pct=result.integrityPercent,threshold=result.threshold||66.7,verdict=result.verdict;
+  const ts=document.getElementById('resultTimestamp');
+  if(ts)ts.textContent=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+  const vhEl=document.getElementById('verdictHero'),vbEl=document.getElementById('verdictBadge');
+  const viEl=document.getElementById('verdictIcon'),vtEl=document.getElementById('verdictText');
+  const vdEl=document.getElementById('verdictDesc'),npEl=document.getElementById('nominalPill');
+  const vmMap={layak:{icon:'✅',label:'LAYAK DITUKAR',cls:'layak'},marginal:{icon:'⚠️',label:'PERLU VERIFIKASI',cls:'marginal'},tidak:{icon:'❌',label:'TIDAK LAYAK TUKAR',cls:'tidak'}};
+  const vm=vmMap[verdict]||vmMap.marginal;
+  if(vhEl)vhEl.className='verdict-hero '+vm.cls;
+  if(vbEl)vbEl.className='verdict-badge '+vm.cls;
+  if(viEl)viEl.textContent=vm.icon;
+  if(vtEl)vtEl.textContent=vm.label;
+  if(vdEl)vdEl.textContent=result.verdictReason;
+  if(npEl){
+    const sl=result.nominalSource==='ocr'?' (Terbaca dari scan)':result.nominalSource==='color_estimate'?' (Estimasi warna)':'';
+    npEl.textContent=result.nominal+sl;
+    npEl.style.background=result.nominalSource==='ocr'?'linear-gradient(135deg,rgba(34,197,94,0.2),rgba(34,197,94,0.1))':'linear-gradient(135deg,rgba(244,185,66,0.2),rgba(244,185,66,0.1))';
+  }
+  const gc=document.getElementById('gaugeCircle'),gpEl=document.getElementById('gaugePct'),gbEl=document.getElementById('gaugeBarFill');
+  const circ=2*Math.PI*45,offset=circ-(pct/100)*circ;
+  if(gc){
+    gc.style.strokeDasharray=circ;gc.style.strokeDashoffset=circ;
+    gc.setAttribute('class',pct>threshold+5?'gauge-fill high':pct>=threshold-5?'gauge-fill medium':'gauge-fill low');
+    setTimeout(()=>{gc.style.strokeDashoffset=offset;},100);
+  }
+  if(gbEl){
+    gbEl.className=pct>threshold+5?'gauge-bar-fill high':pct>=threshold-5?'gauge-bar-fill medium':'gauge-bar-fill low';
+    gbEl.style.width='0%';setTimeout(()=>{gbEl.style.width=pct+'%';},100);
+  }
+  if(gpEl)animateNumber(gpEl,0,pct,1200,v=>v+'%');
+  const tm=document.getElementById('thresholdMarker'),ttEl=document.getElementById('thresholdTip');
+  const tlEl=document.getElementById('thresholdPctLabel'),mlEl=document.getElementById('moneyTypeLabel');
+  if(tm)tm.style.left=threshold+'%';if(ttEl)ttEl.textContent=threshold+'%';
+  if(tlEl)tlEl.textContent=threshold+'% min';if(mlEl)mlEl.textContent=result.moneyType==='logam'?'Uang Logam':'Uang Kertas';
+  const alEl=document.getElementById('analysisList');
+  if(alEl){
+    const notes=result.conditionNotes||[];
+    alEl.innerHTML=notes.length===0?'<div class="dtag dtag-ok">✅ Tidak ada kerusakan parah</div>':notes.map(n=>{
+      const cls2=n.type==='critical'?'dtag dtag-critical':n.type==='warning'?'dtag dtag-warning':'dtag dtag-ok';
+      const icon=n.type==='critical'?'🔴':n.type==='warning'?'⚠️':'✅';
+      return '<span class="'+cls2+'">'+icon+' '+n.text+'</span>';
+    }).join('');
+  }
+  const biBox=document.getElementById('biBoxInner');
+  if(biBox){
+    const pf=pct.toFixed(1);
+    if(moneyType==='logam'){
+      biBox.innerHTML='<strong>💼 Regulasi BI — Uang Logam:</strong> Keutuhan fisik harus &gt; <b>½ (50%)</b>. Hasil ukuran fisik: <strong>'+pf+'%</strong> — '+(pct>50?'<span style="color:#16a34a;font-weight:700;">✓ Memenuhi syarat</span>':'<span style="color:var(--bi-red);font-weight:700;">✗ Tidak memenuhi syarat</span>');
+    } else {
+      biBox.innerHTML='<strong>💼 Regulasi BI — Uang Kertas:</strong> Keutuhan fisik wajib &gt; <b>⅔ (66.7%)</b> ukuran asli. Hasil ukuran fisik: <strong>'+pf+'%</strong> — '+(pct>66.7?'<span style="color:#16a34a;font-weight:700;">✓ Memenuhi syarat penukaran</span>':'<span style="color:var(--bi-red);font-weight:700;">✗ Tidak memenuhi syarat</span>');
+    }
+  }
+}
 
-  liveVerdict.classList.add('show', result.verdict);
-  liveVerdict.className = 'live-verdict show ' + result.verdict;
-
-  const labels = {
-    layak:    '✅ LAYAK DITUKAR',
-    tidak:    '❌ TIDAK LAYAK',
-    marginal: '⚠️ CEK FISIK'
+function handleUpload(event){
+  const file=event.target.files[0];if(!file)return;
+  if(!file.type.startsWith('image/')){toast('Format tidak didukung','error');return;}
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const img=new Image();
+    img.onload=async()=>{
+      stopDetectLoop();setScanState('locked');
+      capCanvas.width=img.width;capCanvas.height=img.height;
+      capCanvas.getContext('2d').drawImage(img,0,0);
+      video.style.display='none';capCanvas.style.display='block';
+      resEmpty.style.display='none';resLoading.style.display='flex';resContent.style.display='none';
+      updateLoadingStep(1);if(resetScanBtn)resetScanBtn.style.display='block';
+      isAnalyzing=true;
+      try{
+        updateLoadingStep(2);
+        const result=await analyzeRupiah(capCanvas,img.width,img.height);
+        updateLoadingStep(4);await sleep(200);
+        currentResult=result;displayResult(result);
+        addHistory(result,capCanvas.toDataURL('image/jpeg',0.35));
+        setHeader('Foto dianalisis','active');toast('✅ Analisis selesai! '+result.integrityPercent+'% keutuhan fisik','success');
+        const bar=document.getElementById('lockIndicatorBar');
+        if(bar){bar.style.cssText='display:block;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-align:center;margin-bottom:8px;background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.35);';bar.textContent='✅ Analisis selesai — Klik "Scan Ulang" untuk scan uang baru';}
+      }catch(err){resLoading.style.display='none';renderEmptyState('Gagal menganalisis.');toast('Gagal: '+err.message,'error');}
+      finally{isAnalyzing=false;}
+    };
+    img.onerror=()=>toast('Gagal memuat gambar','error');
+    img.src=e.target.result;
   };
-  liveVerdict.textContent = labels[result.verdict] || '';
+  reader.readAsDataURL(file);event.target.value='';
 }
 
-function updateLiveIndicatorsError() {
-  liveConf.classList.remove('show');
-  liveVerdict.classList.remove('show');
-}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-/* ─── Display result ─────────────────────────────── */
-function displayResult(result) {
-  currentResult = result;
-  resLoading.style.display = 'none';
-
-  // Timestamp
-  document.getElementById('resultTimestamp').textContent =
-    new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-  // Verdict
-  const vh  = document.getElementById('verdictHero');
-  const vb  = document.getElementById('verdictBadge');
-  const vi  = document.getElementById('verdictIcon');
-  const vt  = document.getElementById('verdictText');
-  const vd  = document.getElementById('verdictDesc');
-  const np  = document.getElementById('nominalPill');
-
-  vh.className  = 'verdict-hero ' + result.verdict;
-  vb.className  = 'verdict-badge ' + result.verdict;
-
-  const verdictData = {
-    layak:    { icon: '✅', text: 'LAYAK DITUKAR', desc: 'Uang memenuhi syarat keutuhan minimum Bank Indonesia' },
-    tidak:    { icon: '❌', text: 'TIDAK LAYAK TUKAR', desc: 'Uang tidak memenuhi syarat keutuhan minimum Bank Indonesia' },
-    marginal: { icon: '⚠️', text: 'PERLU CEK FISIK', desc: 'Keutuhan mendekati batas minimum — disarankan cek langsung ke BI' }
-  };
-
-  const vd_data = verdictData[result.verdict] || verdictData.marginal;
-  vi.textContent = vd_data.icon;
-  vt.textContent = vd_data.text;
-  vd.textContent = result.verdictReason || vd_data.desc;
-  np.textContent = result.nominal || 'Rupiah';
-
-  // Gauge
-  const pct       = Math.min(100, Math.max(0, result.integrityPercent || 0));
-  const threshold = (result.moneyType === 'logam') ? 50 : 66.7;
-  const circumference = 283;
-  const offset    = circumference - (pct / 100) * circumference;
-
-  const gaugeCircle = document.getElementById('gaugeCircle');
-  const gaugePct    = document.getElementById('gaugePct');
-  const gaugeBar    = document.getElementById('gaugeBarFill');
-
-  gaugeCircle.setAttribute('class', 'gauge-fill');
-  gaugeBar.className    = 'gauge-bar-fill ';
-
-  if (pct > threshold + 5) {
-    gaugeCircle.setAttribute('class', 'gauge-fill high');
-    gaugeBar.classList.add('high');
-  } else if (pct >= threshold - 5) {
-    gaugeCircle.setAttribute('class', 'gauge-fill medium');
-    gaugeBar.classList.add('medium');
-  } else {
-    gaugeCircle.setAttribute('class', 'gauge-fill low');
-    gaugeBar.classList.add('low');
-  }
-
-  // Animate
-  setTimeout(() => {
-    gaugeCircle.style.strokeDashoffset = offset;
-    gaugeBar.style.width = pct + '%';
-    // Animate number
-    animateNumber(gaugePct, 0, pct, 1200, v => v + '%');
-  }, 150);
-
-  // Threshold
-  document.getElementById('thresholdMarker').style.left = threshold + '%';
-  document.getElementById('thresholdTip').textContent = threshold + '%';
-  document.getElementById('thresholdPctLabel').textContent = threshold + '% min';
-  document.getElementById('moneyTypeLabel').textContent = result.moneyType === 'logam' ? 'Uang Logam' : 'Uang Kertas';
-
-  // Analysis list
-  const al = document.getElementById('analysisList');
-  const dtags = (result.damageTypes || []).map(d => {
-    const cls = d.toLowerCase().match(/bakar|rayap|hancur|hilang/) ? 'dtag-critical'
-              : d.toLowerCase().match(/robek|sobekan|noda|kotor/)  ? 'dtag-warning'
-              : d.toLowerCase().match(/kusut|lecek|lecek/)          ? 'dtag-minor'
-              : 'dtag-ok';
-    return `<span class="dtag ${cls}">${d}</span>`;
-  }).join('');
-
-  al.innerHTML = `
-    <div class="detail-card">
-      <div class="detail-icon">💵</div>
-      <div class="detail-body">
-        <div class="detail-key">Nominal Teridentifikasi</div>
-        <div class="detail-val">
-          ${result.nominal || 'Tidak terdeteksi'}
-          ${result.tahunEmisi ? `<span style="font-size:11px;color:var(--text-muted);margin-left:4px;">Emisi ${result.tahunEmisi}</span>` : ''}
-        </div>
-      </div>
-    </div>
-
-    <div class="detail-card">
-      <div class="detail-icon">⚠️</div>
-      <div class="detail-body">
-        <div class="detail-key">Jenis Kerusakan Terdeteksi</div>
-        <div class="detail-val">
-          <div class="damage-tags" style="margin-top:4px;">
-            ${dtags || '<span class="dtag dtag-ok">Tidak ada kerusakan signifikan</span>'}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="detail-card">
-      <div class="detail-icon">🔬</div>
-      <div class="detail-body">
-        <div class="detail-key">Deskripsi Kerusakan</div>
-        <div class="detail-val" style="font-size:12px;line-height:1.65;">${result.damageDescription || '—'}</div>
-      </div>
-    </div>
-
-    ${result.splitPieces > 1 ? `
-    <div class="detail-card" style="border-color:rgba(200,149,42,0.25);">
-      <div class="detail-icon">✂️</div>
-      <div class="detail-body">
-        <div class="detail-key">Uang Terbelah — ${result.splitPieces} Bagian</div>
-        <div class="detail-val" style="font-size:12px;">
-          Nomor seri terlihat: <strong>${result.serialVisible ? '✓ Ya' : '✗ Tidak'}</strong><br/>
-          ${result.serialMatch !== null ? `Nomor seri cocok: <strong style="color:${result.serialMatch ? '#16a34a' : 'var(--bi-red)'}">${result.serialMatch ? '✓ Ya — layak tukar' : '✗ Tidak cocok atau tidak terlihat'}</strong>` : 'Perlu verifikasi manual nomor seri'}
-        </div>
-      </div>
-    </div>
-    ` : ''}
-
-    <div class="detail-card">
-      <div class="detail-icon">💡</div>
-      <div class="detail-body">
-        <div class="detail-key">Rekomendasi</div>
-        <div class="detail-val" style="font-size:12px;line-height:1.65;">${result.recommendation || '—'}</div>
-      </div>
-    </div>
-
-    <div class="detail-card" style="border-color:rgba(59,130,246,0.2);background:rgba(59,130,246,0.03);">
-      <div class="detail-icon">🤖</div>
-      <div class="detail-body">
-        <div class="detail-key">Tingkat Keyakinan AI</div>
-        <div class="detail-val">
-          <div class="conf-bar-wrap">
-            <div class="conf-bar-track">
-              <div class="conf-bar-fill" style="width:${result.aiConfidence || 0}%"></div>
-            </div>
-            <div class="conf-val">${result.aiConfidence || 0}%</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  // BI Box
-  const biBox = document.getElementById('biBoxInner');
-  const pctFormatted = pct.toFixed(1);
-  if (result.moneyType === 'logam') {
-    biBox.innerHTML = `<strong>📜 Regulasi BI — Uang Logam:</strong> Keutuhan fisik harus lebih besar dari <b>½ (50%)</b> ukuran aslinya. Hasil analisis: <strong>${pctFormatted}%</strong> — ${pct > 50 ? '<span style="color:#16a34a;font-weight:700;">✓ Memenuhi syarat</span>' : '<span style="color:var(--bi-red);font-weight:700;">✗ Tidak memenuhi syarat</span>'}.${result.additionalNotes ? `<br/><span style="font-size:11px;color:var(--text-muted);">ℹ️ ${result.additionalNotes}</span>` : ''}`;
-  } else if (result.splitPieces > 1) {
-    biBox.innerHTML = `<strong>📜 Regulasi BI — Uang Kertas Terbelah:</strong> Diizinkan maksimal <b>2 bagian</b>. Kedua potongan wajib memiliki <strong>nomor seri yang lengkap dan sama persis</strong>. ${result.serialMatch === true ? '<span style="color:#16a34a;font-weight:700;">✓ Nomor seri cocok</span>' : '<span style="color:var(--bi-gold);font-weight:700;">⚠️ Verifikasi nomor seri secara langsung</span>'}.${result.additionalNotes ? `<br/><span style="font-size:11px;color:var(--text-muted);">ℹ️ ${result.additionalNotes}</span>` : ''}`;
-  } else {
-    biBox.innerHTML = `<strong>📜 Regulasi BI — Uang Kertas:</strong> Keutuhan fisik wajib lebih besar dari <b>⅔ (66.7%)</b> ukuran aslinya. Hasil analisis: <strong>${pctFormatted}%</strong> — ${pct > 66.7 ? '<span style="color:#16a34a;font-weight:700;">✓ Memenuhi syarat</span>' : '<span style="color:var(--bi-red);font-weight:700;">✗ Tidak memenuhi syarat</span>'}.${result.additionalNotes ? `<br/><span style="font-size:11px;color:var(--text-muted);">ℹ️ ${result.additionalNotes}</span>` : ''}`;
-  }
-
-  resContent.classList.add('show');
-
-  if (result.verdict === 'layak') spawnConfetti();
-
-  // Scroll to result on mobile
-  if (window.innerWidth < 1024) {
-    setTimeout(() => {
-      document.querySelector('.result-content.show')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 300);
-  }
-}
-
-/* ─── Animate number ─────────────────────────────── */
-function animateNumber(el, from, to, duration, format = v => v) {
-  const start = performance.now();
-  function step(ts) {
-    const progress = Math.min((ts - start) / duration, 1);
-    const ease = 1 - Math.pow(1 - progress, 3);
-    const val = Math.round(from + (to - from) * ease);
-    el.textContent = format(val);
-    if (progress < 1) requestAnimationFrame(step);
-  }
+function animateNumber(el,from,to,dur,fmt){
+  const start=performance.now();
+  function step(now){const p=Math.min(1,(now-start)/dur);const ease=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(from+(to-from)*ease));if(p<1)requestAnimationFrame(step);}
   requestAnimationFrame(step);
 }
 
-/* ─── Copy result ────────────────────────────────── */
-function copyResult() {
-  if (!currentResult) return;
-  const r = currentResult;
-  const text = [
-    'TukarRupiah.id — Hasil Analisis AI',
-    '='.repeat(40),
-    `Nominal     : ${r.nominal || '—'}`,
-    `Jenis       : ${r.moneyType === 'logam' ? 'Uang Logam' : 'Uang Kertas'}`,
-    `Keutuhan    : ${r.integrityPercent}%`,
-    `Verdict     : ${r.verdict === 'layak' ? '✅ LAYAK DITUKAR' : r.verdict === 'tidak' ? '❌ TIDAK LAYAK' : '⚠️ PERLU CEK FISIK'}`,
-    `Kerusakan   : ${(r.damageTypes || []).join(', ') || 'Tidak ada'}`,
-    '',
-    `Deskripsi   : ${r.damageDescription || '—'}`,
-    `Rekomendasi : ${r.recommendation || '—'}`,
-    '',
-    'Regulasi Bank Indonesia:',
-    '  • Uang Kertas: keutuhan > 66.7%',
-    '  • Uang Logam: keutuhan > 50%',
-    '  • Uang Terbelah: nomor seri harus sama',
-    '',
-    `Diperiksa   : ${new Date().toLocaleString('id-ID')}`,
-    'TukarRupiah.id — Cinta Bangga Paham Rupiah'
-  ].join('\n');
-
-  navigator.clipboard.writeText(text)
-    .then(() => toast('📋 Hasil disalin!', 'success'))
-    .catch(() => toast('❌ Gagal menyalin', 'error'));
+function updateLoadingStep(active){
+  const ids=['step1dot','step2dot','step3dot','step4dot'];
+  const labels=['Mengambil frame gambar','Mendeteksi nominal uang (OCR)','Menghitung geometri fisik','Menerapkan regulasi BI'];
+  ids.forEach((id,i)=>{const el=document.getElementById(id);if(!el)return;el.className=i<active-1?'step-dot done':i===active-1?'step-dot active':'step-dot';});
+  const lt=document.querySelector('.loading-title');
+  if(lt)lt.textContent=labels[Math.min(active-1,labels.length-1)]+'...';
 }
 
-/* ─── Confetti ───────────────────────────────────── */
-function spawnConfetti() {
-  const COLORS = ['#CC0001','#C8952A','#F4B942','#FFFFFF','#22c55e','#3b82f6'];
-  if (!document.getElementById('confStyle')) {
-    const s = document.createElement('style');
-    s.id = 'confStyle';
-    s.textContent = '@keyframes confettiFall { 0% { transform: translateY(-10px) rotate(0deg); opacity:1; } 100% { transform: translateY(105vh) rotate(720deg); opacity:0; } }';
-    document.head.appendChild(s);
-  }
-  for (let i = 0; i < 50; i++) {
-    setTimeout(() => {
-      const el = document.createElement('div');
-      const size = 5 + Math.random() * 8;
-      el.style.cssText = `
-        position:fixed; top:-10px; left:${Math.random()*100}vw;
-        width:${size}px; height:${size * (1 + Math.random())}px;
-        background:${COLORS[Math.floor(Math.random()*COLORS.length)]};
-        border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
-        z-index:9999; pointer-events:none;
-        animation:confettiFall ${1.5+Math.random()*2}s ease-in forwards;
-        transform:rotate(${Math.random()*360}deg);
-      `;
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 4000);
-    }, i * 40);
-  }
+function renderEmptyState(msg){
+  resContent.style.display='none';resLoading.style.display='none';resEmpty.style.display='flex';
+  const sub=resEmpty.querySelector('.result-empty-sub');
+  if(sub)sub.textContent=msg||'Arahkan kamera ke uang. Sistem otomatis mendeteksi & mengunci, lalu menghitung keutuhan fisik secara matematis.';
 }
 
-/* ─── History ────────────────────────────────────── */
-function addHistory(result, thumb) {
-  history.unshift({ id: Date.now(), result, thumb,
-    time: new Date().toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' }),
-    date: new Date().toLocaleDateString('id-ID', { day:'numeric', month:'short' })
-  });
-  if (history.length > 10) history.pop();
-  saveHistory();
+function setType(type){
+  moneyType=type;
+  document.getElementById('typeKertas').className='type-btn'+(type==='kertas'?' active':'');
+  document.getElementById('typeLogam').className='type-btn'+(type==='logam'?' active':'');
+  const tl=document.getElementById('thresholdPctLabel');
+  if(tl)tl.textContent=(type==='logam'?'50':'66.7')+'% min';
+}
+
+function setHeader(txt,state){
+  const dot=document.getElementById('headerLiveDot'),text=document.getElementById('headerLiveText');
+  if(text)text.textContent=txt;
+  if(dot){dot.className='live-dot';if(state==='active')dot.classList.add('active');if(state==='error')dot.style.background='var(--bi-red)';}
+}
+
+function toast(msg,type='info'){
+  const zone=document.getElementById('toastZone');if(!zone)return;
+  const el=document.createElement('div');el.className='toast '+type;el.textContent=msg;
+  zone.appendChild(el);setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),400);},3200);
+}
+
+function copyResult(){
+  if(!currentResult)return;
+  const r=currentResult;
+  const txt='TukarRupiah.id — Hasil Analisis
+'
+    +'Nominal    : '+r.nominal+' '+(r.nominalSource==='ocr'?'(Terbaca dari scan)':'(Estimasi)')+'\n'
+    +'Sisa Fisik : '+r.integrityPercent+'%\n'
+    +'Threshold  : '+r.threshold+'%\n'
+    +'Verdict    : '+(r.verdict==='layak'?'LAYAK DITUKAR':r.verdict==='tidak'?'TIDAK LAYAK TUKAR':'PERLU VERIFIKASI')+'\n'
+    +'Keterangan : '+r.verdictReason+'\n'
+    +'Waktu      : '+new Date().toLocaleString('id-ID');
+  navigator.clipboard.writeText(txt).then(()=>toast('✅ Hasil disalin!','success'),()=>toast('Gagal menyalin','error'));
+}
+
+function addHistory(result,thumbUrl){
+  history.unshift({result,thumb:thumbUrl,ts:Date.now()});
+  if(history.length>12)history.pop();
+  try{localStorage.setItem('tr_history',JSON.stringify(history));}catch(e){}
   renderHistory();
 }
 
-function saveHistory() {
-  try {
-    localStorage.setItem('tr_hist', JSON.stringify(
-      history.map(e => ({
-        id: e.id, time: e.time, date: e.date,
-        verdict: e.result.verdict,
-        pct: e.result.integrityPercent,
-        nominal: e.result.nominal,
-        thumb: e.thumb ? e.thumb.substring(0, 600) : null
-      }))
-    ));
-  } catch {}
-}
-
-function loadHistory() {
-  try {
-    const raw = localStorage.getItem('tr_hist');
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      history = parsed.map(m => ({
-        id: m.id, time: m.time, date: m.date,
-        thumb: m.thumb,
-        result: { verdict: m.verdict, integrityPercent: m.pct, nominal: m.nominal }
-      }));
-    }
-  } catch {}
-}
-
-function renderHistory() {
-  if (history.length === 0) {
-    historyList.innerHTML = '<div class="history-empty">📭 Belum ada riwayat analisis</div>';
-    return;
-  }
-
-  historyList.innerHTML = history.map(e => {
-    const { verdict, integrityPercent, nominal } = e.result;
-    const vlabel = { layak: '✅ LAYAK DITUKAR', tidak: '❌ TIDAK LAYAK', marginal: '⚠️ CEK FISIK' };
-    const thumb = e.thumb
-      ? `<img class="h-thumb" src="${e.thumb}" alt="" />`
-      : `<div class="h-thumb" style="display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--border-light);">${verdict === 'layak' ? '💵' : '💸'}</div>`;
-
-    return `
-      <div class="h-item">
-        ${thumb}
-        <div class="h-info">
-          <div class="h-verdict ${verdict}">${vlabel[verdict] || verdict}</div>
-          <div class="h-sub">${nominal || 'Rupiah'} · Keutuhan: ${integrityPercent || 0}%</div>
-        </div>
-        <div class="h-time">${e.date}<br/>${e.time}</div>
-      </div>
-    `;
+function renderHistory(){
+  try{const s=localStorage.getItem('tr_history');if(s)history=JSON.parse(s);}catch(e){history=[];}
+  if(!historyList)return;
+  if(history.length===0){historyList.innerHTML='<div class="history-empty">Belum ada riwayat analisis</div>';return;}
+  historyList.innerHTML=history.map((h,i)=>{
+    const r=h.result;
+    const vc=r.verdict==='layak'?'#22c55e':r.verdict==='tidak'?'var(--bi-red)':'var(--bi-gold)';
+    const vl=r.verdict==='layak'?'Layak':r.verdict==='tidak'?'Tidak Layak':'Perlu Cek';
+    return '<div class="history-item" onclick="showHistory('+i+')">'
+      +'<div class="history-thumb" style="background:url('+(h.thumb||'')+') center/cover;"></div>'
+      +'<div class="history-info">'
+      +'<div class="history-nominal">'+(r.nominal||'--')+'</div>'
+      +'<div style="font-size:11px;color:var(--text-muted);">'+r.integrityPercent+'% • '+new Date(h.ts).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})+'</div>'
+      +'</div>'
+      +'<div style="font-size:11px;font-weight:800;color:'+vc+';">'+vl+'</div>'
+      +'</div>';
   }).join('');
 }
 
-function clearHistory() {
-  if (history.length === 0) return;
-  history = [];
-  localStorage.removeItem('tr_hist');
-  renderHistory();
-  toast('🗑️ Riwayat dihapus', 'info');
-}
-
-/* ─── Toast ──────────────────────────────────────── */
-function toast(msg, type = 'info', dur = 3500) {
-  const zone = document.getElementById('toastZone');
-  const el   = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.textContent = msg;
-  zone.appendChild(el);
-  setTimeout(() => {
-    el.style.transition = 'all 0.3s';
-    el.style.opacity    = '0';
-    el.style.transform  = 'translateY(10px)';
-    setTimeout(() => el.remove(), 300);
-  }, dur);
-}
-
-/* ─── Keyboard shortcuts ─────────────────────────── */
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeSettings();
-  if (e.key === ' ' && !['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) {
-    e.preventDefault();
-    if (!analyzeBtn.disabled) captureAndAnalyze();
-  }
-  if (e.key === 'a' && e.ctrlKey) { e.preventDefault(); toggleAutoDetect(); }
-});
-
-/* ─── Welcome toast ──────────────────────────────── */
-setTimeout(() => {
-  const key = localStorage.getItem('tr_api_key');
-  if (key) {
-    toast('👋 Selamat datang! Aktifkan kamera untuk memulai', 'info', 4000);
-  } else {
-    toast('🔑 Atur API Key di ⚙️ untuk menggunakan AI', 'warning', 5000);
-  }
-}, 800);
+function showHistory(i){if(!history[i])return;currentResult=history[i].result;displayResult(currentResult);document.getElementById('resContent').scrollIntoView({behavior:'smooth',block:'start'});}
+function clearHistory(){history=[];try{localStorage.removeItem('tr_history');}catch(e){}renderHistory();toast('Riwayat dihapus','info');}
 </script>
 
-<!-- ════════════════════════════════════════════════════
-     DUAL-MODE AI ENGINE
-     Standard: TensorFlow.js + Canvas Pixel Analysis (No API Key)
-     Premium:  Google Gemini Vision API (API Key Required)
-     ════════════════════════════════════════════════════ -->
-<script>
-'use strict';
-
-/* ─── AI Mode State ──────────────────────────────────── */
-let aiMode = 'standard'; // 'standard' | 'premium'
-let tfModel = null;
-let tfModelLoading = false;
-
-/* ─── Mode Switcher ──────────────────────────────────── */
-function setAIMode(mode) {
-  aiMode = mode;
-
-  const stdBtn    = document.getElementById('modeStdBtn');
-  const proBtn    = document.getElementById('modeProBtn');
-  const banner    = document.getElementById('modeBanner');
-  const bannerTxt = document.getElementById('modeBannerText');
-  const apiAlert  = document.getElementById('apiAlert');
-
-  if (mode === 'standard') {
-    stdBtn.className = 'mode-btn active-std';
-    proBtn.className = 'mode-btn';
-    banner.className = 'mode-banner std';
-    bannerTxt.textContent = 'Mode Standard — TensorFlow.js (Offline, tanpa API Key)';
-    apiAlert.classList.remove('show');
-    // Pre-load TF.js model
-    preloadTFModel();
-  } else {
-    stdBtn.className = 'mode-btn';
-    proBtn.className = 'mode-btn active-pro';
-    banner.className = 'mode-banner pro';
-    bannerTxt.textContent = 'Mode Premium — Google Gemini Vision AI (API Key Diperlukan)';
-    checkApiKey();
-  }
-
-  toast(mode === 'standard'
-    ? '🧠 Mode Standard: TF.js aktif (offline, no API key)'
-    : '⭐ Mode Premium: Gemini Vision AI aktif',
-    'info'
-  );
-}
-
-/* ─── Pre-load TF.js Model ───────────────────────────── */
-async function preloadTFModel() {
-  if (tfModel || tfModelLoading) return;
-  tfModelLoading = true;
-
-  const loader    = document.getElementById('tfjsLoader');
-  const barFill   = document.getElementById('tfjsBarFill');
-  const loaderLbl = document.getElementById('tfjsLoaderLabel');
-  const loaderPct = document.getElementById('tfjsLoaderPct');
-
-  loader.classList.add('show');
-  loaderLbl.textContent = 'Memuat TensorFlow.js runtime...';
-  barFill.style.width = '15%';
-  loaderPct.textContent = '15%';
-
-  try {
-    // Wait for TF.js to be available
-    let attempts = 0;
-    while (typeof tf === 'undefined' && attempts < 20) {
-      await sleep(300);
-      attempts++;
-    }
-
-    if (typeof tf === 'undefined') throw new Error('TensorFlow.js gagal dimuat');
-
-    loaderLbl.textContent = 'Inisialisasi backend WebGL...';
-    barFill.style.width = '35%';
-    loaderPct.textContent = '35%';
-
-    await tf.ready();
-
-    loaderLbl.textContent = 'Backend siap: ' + tf.getBackend();
-    barFill.style.width = '60%';
-    loaderPct.textContent = '60%';
-
-    await sleep(200);
-
-    // We use Canvas pixel analysis (no model download needed)
-    // Just confirm TF.js tensor operations work
-    const testTensor = tf.tensor([1, 2, 3]);
-    testTensor.dispose();
-
-    barFill.style.width = '100%';
-    loaderPct.textContent = '100%';
-    loaderLbl.textContent = '✓ TensorFlow.js siap (Mode Offline)';
-
-    await sleep(1000);
-    loader.classList.remove('show');
-    tfModel = 'ready'; // marker that TF is initialized
-    tfModelLoading = false;
-
-    toast('✅ TensorFlow.js siap — analisis offline aktif', 'success');
-
-  } catch (err) {
-    loaderLbl.textContent = '⚠️ TF.js gagal dimuat, menggunakan Canvas Analysis';
-    barFill.style.width = '100%';
-    barFill.style.background = 'rgba(200,149,42,0.7)';
-    await sleep(1500);
-    loader.classList.remove('show');
-    tfModel = 'canvas-only'; // fallback
-    tfModelLoading = false;
-  }
-}
-
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-/* ─── Single dispatcher — checks aiMode ────────── */
-// Defined once here, no Object.defineProperty needed
-async function captureAndAnalyze(isAuto = false) {
-  if (typeof aiMode !== 'undefined' && aiMode === 'premium') {
-    await captureAndAnalyzeGemini(isAuto);
-  } else {
-    await captureAndAnalyzeStandard(isAuto);
-  }
-}
-
-/* ─── Standard Mode: TF.js + Canvas Analysis ─────────── */
-async function captureAndAnalyzeStandard(isAuto = false) {
-  if (isAnalyzing) return;
-
-  // Fixed: correct check if camera is active OR we already have a captured image
-  const hasLiveCamera = stream && video && video.readyState >= 2;
-  const hasCaptured   = capCanvas && capCanvas.style.display === 'block';
-  if (!hasLiveCamera && !hasCaptured) {
-    toast('❌ Aktifkan kamera atau upload gambar terlebih dahulu', 'error');
-    return;
-  }
-
-  // Ensure TF is initialized (graceful — we don't strictly need TF for canvas analysis)
-  if (!tfModel && !tfModelLoading) {
-    preloadTFModel(); // fire and forget, analysis still runs
-  }
-
-  isAnalyzing = true;
-  analyzeBtn.disabled = true;
-  analyzingBar.classList.add('show');
-  setHeaderStatus('Menganalisis...', 'analyzing');
-  autoDot.className = 'auto-dot analyzing';
-
-  // ── Capture frame ──────────────────────────────────────────────
-  let sourceEl = hasCaptured ? capCanvas : video;
-  const w = (hasLiveCamera ? video.videoWidth  : capCanvas.width)  || 640;
-  const h = (hasLiveCamera ? video.videoHeight : capCanvas.height) || 480;
-
-  hiddenCvs.width  = w;
-  hiddenCvs.height = h;
-  const hCtx = hiddenCvs.getContext('2d');
-  hCtx.drawImage(sourceEl, 0, 0, w, h);
-
-  // Show captured frame
-  capCanvas.width  = w;
-  capCanvas.height = h;
-  capCanvas.style.display = 'block';
-  const cCtx = capCanvas.getContext('2d');
-  cCtx.drawImage(hiddenCvs, 0, 0);
-  if (video) video.style.display = 'none';
-  retakeBtn.style.display = 'flex';
-  const scanHint = document.getElementById('scanHint');
-  if (scanHint) scanHint.style.display = 'none';
-
-  // Show loading
-  resEmpty.style.display = 'none';
-  resContent.classList.remove('show');
-  resLoading.style.display = 'flex';
-  animateLoadingSteps();
-
-  try {
-    let result;
-    try {
-      result = await analyzeWithCanvas(hiddenCvs, w, h);
-    } catch (analysisErr) {
-      // Analisis error → tampilkan hasil default "tidak bisa dianalisis" daripada kosong
-      console.warn('Canvas analysis error (fallback):', analysisErr);
-      result = {
-        isRupiah: false,
-        nominal: '-',
-        tahunEmisi: null,
-        moneyType,
-        integrityPercent: 0,
-        verdict: 'marginal',
-        verdictReason: 'Analisis tidak dapat diselesaikan. Coba lagi dengan pencahayaan lebih baik.',
-        damageTypes: ['⚠️ Gagal menganalisis'],
-        damageDescription: 'Terjadi kesalahan saat memproses gambar. Pastikan uang terlihat jelas dan coba lagi.',
-        damageRegions: [],
-        serialVisible: false, serialMatch: null, splitPieces: 1,
-        recommendation: 'Coba lagi: letakkan uang di permukaan putih dengan cahaya merata, isi ±70% frame kamera.',
-        aiConfidence: 0,
-        additionalNotes: 'Error teknis: ' + analysisErr.message,
-        _mode: 'standard'
-      };
-    }
-
-    const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
-    displayResult(result);
-    drawDetectionOverlay(result, cCtx, w, h);
-    updateLiveIndicators(result);
-    addHistory(result, thumbUrl);
-
-    const msg = result.verdict === 'layak'
-      ? '✅ Analisis selesai — Layak Tukar!'
-      : result.verdict === 'marginal'
-        ? '⚠️ Analisis selesai — Perlu Cek Fisik'
-        : '❌ Analisis selesai — Tidak Layak';
-    toast(msg, result.verdict === 'layak' ? 'success' : result.verdict === 'marginal' ? 'warning' : 'error');
-
-  } catch (err) {
-    // Hanya jika benar-benar fatal (misal displayResult error)
-    console.error('Fatal error:', err);
-    resLoading.style.display = 'none';
-    resEmpty.style.display = 'flex';
-    toast('❌ Error fatal: ' + err.message, 'error');
-    updateLiveIndicatorsError();
-  } finally {
-    isAnalyzing = false;
-    analyzeBtn.disabled = false;
-    analyzingBar.classList.remove('show');
-    setHeaderStatus(stream ? 'Kamera Aktif' : 'AI Siap', 'active');
-    if (autoDetect) autoDot.className = 'auto-dot';
-    else autoDot.className = 'auto-dot inactive';
-  }
-}
-
-/* ─── Canvas Pixel Analysis Engine (Calibrated v3) ───── */
-/* 
-  CARA KERJA:
-  Algoritma ini mengukur keutuhan uang dengan langkah berikut:
-  1. Deteksi warna latar belakang secara adaptif dari tepi frame
-  2. Pisahkan piksel "uang" dari "latar" menggunakan color-diff
-  3. Hitung bounding box uang → fillRatio = piksel_uang / luas_kotak
-     (ini adalah estimasi terbaik dari "berapa % uang masih ada")
-  4. Konversi ke integrityPercent & bandingkan dengan threshold 66.7%
-  
-  BATAS AKURASI:
-  - Pencahayaan merata: akurasi ~80%
-  - Uang kontras dengan latar (putih/hitam): akurasi ~85%
-  - Tidak bisa identifikasi nominal (butuh Mode Premium)
-*/
-async function analyzeWithCanvas(canvas, width, height) {
-  await sleep(150);
-
-  const ctx = canvas.getContext('2d');
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-
-  document.getElementById('step2dot').className = 'step-dot done';
-  document.getElementById('step3dot').className = 'step-dot active';
-  await sleep(80);
-
-  const totalPx = width * height;
-
-  // ── 1. Adaptive background sampling ─────────────────────────
-  // Sample 3 border rings for robust bg estimation
-  const BW = Math.max(20, Math.floor(width  * 0.09));
-  const BH = Math.max(20, Math.floor(height * 0.09));
-  let eR=0, eG=0, eB=0, eN=0;
-  for (let y=0; y<height; y++) {
-    for (let x=0; x<width; x++) {
-      if (x<BW || x>=width-BW || y<BH || y>=height-BH) {
-        const i=(y*width+x)*4;
-        eR+=data[i]; eG+=data[i+1]; eB+=data[i+2]; eN++;
-      }
-    }
-  }
-  const bgR = eN>0 ? eR/eN : 200;
-  const bgG = eN>0 ? eG/eN : 200;
-  const bgB = eN>0 ? eB/eN : 200;
-
-  // ── 2. Pixel classification ──────────────────────────────────
-  let objPx=0, darkPx=0, holePx=0, stainPx=0, rupiahPx=0;
-  let minX=width, maxX=0, minY=height, maxY=0;
-
-  // Rupiah banknote color ranges (warm paper tones: red/brown/blue hues)
-  function isRupiahColor(r,g,b) {
-    // Warm paper tones (cream, tan, light brown)
-    if (r>160 && g>130 && b>80  && r>g && g>b) return true;
-    // Red/orange dominant (100K, 50K notes)
-    if (r>140 && r>g*1.3 && r>b*1.2) return true;
-    // Blue dominant (20K notes)
-    if (b>130 && b>r*1.2 && b>g*1.1) return true;
-    // Purple/magenta (10K notes)
-    if (r>120 && b>120 && r>g*1.1 && b>g*1.1) return true;
-    // Green (5K notes)
-    if (g>130 && g>r*1.15 && g>b*1.1) return true;
-    // Grey/silver (2K, 1K notes)
-    if (Math.abs(r-g)<30 && Math.abs(g-b)<30 && r>100 && r<220) return true;
-    return false;
-  }
-
-  // Dynamic diff threshold — higher if bg is very uniform
-  const DIFF_THR = 38;
-
-  for (let y=0; y<height; y++) {
-    for (let x=0; x<width; x++) {
-      const i=(y*width+x)*4;
-      const r=data[i], g=data[i+1], b=data[i+2];
-      const lum=0.299*r+0.587*g+0.114*b;
-      const diff=Math.abs(r-bgR)+Math.abs(g-bgG)+Math.abs(b-bgB);
-      
-      // Fast texture/edge approximation to distinguish intricate banknote prints from smooth backgrounds
-      let edge = 0;
-      if (x < width - 2 && y < height - 2) {
-        edge = Math.abs(r - data[i+8]) + Math.abs(g - data[i+9]) + 
-               Math.abs(r - data[i+width*8]) + Math.abs(g - data[i+width*8+1]);
-      }
-
-      if (diff > DIFF_THR || edge > 35) {
-        objPx++;
-        if (x<minX) minX=x; if (x>maxX) maxX=x;
-        if (y<minY) minY=y; if (y>maxY) maxY=y;
-        // Damage indicators
-        if (lum < 38) darkPx++;             // burned / charred
-        if (lum > 232) holePx++;            // holes showing through
-        const cmax=Math.max(r,g,b)/255, cmin=Math.min(r,g,b)/255;
-        const sat = cmax===0 ? 0 : (cmax-cmin)/cmax;
-        if (sat>0.38 && lum>45 && lum<195) stainPx++;
-        if (isRupiahColor(r,g,b)) rupiahPx++;
-      }
-    }
-  }
-
-  const objRatio = objPx / totalPx;
-
-  await sleep(100);
-  document.getElementById('step3dot').className = 'step-dot done';
-  document.getElementById('step4dot').className = 'step-dot active';
-
-  // ── 3. No object guard ───────────────────────────────────────
-  if (objRatio < 0.05) {
-    await sleep(60);
-    document.getElementById('step4dot').className = 'step-dot done';
-    return {
-      isRupiah: false, nominal: '-', tahunEmisi: null, moneyType,
-      integrityPercent: 0, verdict: 'tidak',
-      verdictReason: 'Tidak ada objek terdeteksi. Pastikan uang ada di depan kamera dan kontras dengan permukaan.',
-      damageTypes: ['⚠️ Objek tidak terdeteksi'],
-      damageDescription: 'Kamera tidak mendeteksi uang. Coba: (1) Letakkan di permukaan putih/hitam, (2) Pastikan cahaya cukup, (3) Isi ±70% area kamera.',
-      damageRegions: [], serialVisible:false, serialMatch:null, splitPieces:1,
-      recommendation: 'Gunakan alas berwarna kontras. Uang harus mengisi setidaknya 60% frame kamera.',
-      aiConfidence: 5,
-      additionalNotes: 'Mode Standard (offline). Gunakan Mode Premium ⭐ untuk deteksi nominal akurat.',
-      _mode: 'standard'
-    };
-  }
-
-  // ── 4. INTEGRITY CALCULATION ─────────────────────────────────
-  // fillRatio: seberapa "padat" area bounding box terisi piksel uang
-  // Ini adalah estimasi langsung dari % luas uang yang tersisa
-  const boxW   = Math.max(1, maxX - minX);
-  const boxH   = Math.max(1, maxY - minY);
-  
-  // Aspect ratio correction (IDR notes are ~2.23 aspect ratio)
-  // Ini sangat krusial: jika separuh uang hilang, bounding box ikut mengecil.
-  // Dengan mengetahui rasio asli uang, kita bisa menebak ukuran originalnya.
-  const EXPECTED_ASPECT = 2.23;
-  let originalArea = boxW * boxH;
-  
-  if (boxW > boxH) {
-    const expectedW = boxH * EXPECTED_ASPECT;
-    originalArea = Math.max(boxW, expectedW) * boxH;
-  } else {
-    const expectedH = boxW * EXPECTED_ASPECT;
-    originalArea = boxW * Math.max(boxH, expectedH);
-  }
-  
-  // fillRatio ~1.0 = uang utuh, fillRatio ~0.5 = uang tinggal setengah
-  const fillRatio  = Math.min(1, objPx / originalArea);
-  const darkRatio  = objPx > 0 ? darkPx  / objPx : 0;
-  const holeRatio  = objPx > 0 ? holePx  / objPx : 0;
-  const stainRatio = objPx > 0 ? stainPx / objPx : 0;
-
-  // Multi-pass tear detection (horizontal + vertical scans)
-  let tearScore = 0;
-  const scanStep = Math.max(1, Math.floor(height / 60));
-  for (let row = BH; row < height-BH; row += scanStep) {
-    let rs=-1, re=-1;
-    for (let col=0; col<width; col++) {
-      const i=(row*width+col)*4;
-      const diff=Math.abs(data[i]-bgR)+Math.abs(data[i+1]-bgG)+Math.abs(data[i+2]-bgB);
-      if (diff>DIFF_THR) { if(rs===-1)rs=col; re=col; }
-    }
-    if (rs > width*0.12) tearScore++;
-    if (re>0 && re<width*0.88) tearScore++;
-  }
-  // Vertical scan too
-  const scanStepV = Math.max(1, Math.floor(width / 60));
-  for (let col = BW; col < width-BW; col += scanStepV) {
-    let cs=-1, ce=-1;
-    for (let row=0; row<height; row++) {
-      const i=(row*width+col)*4;
-      const diff=Math.abs(data[i]-bgR)+Math.abs(data[i+1]-bgG)+Math.abs(data[i+2]-bgB);
-      if (diff>DIFF_THR) { if(cs===-1)cs=row; ce=row; }
-    }
-    if (cs > height*0.12) tearScore++;
-    if (ce>0 && ce<height*0.88) tearScore++;
-  }
-  const tearNorm = Math.min(tearScore / 40, 1);
-
-  // ── INTEGRITY FORMULA ────────────────────────────────────────
-  // Base: fillRatio directly maps to integrity (calibrated)
-  // 100% fill = 100% integrity, 66.7% fill = borderline, 50% fill = 0% for logam
-  let integrityPercent = Math.round(fillRatio * 100);
-
-  // Deduct for actual damage on the detected area
-  const damagePenalty = 
-    (darkRatio  * 100 * 0.9) +  // burned sections — severe
-    (holeRatio  * 100 * 0.7) +  // holes
-    (stainRatio * 100 * 0.2) +  // stains — minor
-    (tearNorm   * 15);           // ragged edges
-
-  integrityPercent = Math.max(0, Math.min(100, Math.round(integrityPercent - damagePenalty)));
-
-  // Warn if object is too small in frame (unreliable measurement)
-  const tooSmall = objRatio < 0.15;
-  if (tooSmall) {
-    // Clamp max to 85% if object is tiny — measurement unreliable
-    integrityPercent = Math.min(85, integrityPercent);
-  }
-
-  // ── 5. Damage classification ─────────────────────────────────
-  const damageTypes = [];
-  if (fillRatio  < 0.75) damageTypes.push('Area Hilang/Terkoyak');
-  if (darkRatio  > 0.04) damageTypes.push('Terbakar/Hangus');
-  if (holeRatio  > 0.04) damageTypes.push('Berlubang/Bolong');
-  if (stainRatio > 0.07) damageTypes.push('Noda/Coretan');
-  if (tearNorm   > 0.30) damageTypes.push('Tepi Sobek/Tidak Rata');
-  const isGoodCondition = damageTypes.length === 0 && integrityPercent >= 82;
-  if (isGoodCondition) damageTypes.push('Kondisi Baik / Utuh');
-
-  // Rupiah likelihood (for display)
-  const rupiahLikelihood = rupiahPx / Math.max(1, objPx);
-  const likelyRupiah = rupiahLikelihood > 0.25 || objRatio > 0.1;
-
-  // ── 6. Verdict at 66.7% threshold ───────────────────────────
-  const threshold = moneyType === 'logam' ? 50 : 66.7;
-  const verdict = integrityPercent > threshold + 5 ? 'layak'
-                : integrityPercent < threshold - 5 ? 'tidak'
-                : 'marginal';
-
-  const damageDescription = isGoodCondition
-    ? `Uang terlihat dalam kondisi baik. Estimasi keutuhan: ${integrityPercent}%.`
-    : damageTypes.length
-    ? `Terdeteksi: ${damageTypes.join(', ')}. Estimasi keutuhan: ${integrityPercent}%.`
-    : `Estimasi keutuhan: ${integrityPercent}%.`;
-
-  const confidence = Math.round(
-    (tooSmall ? 55 : 75) +
-    (likelyRupiah ? 10 : 0) +
-    (objRatio > 0.3 ? 10 : objRatio > 0.2 ? 5 : 0) -
-    (tearNorm * 10)
-  );
-
-  const damageRegions = estimateDamageRegions(data, width, height);
-  await sleep(80);
-  document.getElementById('step4dot').className = 'step-dot done';
-
-  return {
-    isRupiah: likelyRupiah,
-    nominal: 'Tidak terdeteksi — gunakan Mode Premium ⭐ untuk identifikasi nominal',
-    tahunEmisi: null,
-    moneyType,
-    integrityPercent,
-    verdict,
-    verdictReason: buildVerdictReason(integrityPercent, threshold, verdict),
-    damageTypes,
-    damageDescription,
-    damageRegions,
-    serialVisible: false, serialMatch: null, splitPieces: 1,
-    recommendation: buildRecommendation(verdict, integrityPercent, threshold),
-    aiConfidence: Math.min(95, Math.max(20, confidence)),
-    additionalNotes: tooSmall
-      ? '⚠️ Uang terlalu kecil di frame — dekatkan kamera agar uang mengisi ±70% area. Mode Premium ⭐ untuk presisi lebih tinggi.'
-      : 'Analisis Standard (deteksi piksel adaptif, offline). Akurasi terbaik: letakkan uang di permukaan putih/hitam dengan cahaya merata. Mode Premium ⭐ untuk identifikasi nominal.',
-    _mode: 'standard'
-  };
-}
-
-/* ─── Helper: Build damage description ───────────────── */
-function buildDamageDescription(darkR, holeR, stainR, tearScore, areaR, pct) {
-  const parts = [];
-
-  if (darkR > 0.08) {
-    const pctDark = Math.round(darkR * 100);
-    parts.push(`Terdeteksi area gelap/hangus pada sekitar ${pctDark}% permukaan uang`);
-  }
-  if (holeR > 0.12 || areaR < 0.35) {
-    parts.push(`Terdapat indikasi area yang hilang atau robekan besar`);
-  }
-  if (stainR > 0.10) {
-    parts.push(`Ditemukan noda berwarna atau coretan pada permukaan`);
-  }
-  if (tearScore > 8) {
-    parts.push(`Tepi uang tidak rata, mengindikasikan robekan atau sobekan`);
-  }
-
-  if (parts.length === 0) {
-    return `Tidak terdeteksi kerusakan signifikan. Estimasi keutuhan: ${pct}%.`;
-  }
-
-  return parts.join('. ') + `. Estimasi keutuhan keseluruhan: ${pct}%.`;
-}
-
-/* ─── Helper: Verdict reason ─────────────────────────── */
-function buildVerdictReason(pct, threshold, verdict) {
-  if (verdict === 'layak') return `Keutuhan estimasi ${pct}% melebihi batas minimum ${threshold}% — layak ditukarkan`;
-  if (verdict === 'tidak') return `Keutuhan estimasi ${pct}% di bawah batas minimum ${threshold}% — tidak memenuhi syarat`;
-  return `Keutuhan estimasi ${pct}% mendekati batas minimum ${threshold}% — perlu konfirmasi fisik langsung`;
-}
-
-/* ─── Helper: Recommendation ─────────────────────────── */
-function buildRecommendation(verdict, pct, threshold) {
-  if (verdict === 'layak') {
-    return `Berdasarkan analisis visual, uang ini kemungkinan memenuhi syarat penukaran Bank Indonesia. Kunjungi kantor BI atau bank umum terdekat untuk konfirmasi resmi.`;
-  } else if (verdict === 'tidak') {
-    return `Berdasarkan analisis visual, keutuhan uang kemungkinan di bawah batas minimum BI (${threshold}%). Disarankan tidak menukarkan. Untuk kepastian, gunakan Mode Premium atau kunjungi BI langsung.`;
-  }
-  return `Keutuhan uang berada di zona kritis (mendekati ${threshold}%). Disarankan melakukan verifikasi fisik langsung di kantor Bank Indonesia atau gunakan Mode Premium untuk analisis lebih akurat.`;
-}
-
-/* ─── Helper: Confidence calculation ─────────────────── */
-function calculateConfidence(pct, damageTypes, areaRatio) {
-  // Confidence is higher when result is clearly good or clearly bad
-  const distFromThreshold = Math.abs(pct - (moneyType === 'logam' ? 50 : 66.7));
-  let conf = 50 + Math.min(distFromThreshold * 1.5, 35);
-
-  // Lower confidence if currency area ratio is small (bad framing)
-  if (areaRatio < 0.25) conf -= 15;
-
-  // Caveat: canvas analysis is less accurate than AI Vision
-  conf = Math.min(conf, 78); // cap at 78% for canvas analysis
-  return Math.round(Math.max(30, conf));
-}
-
-/* ─── Helper: Estimate damage regions from pixel data ── */
-function estimateDamageRegions(data, width, height) {
-  const regions = [];
-  const blockW = Math.floor(width / 8);
-  const blockH = Math.floor(height / 6);
-
-  for (let blockY = 0; blockY < 6; blockY++) {
-    for (let blockX = 0; blockX < 8; blockX++) {
-      let darkCount = 0, total = 0;
-
-      for (let dy = 0; dy < blockH; dy++) {
-        for (let dx = 0; dx < blockW; dx++) {
-          const px = blockX * blockW + dx;
-          const py = blockY * blockH + dy;
-          const idx = (py * width + px) * 4;
-          const r = data[idx], g = data[idx+1], b = data[idx+2];
-          const lum = 0.299*r + 0.587*g + 0.114*b;
-          if (lum < 50) darkCount++;
-          total++;
-        }
-      }
-
-      const darkRatio = darkCount / total;
-      if (darkRatio > 0.20) {
-        regions.push({
-          label: darkRatio > 0.4 ? 'Hangus/Gelap' : 'Area Rusak',
-          x: (blockX * blockW) / width,
-          y: (blockY * blockH) / height,
-          w: blockW / width,
-          h: blockH / height
-        });
-      }
-    }
-  }
-
-  return regions.slice(0, 5); // max 5 regions for overlay
-}
-
-/* ─── Upload handler also needs dual-mode ────────────── */
-const _originalHandleUpload = handleUpload;
-window.handleUpload = async function(event) {
-  if (aiMode === 'premium') {
-    _originalHandleUpload(event);
-    return;
-  }
-
-  const file = event.target.files[0];
-  if (!file) return;
-
-  if (!tfModel) await preloadTFModel();
-
-  const reader = new FileReader();
-  reader.onload = async e => {
-    const img = new Image();
-    img.onload = async () => {
-      const maxW = 1280, maxH = 960;
-      let w = img.width, h = img.height;
-      if (w > maxW) { h = Math.round(h*maxW/w); w = maxW; }
-      if (h > maxH) { w = Math.round(w*maxH/h); h = maxH; }
-
-      hiddenCvs.width = w; hiddenCvs.height = h;
-      hiddenCvs.getContext('2d').drawImage(img, 0, 0, w, h);
-
-      capCanvas.width = w; capCanvas.height = h;
-      capCanvas.style.display = 'block';
-      const cCtx = capCanvas.getContext('2d');
-      cCtx.drawImage(hiddenCvs, 0, 0);
-      video.style.display = 'none';
-      noCamState.style.display = 'none';
-      scanOverlay.classList.add('active');
-      retakeBtn.style.display = 'flex';
-      analyzeBtn.disabled = false;
-
-      isAnalyzing = true;
-      analyzeBtn.disabled = true;
-      analyzingBar.classList.add('show');
-      setHeaderStatus('Menganalisis...', 'analyzing');
-
-      resEmpty.style.display = 'none';
-      resContent.classList.remove('show');
-      resLoading.style.display = 'flex';
-      animateLoadingSteps();
-
-      try {
-        const result = await analyzeWithCanvas(hiddenCvs, w, h);
-        const thumbUrl = hiddenCvs.toDataURL('image/jpeg', 0.35);
-        displayResult(result);
-        drawDetectionOverlay(result, cCtx, w, h);
-        updateLiveIndicators(result);
-        addHistory(result, thumbUrl);
-        toast(result.verdict === 'layak' ? '✅ Analisis selesai!' : '❌ Analisis selesai',
-          result.verdict === 'layak' ? 'success' : 'error');
-      } catch (err) {
-        resLoading.style.display = 'none';
-        resEmpty.style.display = 'flex';
-        toast('❌ Gagal: ' + err.message, 'error');
-      } finally {
-        isAnalyzing = false;
-        analyzeBtn.disabled = false;
-        analyzingBar.classList.remove('show');
-        setHeaderStatus('AI Siap', 'active');
-      }
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-  event.target.value = '';
-};
-
-/* ─── Auto-start: pre-load TF.js on page load ────────── */
-window.addEventListener('load', () => {
-  // Auto pre-load in standard mode after brief delay
-  setTimeout(() => {
-    if (aiMode === 'standard') preloadTFModel();
-  }, 1500);
-});
-</script>
-<script>
-  /* Hero Slideshow Logic */
-  setInterval(() => {
-    const slides = document.querySelectorAll('.hero-slideshow .slide');
-    if(slides.length === 0) return;
-    let activeIdx = Array.from(slides).findIndex(s => s.classList.contains('active'));
-    slides[activeIdx].classList.remove('active');
-    activeIdx = (activeIdx + 1) % slides.length;
-    slides[activeIdx].classList.add('active');
-  }, 4000);
-</script>
 </body>
 </html>
+
 
