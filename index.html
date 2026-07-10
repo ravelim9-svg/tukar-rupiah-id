@@ -3454,6 +3454,82 @@ function renderEmptyState(msg){
   if(sub)sub.textContent=msg||'Arahkan kamera ke uang. Sistem otomatis mendeteksi & mengunci, lalu menghitung keutuhan fisik secara matematis.';
 }
 
+function displayResult(r) {
+  const verdictHero = document.getElementById('verdictHero');
+  const verdictBadge = document.getElementById('verdictBadge');
+  const verdictIcon = document.getElementById('verdictIcon');
+  const verdictText = document.getElementById('verdictText');
+  const verdictDesc = document.getElementById('verdictDesc');
+  const nominalPill = document.getElementById('nominalPill');
+  
+  const gaugeCircle = document.getElementById('gaugeCircle');
+  const gaugePct = document.getElementById('gaugePct');
+  const gaugeBarFill = document.getElementById('gaugeBarFill');
+  const thresholdMarker = document.getElementById('thresholdMarker');
+  const thresholdTip = document.getElementById('thresholdTip');
+  const analysisList = document.getElementById('analysisList');
+  
+  nominalPill.textContent = r.nominal + ' ' + (r.nominalSource==='ocr'?'(Teks Terbaca)':'(Estimasi Warna)');
+  
+  // Reset classes
+  verdictHero.className = 'verdict-hero';
+  verdictBadge.className = 'verdict-badge';
+  
+  if (r.verdict === 'layak') {
+    verdictBadge.classList.add('verdict-ok');
+    verdictIcon.textContent = '✅';
+    verdictText.textContent = 'LAYAK DITUKAR';
+    verdictDesc.textContent = 'Memenuhi syarat penukaran Bank Indonesia.';
+  } else if (r.verdict === 'marginal') {
+    verdictHero.classList.add('verdict-marginal');
+    verdictBadge.classList.add('verdict-marginal');
+    verdictIcon.textContent = '⚠️';
+    verdictText.textContent = 'VERIFIKASI MANUAL';
+    verdictDesc.textContent = 'Kondisi uang berada di ambang batas kriteria fisik.';
+  } else {
+    verdictHero.classList.add('verdict-reject');
+    verdictBadge.classList.add('verdict-reject');
+    verdictIcon.textContent = '❌';
+    verdictText.textContent = 'TIDAK LAYAK';
+    verdictDesc.textContent = 'Kerusakan terlalu parah, di bawah standar BI.';
+  }
+  
+  const pct = Math.max(0, Math.min(100, r.integrityPercent));
+  gaugePct.textContent = pct + '%';
+  const c = 283; // 2 * PI * 45
+  const offset = c - (pct / 100) * c;
+  gaugeCircle.style.strokeDasharray = c;
+  gaugeCircle.style.strokeDashoffset = offset;
+  
+  if (pct >= r.threshold + 5) gaugeCircle.style.stroke = 'url(#gaugeGoldGrad)';
+  else if (pct >= r.threshold - 5) gaugeCircle.style.stroke = '#F4B942';
+  else gaugeCircle.style.stroke = 'url(#gaugeRedGrad)';
+  
+  gaugeBarFill.style.width = pct + '%';
+  gaugeBarFill.style.background = pct >= r.threshold - 5 ? '#F4B942' : '#ef4444';
+  
+  thresholdMarker.style.left = r.threshold + '%';
+  thresholdTip.textContent = r.threshold + '%';
+  
+  let htmlNotes = '';
+  r.conditionNotes.forEach(note => {
+    let icon = 'ℹ️', color = '#9ca3af';
+    if(note.type === 'critical') { icon = '❌'; color = '#ef4444'; }
+    else if(note.type === 'warning') { icon = '⚠️'; color = '#F4B942'; }
+    else if(note.type === 'ok') { icon = '✅'; color = '#22c55e'; }
+    
+    htmlNotes += `<div class="analysis-item">
+      <div class="analysis-icon">${icon}</div>
+      <div class="analysis-text" style="color:${color}">${note.text}</div>
+    </div>`;
+  });
+  analysisList.innerHTML = htmlNotes;
+  
+  resEmpty.style.display='none';
+  resLoading.style.display='none';
+  resContent.style.display='block';
+}
+
 function setType(type){
   moneyType=type;
   document.getElementById('typeKertas').className='type-btn'+(type==='kertas'?' active':'');
